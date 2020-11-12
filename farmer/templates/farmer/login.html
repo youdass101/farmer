@@ -1,11 +1,17 @@
 {% extends "farmer/layout.html" %}
-
 {% block body %}
+<h1>Login</h1>
 <form action="{% url 'login' %}" method="POST">
     {% csrf_token %}
-    <input autofocus type="text" name="username" placeholder="Username">
-    <input name="password" type="password" placeholder="Password">
-    <input type="submit">
+    <div class="forma">
+        <input class="inputs" autofocus type="text" name="username" placeholder="Username" required>
+    </div>
+    <div class="forma">
+        <input class="inputs" name="password" type="password" placeholder="Password" required>
+    </div>
+    <div class="forma">    
+        <input class="inputs" type="submit">
+    </div>
 
 </form> 
 

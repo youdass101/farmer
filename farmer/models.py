@@ -9,3 +9,13 @@ class User(AbstractUser):
     def __str__(self):
         return f"Username: {self.username}"
 
+class Plant(models.Model):
+    name = models.CharField(max_length=255)
+    seeds = models.IntegerField()
+    pressure = models.IntegerField()
+    blackout = models.IntegerField()
+    harvest = models.IntegerField()
+    output = models.IntegerField()
+    
+    def __str__(self):
+        return f"{self.name} seeds:{self.seeds}g pressure:{self.pressure}days blackout:{self.blackout}days harvest:{self.harvest}days output:{self.output}g"
