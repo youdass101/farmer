@@ -1,27 +1,25 @@
 {% extends "farmer/layout.html" %}
 {% block body %}
-<h1>Register User</h1>
+
+<h1 class="forma">Register User</h1>
 {% if error %}
-<p>{{error}}</p>
+<p class="forma">{{error}}</p>
 {% endif %}
 <div>
     <form action="{% url 'register' %}" method="POST">
         {% csrf_token %}
-        <div class="forma">
-            <input class="inputs" type="text" placeholder="Username" name="username" required>
-            <input class="inputs" type="email" placeholder="Email address" name="email" required>
-        </div>
-        <div class="forma">
-            <input class="inputs" type="password" placeholder="password" name="password" required>
-            <input class="inputs" type="password" placeholder="Confirm password" name="confirm" required>
-        </div>
-        <div class="forma">
-            <input class="inputs" type="text" placeholder="reg Code" name="reg" required>
-        </div>
-        <div class="forma">
-            <input class="inputs" type="submit">
-        </div>
-    </form>
+    <div class="forma">
+            {{form.username}} {{form.email}}
+    </div>
+    <div class="forma">
+        {{form.password}} {{form.confirm}}
+    </div>
+    <div class="forma">
+        {{form.regcode}}
+    </div>
+    <div class="forma">
+        <input class="inputs" type="submit">
 </div>
-</body>
+</form>
+
 {% endblock %}

@@ -1,0 +1,71 @@
+{% extends "farmer/layout.html" %}
+{% block body %}
+<div id="myModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <div>
+            <span class="close">&times;</span>
+            <h4>New Plant</h4>
+        </div>
+        <div>
+            <form action="{% url 'plants' %}" method="POST">
+                {% csrf_token %}
+                {{form}}
+                <input class="subbtn" type="submit" value="Create">
+            </form>
+        </div>
+    </div>
+</div>
+<!-- FILTER -->
+<table class="filter">
+    <tr>
+        <td>
+            <form action="plants" method="POST">
+                <select name="filter">
+                <option value="name">Name</option>
+                <option value="harvest">Harvest</option>
+                <option value="output">Output</option>
+                </select>   
+                <input name="search" type="text" placeholder="Search Plants">
+                <button type="submit">Filter</button>
+            </form>
+        </td>
+        <td>
+            <!-- create new plant -->
+            <button id="myBtn" class="subbtn">New Plant</button>
+        </td>
+    </tr>
+</table>
+<table class="table table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">Plant</th>
+            <th scope="col">Seeds</th>
+            <th scope="col">Black out</th>
+            <th scope="col">Pressure</th>
+            <th scope="col">Harvest</th>
+            <th scope="col">Output</th>
+            <th scope="col">Edit</th>
+        </tr>
+    </thead>
+<!-- created plants list -->
+    <tbody>
+        {% for i in plants %}
+        <tr>
+            <td style = "text-transform:capitalize;">{{i.name}}</td>
+            <td>{{i.seeds}}g</td>
+            <td>{{i.blackout}} days</td>
+            <td>{{i.pressure}} days</td>
+            <td>{{i.harvest}} days</td>
+            <td>{{i.output}}g</td>
+            <td>
+                <form action="edit_plant" method="POST">
+                    <input name="editplant" type="hidden" value="{{i.pid}}"/>
+                    <button type="submit">Edit</button>
+                    </form>
+                </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
