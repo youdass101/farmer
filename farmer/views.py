@@ -2,6 +2,10 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+import json
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import *
 from .forms import *
@@ -71,19 +75,23 @@ def register_view(request):
 #plants view 
 def plants(request):
     if request.method == "POST":
-        form = Newplant(request.POST)
-        if form.is_valid():
-            name = form.cleaned_data['name'].lower()
-            seeds = form.cleaned_data['seeds']
-            pressure = form.cleaned_data['pressure']
-            blackout = form.cleaned_data['blackout']
-            harvest = form.cleaned_data['harvest']
-            output = form.cleaned_data['output']
+        data = json.loads(request.body)
+        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
 
-            newplant = Plant.objects.create(name=name, seeds=seeds, pressure=pressure, blackout=blackout, harvest=harvest, output=output)
-            # newplant.save()
+        print(data)
+        return None
+        # form = Newplant(request.POST)
+        # if form.is_valid():
+        #     name = form.cleaned_data['name'].lower()
+        #     seeds = form.cleaned_data['seeds']
+        #     pressure = form.cleaned_data['pressure']
+        #     blackout = form.cleaned_data['blackout']
+        #     harvest = form.cleaned_data['harvest']
+        #     output = form.cleaned_data['output']
 
+            # newplant = Plant.objects.create(name=name, seeds=seeds, pressure=pressure, blackout=blackout, harvest=harvest, output=output)
 
+    
     plantslist = Plant.objects.all()
     return render(request, "farmer/plants.html", {"form": Newplant(), "plants": plantslist})
     

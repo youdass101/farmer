@@ -11,7 +11,7 @@
             <form action="{% url 'plants' %}" method="POST">
                 {% csrf_token %}
                 {{form}}
-                <input class="subbtn" type="submit" value="Create">
+                <button id="createplant" class="subbtn" >Create </button>
             </form>
         </div>
     </div>
@@ -59,9 +59,8 @@
             <td>{{i.harvest}} days</td>
             <td>{{i.output}}g</td>
             <td>
-                <form action="edit_plant" method="POST">
-                    <input name="editplant" type="hidden" value="{{i.pid}}"/>
-                    <button type="submit">Edit</button>
+                <form action="edit_plant" method="POST"></form>
+                    <button type="submit" value="{{i.id}}">Edit</button>
                     </form>
                 </td>
         </tr>

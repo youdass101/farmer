@@ -26,3 +26,26 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 })
+
+document.querySelector('#createplant').onclick = () => {
+    const name = document.querySelector('#id_name').value;
+    const seeds = document.querySelector('#id_seeds').value;
+    const pressure = document.querySelector('#id_pressure').value;
+    const blackout = document.querySelector('#id_blackout').value;
+    const harvest = document.querySelector('#id_harvest').value;
+    const output = document.querySelector('#id_output').value;
+    alert(name)
+
+    fetch('/plants',{
+        method: 'POST',
+        body: JSON.stringify({
+            name: name
+        })
+    })
+    .then(response => response.json())
+    .then(data =>
+        console.log(data))
+    return false;
+
+    
+}
