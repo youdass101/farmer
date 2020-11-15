@@ -76,10 +76,8 @@ def register_view(request):
 def plants(request):
     if request.method == "POST":
         data = json.loads(request.body)
-        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-
         print(data)
-        return None
+        return JsonResponse()
         # form = Newplant(request.POST)
         # if form.is_valid():
         #     name = form.cleaned_data['name'].lower()

@@ -9,9 +9,8 @@
         </div>
         <div>
             <form action="{% url 'plants' %}" method="POST">
-                {% csrf_token %}
                 {{form}}
-                <button id="createplant" class="subbtn" >Create </button>
+                <button id="createplant" type="submit" class="subbtn" >Create</button>
             </form>
         </div>
     </div>
