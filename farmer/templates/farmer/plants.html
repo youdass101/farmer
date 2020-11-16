@@ -35,7 +35,7 @@
         </td>
     </tr>
 </table>
-<table class="table table-striped">
+<table id="planttable" class="table table-striped">
     <thead class="thead-dark">
         <tr>
             <th scope="col">Plant</th>
@@ -58,10 +58,8 @@
             <td>{{i.harvest}} days</td>
             <td>{{i.output}}g</td>
             <td>
-                <form action="edit_plant" method="POST"></form>
-                    <button type="submit" value="{{i.id}}">Edit</button>
-                    </form>
-                </td>
+                <button class="editplant">Edit</button>
+            </td>
         </tr>
         {% endfor %}
     </tbody>

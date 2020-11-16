@@ -60,13 +60,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.querySelectorAll('.toset').forEach (element => {
                     element.value = ""
                 });
-
-            }
-            
-            
+                var table = document.getElementById("planttable");
+                var row = table.insertRow(1);
+                row.innerHTML = `<td style = "text-transform:capitalize;">${data.name}</td><td>${data.seeds}g</td><td>${data.blackout} days</td><td>${data.pressure} days</td><td>${data.harvest} days</td><td>${data.output}g</td><td><button class="editplant">Edit</button></td>`
+            }     
         })
         return false;
     }
+
+    document.querySelectorAll(".editplant").forEach (button => {
+        button.onclick = () => {
+            button.parentElement.innerHTML=""
+        }
+    })
+
     // CSRF token function  
     function getCookie(name) {
         if (!document.cookie) {
