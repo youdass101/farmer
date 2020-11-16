@@ -75,20 +75,14 @@ def register_view(request):
 #plants view 
 def plants(request):
     if request.method == "POST":
-        data = json.loads(request.body)
-        print(data)
-        return JsonResponse()
-        # form = Newplant(request.POST)
-        # if form.is_valid():
-        #     name = form.cleaned_data['name'].lower()
-        #     seeds = form.cleaned_data['seeds']
-        #     pressure = form.cleaned_data['pressure']
-        #     blackout = form.cleaned_data['blackout']
-        #     harvest = form.cleaned_data['harvest']
-        #     output = form.cleaned_data['output']
-
-            # newplant = Plant.objects.create(name=name, seeds=seeds, pressure=pressure, blackout=blackout, harvest=harvest, output=output)
-
+        data = json.loads(request.body)['data']
+        try:
+            plant = Plant.objects.get(name=data['name'])
+            return JsonResponse({"result": "exist"}, status=500)
+        except:
+            Plant.objects.create(name=data['name'].lower(), seeds=data['seeds'], pressure=data['pressure'], blackout=data['blackout'], harvest=data['harvest'], output=data['output'])
+            return JsonResponse({"result": "done"}, status=201)
+        
     
     plantslist = Plant.objects.all()
     return render(request, "farmer/plants.html", {"form": Newplant(), "plants": plantslist})

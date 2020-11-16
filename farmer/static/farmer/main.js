@@ -26,36 +26,48 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-
+    // Create new plant
     document.querySelector('#createplant').onclick = () => {
-        alert('start')
-        const name = document.querySelector('#id_name').value;
-        const seeds = document.querySelector('#id_seeds').value;
-        const pressure = document.querySelector('#id_pressure').value;
-        const blackout = document.querySelector('#id_blackout').value;
-        const harvest = document.querySelector('#id_harvest').value;
-        const output = document.querySelector('#id_output').value;
+        var data = 
+            {
+                name : document.querySelector('#id_name').value,
+                seeds : document.querySelector('#id_seeds').value,
+                pressure : document.querySelector('#id_pressure').value,
+                blackout : document.querySelector('#id_blackout').value,
+                harvest : document.querySelector('#id_harvest').value,
+                output : document.querySelector('#id_output').value
+            }
+        
         const csrftoken = getCookie('csrftoken');
 
         fetch('/plants',{
             method: 'POST',
-            credentials: 'same-origin',
             body: JSON.stringify({
-                name: name
-
+                data
             }),
             headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
                 'X-CSRFToken': csrftoken
             },
         })
         .then(response => response.json())
-        .then(data =>
-            console.log(data))
-        return false;    
-    }
+        .then( result => {
+            console.log(result);
+            if (result.result == "exist") {
+                alert("Plant name already exist")
+            }
+            else {
+                modal.style.display = "none";
+                document.querySelectorAll('.toset').forEach (element => {
+                    element.value = ""
+                });
 
+            }
+            
+            
+        })
+        return false;
+    }
+    // CSRF token function  
     function getCookie(name) {
         if (!document.cookie) {
             return null;
