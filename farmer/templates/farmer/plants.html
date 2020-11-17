@@ -1,7 +1,7 @@
 {% extends "farmer/layout.html" %}
 {% block body %}
 <div id="myModal" class="modal">
-    <!-- Modal content -->
+    <!-- NEW PLANT Modal content -->
     <div class="modal-content">
         <div>
             <span class="close">&times;</span>
@@ -15,6 +15,7 @@
         </div>
     </div>
 </div>
+
 <!-- FILTER -->
 <table class="filter">
     <tr>
@@ -30,11 +31,13 @@
             </form>
         </td>
         <td>
-            <!-- create new plant -->
+            <!-- create new plant button -->
             <button id="myBtn" class="subbtn">New Plant</button>
         </td>
     </tr>
 </table>
+
+<!-- TABEL OF CONTENT -->
 <table id="planttable" class="table table-striped">
     <thead class="thead-dark">
         <tr>
@@ -58,7 +61,7 @@
             <td>{{i.harvest}} days</td>
             <td>{{i.output}}g</td>
             <td>
-                <button class="editplant">Edit</button>
+                <button class="editplant" value="{{i.id}}" >Edit</button>
             </td>
         </tr>
         {% endfor %}

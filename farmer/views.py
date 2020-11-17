@@ -75,6 +75,8 @@ def register_view(request):
 #plants view 
 def plants(request):
     if request.method == "POST":
+        tp = json.loads(request.body)
+        print(tp)
         data = json.loads(request.body)['data']
         try:
             plant = Plant.objects.get(name=data['name'])

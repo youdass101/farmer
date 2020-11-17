@@ -43,7 +43,8 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch('/plants',{
             method: 'POST',
             body: JSON.stringify({
-                data
+                data,
+                type : "create"
             }),
             headers: {
                 'X-CSRFToken': csrftoken
@@ -62,7 +63,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 var table = document.getElementById("planttable");
                 var row = table.insertRow(1);
-                row.innerHTML = `<td style = "text-transform:capitalize;">${data.name}</td><td>${data.seeds}g</td><td>${data.blackout} days</td><td>${data.pressure} days</td><td>${data.harvest} days</td><td>${data.output}g</td><td><button class="editplant">Edit</button></td>`
+                row.innerHTML = `<td style = "text-transform:capitalize;">${data.name}</td><td>${data.seeds}g</td>
+                    <td>${data.blackout} days</td><td>${data.pressure} days</td><td>${data.harvest} days</td>
+                    <td>${data.output}g</td><td><button class="editplant" value="${data.id}">Edit</button></td>`
             }     
         })
         return false;
@@ -70,7 +73,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.querySelectorAll(".editplant").forEach (button => {
         button.onclick = () => {
-            button.parentElement.innerHTML=""
+            fetch('/plants',{
+                method: 'POST',
+                body: JSON.stringify({
+                    data
+                })
+            })
+            .then(response => response.json())
+            .then( result => {
+                console.log(result);
+            (button.parentElement).parentElement.innerHTML=`<td><input type="text" value="${data.name}"></td>`
+            })
         }
     })
 
