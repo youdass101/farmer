@@ -75,15 +75,22 @@ def register_view(request):
 #plants view 
 def plants(request):
     if request.method == "POST":
-        tp = json.loads(request.body)
-        print(tp)
-        data = json.loads(request.body)['data']
-        try:
-            plant = Plant.objects.get(name=data['name'])
-            return JsonResponse({"result": "exist"}, status=500)
-        except:
-            Plant.objects.create(name=data['name'].lower(), seeds=data['seeds'], pressure=data['pressure'], blackout=data['blackout'], harvest=data['harvest'], output=data['output'])
-            return JsonResponse({"result": "done"}, status=201)
+        tp = json.loads(request.body)['type']
+        if tp == "get":
+            pp = json.loads(request.body)['data']
+            data = Plant.objects.get(id=pp)
+            print(data)
+            return JsonResponse({"result": data}, status=201)
+
+        
+        if tp == "create":
+            data = json.loads(request.body)['data']
+            try:
+                plant = Plant.objects.get(name=data['name'])
+                return JsonResponse({"result": "exist"}, status=500)
+            except:
+                Plant.objects.create(name=data['name'].lower(), seeds=data['seeds'], pressure=data['pressure'], blackout=data['blackout'], harvest=data['harvest'], output=data['output'])
+                return JsonResponse({"result": "done"}, status=201)
         
     
     plantslist = Plant.objects.all()

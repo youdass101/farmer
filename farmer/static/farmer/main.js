@@ -73,16 +73,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.querySelectorAll(".editplant").forEach (button => {
         button.onclick = () => {
-            fetch('/plants',{
+            fetch('/plants', {
                 method: 'POST',
                 body: JSON.stringify({
-                    data
-                })
+                    data: button.value,
+                    type: "get"
+                    
+                }),
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
             })
             .then(response => response.json())
-            .then( result => {
-                console.log(result);
-            (button.parentElement).parentElement.innerHTML=`<td><input type="text" value="${data.name}"></td>`
+            .then(result => {
+                (button.parentElement).parentElement.innerHTML=`<td><input type="text" value=""></td>`
             })
         }
     })
