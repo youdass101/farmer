@@ -79,7 +79,6 @@ def plants(request):
         if tp == "get":
             pp = json.loads(request.body)['data']
             data = Plant.objects.get(id=pp)
-            print(data)
             return JsonResponse({"result": data}, status=201)
 
         
@@ -91,6 +90,10 @@ def plants(request):
             except:
                 Plant.objects.create(name=data['name'].lower(), seeds=data['seeds'], pressure=data['pressure'], blackout=data['blackout'], harvest=data['harvest'], output=data['output'])
                 return JsonResponse({"result": "done"}, status=201)
+        
+        if tp == "put":
+            pp = json.loads(request.body)
+            print(pp)
         
     
     plantslist = Plant.objects.all()

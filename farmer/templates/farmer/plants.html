@@ -54,12 +54,12 @@
     <tbody>
         {% for i in plants %}
         <tr>
-            <td style = "text-transform:capitalize;">{{i.name}}</td>
-            <td>{{i.seeds}}g</td>
-            <td>{{i.blackout}} days</td>
-            <td>{{i.pressure}} days</td>
-            <td>{{i.harvest}} days</td>
-            <td>{{i.output}}g</td>
+            <td class="name" style="text-transform:capitalize;">{{i.name}}</td>
+            <td class="seeds">{{i.seeds}}g</td>
+            <td class="blackout">{{i.blackout}} days</td>
+            <td class="pressure">{{i.pressure}} days</td>
+            <td class="harvest">{{i.harvest}} days</td>
+            <td class="output">{{i.output}}g</td>
             <td>
                 <button class="editplant" value="{{i.id}}" >Edit</button>
             </td>

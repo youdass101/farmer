@@ -63,31 +63,58 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 var table = document.getElementById("planttable");
                 var row = table.insertRow(1);
-                row.innerHTML = `<td style = "text-transform:capitalize;">${data.name}</td><td>${data.seeds}g</td>
-                    <td>${data.blackout} days</td><td>${data.pressure} days</td><td>${data.harvest} days</td>
-                    <td>${data.output}g</td><td><button class="editplant" value="${data.id}">Edit</button></td>`
+                row.innerHTML = `<td class="name" style="text-transform:capitalize;">${data.name}</td><td class="seeds">${data.seeds}g</td>
+                    <td class="blackout">${data.blackout} days</td><td class="pressure">${data.pressure} days</td><td class="harvest">${data.harvest} days</td>
+                    <td class="output">${data.output}g</td><td><button class="editplant" value="${data.id}">Edit</button></td>`
             }     
         })
         return false;
     }
 
+    // EDIT PLANT
     document.querySelectorAll(".editplant").forEach (button => {
         button.onclick = () => {
-            fetch('/plants', {
-                method: 'POST',
-                body: JSON.stringify({
-                    data: button.value,
-                    type: "get"
-                    
-                }),
-                headers: {
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-            })
-            .then(response => response.json())
-            .then(result => {
-                (button.parentElement).parentElement.innerHTML=`<td><input type="text" value=""></td>`
-            })
+            if (!document.querySelector(".save")) {
+                parent = (button.parentElement).parentElement;
+                i = button.value
+                n = parent.querySelector(".name").innerHTML;
+                s = parent.querySelector(".seeds").innerHTML;
+                b = parent.querySelector(".blackout").innerHTML;
+                p = parent.querySelector(".pressure").innerHTML;
+                h = parent.querySelector(".harvest").innerHTML;
+                o = parent.querySelector(".output").innerHTML;
+                parent.innerHTML=`<td style="text-transform:capitalize;"><input class="namee" value="${n}"></td>
+                <td ><input class="seedse" value="${s}"></td>
+                <td ><input class="blackoute" value="${b}"></td>
+                <td ><input class="pressuree" value="${p}"></td>
+                <td ><input class="harveste" value="${h}"></td>
+                <td ><input class="outpute" value="${o}"></td>
+                <td>
+                    <button value="${i}" class="save">Save</button>
+                </td>`
+                document.querySelector(".save").onclick = () => {
+                    var data = {
+                        name : document.querySelector(".namee").value,
+                        seeds : document.querySelector(".seedse").value,
+                        blackout : document.querySelector(".namee").value,
+                        pressure : document.querySelector(".pressuree").value,
+                        harvest : document.querySelector(".harveste").value,
+                        output : document.querySelector(".outpute").value,
+                        id : document.querySelector(".save").value
+                    }  
+                    fetch('/plants', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            data,
+                            type: "put"  
+                        }),
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken')
+                        }
+                    })
+
+                }
+            }
         }
     })
 
