@@ -93,23 +93,30 @@ def plants(request):
         
         if tp == "put":
             pp = json.loads(request.body)['data']
+            edit = Plant.objects.get(id=pp['id'])
             print(pp['name'])
-            try:
-                Plant.objects.get(name=pp['name'])
-                return JsonResponse({"msg":"Name already exist", "error": True}, status=206)
-            except:
-                edit = Plant.objects.get(id=pp['id'])
-                edit.name = pp['name']
-                edit.seeds = pp['seeds']
-                edit.pressure = pp['pressure']
-                edit.blackout = pp['blackout']
-                edit.harvest = pp['harvest']
-                edit.output = pp['output']
-                edit.save()
-                return JsonResponse({"msg":"success", "error": False, "data": edit}, status=201)
+            if edit.name != pp['name']:
+                try:
+                    Plant.objects.get(name=pp['name'])
+                    return JsonResponse({"msg":"Name already exist", "error": True}, status=206)
+                except:
+                    pas = True
+
+            edit.name = pp['name']
+            edit.seeds = pp['seeds']
+            edit.pressure = pp['pressure']
+            edit.blackout = pp['blackout']
+            edit.harvest = pp['harvest']
+            edit.output = pp['output']
+            edit.save()
+          
+            return JsonResponse({"msg":"success", "error": False}, status=201)
 
         
     
     plantslist = Plant.objects.all()
     return render(request, "farmer/plants.html", {"form": Newplant(), "plants": plantslist})
     
+# MEDIUM 
+def medium(request):
+    return render(request, "farmer/medium.html")

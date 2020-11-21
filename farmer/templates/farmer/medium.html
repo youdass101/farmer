@@ -1,0 +1,56 @@
+{% extends "farmer/layout.html" %}
+{% block body %}
+<table class="filter">
+    <tr>
+        <td>
+            <form action="medium" method="POST">
+                <select name="filter">
+                <option value="mname">Name</option>
+                <option value="coco">Coco</option>
+                <option value="soil">Soil</option>
+                </select>   
+                <input name="search" type="text" placeholder="Search">
+                <button type="submit">Filter</button>
+            </form>
+        </td>
+        <td>
+            <!-- create new plant button -->
+            <button id="myBtn" class="subbtn">New Mix</button>
+        </td>
+    </tr>            
+</table>    
+
+<!-- table header titles -->
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Coco</th>
+            <th scope="col">Soil</th>
+            <th scope="col">Peat</th>
+            <th scope="col">Matt</th>
+            <th scope="col">None</th>
+            <th scope="col">Edit</th>
+        </tr>
+    </thead>
+<!-- created plants list -->
+    <tbody>
+        {% for i in data %}
+        <tr>
+            <td style = "text-transform:capitalize;"></td>
+            <td>%</td>
+            <td>%</td>
+            <td>%</td>
+            <td>%</td>
+            <td>%</td>
+            <td>
+                <form action="" method="POST">
+                    <input id="output" name="idmix" type="hidden" value=""/>
+                    <button type="submit">Edit</button>
+                    </form>
+                </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
