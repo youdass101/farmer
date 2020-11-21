@@ -78,11 +78,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 parent = (button.parentElement).parentElement;
                 i = button.value
                 n = parent.querySelector(".name").innerHTML;
-                s = parent.querySelector(".seeds").innerHTML;
-                b = parent.querySelector(".blackout").innerHTML;
-                p = parent.querySelector(".pressure").innerHTML;
-                h = parent.querySelector(".harvest").innerHTML;
-                o = parent.querySelector(".output").innerHTML;
+                s = parent.querySelector(".seeds").getAttribute('value');
+                b = parent.querySelector(".blackout").getAttribute('value');
+                p = parent.querySelector(".pressure").getAttribute('value');
+                h = parent.querySelector(".harvest").getAttribute('value');
+                o = parent.querySelector(".output").getAttribute('value');
                 parent.innerHTML=`<td style="text-transform:capitalize;"><input class="namee" value="${n}"></td>
                 <td ><input class="seedse" value="${s}"></td>
                 <td ><input class="blackoute" value="${b}"></td>
@@ -112,7 +112,22 @@ document.addEventListener('DOMContentLoaded', function() {
                             'X-CSRFToken': getCookie('csrftoken')
                         }
                     })
-
+                    .then (response => response.json())
+                    .then (result => {
+                        console.log(result)
+                        if (!result.error){
+                            select = (document.querySelector(".save").parentElement).parentElement
+                            select.innerHTML = ` <td class="name" style="text-transform:capitalize;">${result.data.name}</td>
+                                <td class="seeds">${result.data.seeds}g</td>
+                                <td class="blackout">${result.data.blackout} days</td>
+                                <td class="pressure">${result.data.pressure} days</td>
+                                <td class="harvest">${result.data.harvest} days</td>
+                                <td class="output">${result.data.output}g</td>
+                                <td>
+                                    <button class="editplant" value="${result.data.id}" >Edit</button>
+                                </td>`
+                        }
+                    })
                 }
             }
         }

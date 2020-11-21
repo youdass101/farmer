@@ -92,8 +92,22 @@ def plants(request):
                 return JsonResponse({"result": "done"}, status=201)
         
         if tp == "put":
-            pp = json.loads(request.body)
-            print(pp)
+            pp = json.loads(request.body)['data']
+            print(pp['name'])
+            try:
+                Plant.objects.get(name=pp['name'])
+                return JsonResponse({"msg":"Name already exist", "error": True}, status=206)
+            except:
+                edit = Plant.objects.get(id=pp['id'])
+                edit.name = pp['name']
+                edit.seeds = pp['seeds']
+                edit.pressure = pp['pressure']
+                edit.blackout = pp['blackout']
+                edit.harvest = pp['harvest']
+                edit.output = pp['output']
+                edit.save()
+                return JsonResponse({"msg":"success", "error": False, "data": edit}, status=201)
+
         
     
     plantslist = Plant.objects.all()
