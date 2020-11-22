@@ -1,5 +1,21 @@
 {% extends "farmer/layout.html" %}
 {% block body %}
+<div id="myModal" class="modal">
+    <!-- NEW PLANT Modal content -->
+    <div class="modal-content">
+        <div>
+            <span class="close">&times;</span>
+            <h4>New Medium</h4>
+        </div>
+        <div>
+            <form action="{% url 'medium' %}" method="POST">
+                {{form}}
+                <button id="newmedium" type="submit" class="subbtn">Create</button>
+            </form>
+        </div>
+    </div>
+</div>
+
 <table class="filter">
     <tr>
         <td>
@@ -21,15 +37,12 @@
 </table>    
 
 <!-- table header titles -->
-<table class="table">
+<table class="table" id="mediumtable">
     <thead class="thead-dark">
         <tr>
             <th scope="col">Name</th>
             <th scope="col">Coco</th>
             <th scope="col">Soil</th>
-            <th scope="col">Peat</th>
-            <th scope="col">Matt</th>
-            <th scope="col">None</th>
             <th scope="col">Edit</th>
         </tr>
     </thead>
@@ -37,12 +50,9 @@
     <tbody>
         {% for i in data %}
         <tr>
-            <td style = "text-transform:capitalize;"></td>
-            <td>%</td>
-            <td>%</td>
-            <td>%</td>
-            <td>%</td>
-            <td>%</td>
+            <td style = "text-transform:capitalize;">{{i.name}}</td>
+            <td>{{i.soil}}%</td>
+            <td>{{i.coco}}%</td>
             <td>
                 <form action="" method="POST">
                     <input id="output" name="idmix" type="hidden" value=""/>

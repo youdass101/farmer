@@ -119,4 +119,17 @@ def plants(request):
     
 # MEDIUM 
 def medium(request):
-    return render(request, "farmer/medium.html")
+    if request.method == "POST":
+        tp = json.loads(request.body)
+        if tp['type'] == "create":
+            try:
+                Medium.objects.get(name=tp['data']['name'])
+                return JsonResponse({"result": "exist"}, status=500)
+            except:
+                Medium.objects.create(name=tp['data']['name'].lower(), soil=tp['data']['soil'], coco=tp['data']['coco'])
+                return JsonResponse({"result": "done"}, status=201)
+
+        return None
+
+    mediumlist = Medium.objects.all()
+    return render(request, "farmer/medium.html", {"form": Newmedium(), "data": mediumlist})

@@ -19,3 +19,8 @@ class Register(forms.Form):
     confirm = forms.CharField(widget=forms.PasswordInput(attrs={'class':'inputs', 'placeholder':'Comfirm password'}),label=(''))
     regcode = forms.CharField(widget=forms.TextInput(attrs={'class':'inputs', 'placeholder':'Registration Code'}),label=(''))
 
+class Newmedium(forms.Form):
+    name =  forms.CharField(widget=forms.TextInput(attrs={'class':'toset', 'placeholder':'Medium name'}),label=(''))
+    soil = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'Soil percentage'}),label=(''))
+    coco = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'coco percentage'}),label=(''))
+

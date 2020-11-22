@@ -19,3 +19,11 @@ class Plant(models.Model):
     
     def __str__(self):
         return f"{self.name} seeds:{self.seeds}g pressure:{self.pressure}days blackout:{self.blackout}days harvest:{self.harvest}days output:{self.output}g"
+
+class Medium(models.Model):
+    name = models.CharField(max_length=255)
+    soil = models.IntegerField()
+    coco = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.name} soil:{self.soil}% coco:{self.coco}%"
