@@ -50,15 +50,12 @@
     <tbody>
         {% for i in data %}
         <tr>
-            <td style = "text-transform:capitalize;">{{i.name}}</td>
-            <td>{{i.soil}}%</td>
-            <td>{{i.coco}}%</td>
+            <td class="name" style = "text-transform:capitalize;">{{i.name}}</td>
+            <td class="soil" value="{{i.soil}}">{{i.soil}}%</td>
+            <td class="coco" value="{{i.coco}}">{{i.coco}}%</td>
             <td>
-                <form action="" method="POST">
-                    <input id="output" name="idmix" type="hidden" value=""/>
-                    <button type="submit">Edit</button>
-                    </form>
-                </td>
+                <button class="editmedium" value="{{i.id}}">Edit</button>
+            </td>
         </tr>
         {% endfor %}
     </tbody>

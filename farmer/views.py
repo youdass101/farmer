@@ -94,7 +94,6 @@ def plants(request):
         if tp == "put":
             pp = json.loads(request.body)['data']
             edit = Plant.objects.get(id=pp['id'])
-            print(pp['name'])
             if edit.name != pp['name']:
                 try:
                     Plant.objects.get(name=pp['name'])
@@ -129,7 +128,22 @@ def medium(request):
                 Medium.objects.create(name=tp['data']['name'].lower(), soil=tp['data']['soil'], coco=tp['data']['coco'])
                 return JsonResponse({"result": "done"}, status=201)
 
-        return None
+        if tp['type'] == "put":
+            print("it is put")
+            print(tp['data']['id'])
+            edit = Medium.objects.get(id=tp['data']['id'])
+            print(edit)
+            if edit.name != tp['data']['name']:
+                try:
+                    Medium.objects.get(name=tp['data']['name'])
+                    return JsonResponse({"msg":"Name already exist", "error": True}, status=206)
+                except:
+                    pas = True
+            edit.name = tp['data']['name']
+            edit.soil = tp['data']['soil'] 
+            edit.coco = tp['data']['coco']
+            edit.save()
+            return JsonResponse({"msg":"success", "error": False}, status=201)       
 
     mediumlist = Medium.objects.all()
     return render(request, "farmer/medium.html", {"form": Newmedium(), "data": mediumlist})

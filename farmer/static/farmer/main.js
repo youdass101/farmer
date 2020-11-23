@@ -190,17 +190,78 @@ document.addEventListener('DOMContentLoaded', function() {
                     var row = table.insertRow(1);
                     row.innerHTML = `<td style = "text-transform:capitalize;">${data.name}</td>
                         <td>${data.soil}%</td>
-                        <td>${data.soil}%</td>
+                        <td>${data.coco}%</td>
                         <td>
-                            <form action="" method="POST">
-                                <input id="output" name="idmix" type="hidden" value="${data.id}"/>
-                                <button type="submit">Edit</button>
-                                </form>
+                                <button class="editmedium" value="${data.id}">Edit</button>
                             </td>`
                 }
             })
             return false
         }
+    }
+
+    if(document.querySelectorAll(".editmedium")){
+        // EDIT PLANT
+        document.querySelectorAll(".editmedium").forEach (button => {
+            button.onclick = () => {
+                if (!document.querySelector(".save")) {
+                    // COLLECT PLANT TO EDIT CURRENT DATA
+                    parent = (button.parentElement).parentElement;
+                    i = button.value;
+                    n = parent.querySelector(".name").innerHTML;
+                    s = parent.querySelector(".soil").getAttribute('value');
+                    c = parent.querySelector(".coco").getAttribute('value');
+                    parent.innerHTML = `<td style = "text-transform:capitalize;"><input class="namee" value="${n}"></input></td>
+                        <td><input class="soile" value="${s}"></input></td>
+                        <td><input class="cocoe" value="${c}"></input></td>
+                        <td>
+                            <button class="save" value="${i}">Save</button>
+                        </td>`
+
+                    document.querySelector(".save").onclick = () => {
+                        // COLLECTING NEW DATA 
+                        var data = {
+                            name : document.querySelector(".namee").value,
+                            soil : document.querySelector(".soile").value,
+                            coco : document.querySelector(".cocoe").value,
+                            id : document.querySelector(".save").value
+                        }  
+                    
+                        fetch ("/medium", {
+                            method : "POST",
+                            body : JSON.stringify({
+                                data,
+                                type : "put"
+                            }),
+                            headers: {
+                                'X-CSRFToken': getCookie('csrftoken')
+                            }
+                        })
+                        .then (response => response.json())
+                        .then (result => {
+                            console.log(result)
+                            if (result.error){
+                                alert(result.msg)
+                            }
+                            else {
+                                // REDITING ROW TO VIEW DATA 
+                                select = (document.querySelector(".save").parentElement).parentElement
+                                select.innerHTML = `<td style = "text-transform:capitalize;">${data.name}</td>
+                                    <td>${data.soil}%</td>
+                                    <td>${data.coco}%</td>
+                                    <td>
+                                        <button class="editmedium" value="${data.id}">Edit</button>
+                                    </td>`
+                            }
+
+                        })
+
+
+                    }
+                    
+                }
+            }
+        })
     }
 
     // CSRF token function  
