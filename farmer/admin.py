@@ -6,3 +6,4 @@ from .models import *
 admin.site.register(User)
 admin.site.register(Plant)
 admin.site.register(Medium)
+admin.site.register(Tray)

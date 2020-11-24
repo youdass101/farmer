@@ -27,3 +27,13 @@ class Medium(models.Model):
 
     def __str__(self):
         return f"{self.name} soil:{self.soil}% coco:{self.coco}%"
+
+class Tray(models.Model):
+    name = models.ForeignKey(Plant, on_delete=models.CASCADE)
+    medium = models.ForeignKey(Medium, on_delete=models.CASCADE)
+    start = models.DateTimeField(auto_now_add=True)
+    medium_weight = models.IntegerField()
+    seeds_weight = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.name} start:{self.start}"

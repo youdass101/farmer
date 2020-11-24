@@ -1,4 +1,5 @@
 from django import forms
+from .models import *
 
 class Newplant(forms.Form):
     name = forms.CharField(widget=forms.TextInput(attrs={'class':'toset', 'placeholder':'Plant Name'}),label=(''))
@@ -24,3 +25,6 @@ class Newmedium(forms.Form):
     soil = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'Soil percentage'}),label=(''))
     coco = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'coco percentage'}),label=(''))
 
+
+class Newtray(forms.Form):
+    plant = 
