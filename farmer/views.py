@@ -15,7 +15,7 @@ regcode = "123456"
 # INDEX PAGE LOAD 
 def index(request):
     if request.user.is_authenticated:
-        return render (request, "farmer/index.html")
+        return render (request, "farmer/index.html", {"form": Newtray()})
     else:
         return HttpResponseRedirect(reverse("login"))
 

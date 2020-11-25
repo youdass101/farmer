@@ -1,5 +1,7 @@
 from django import forms
 from .models import *
+import datetime as dt
+
 
 class Newplant(forms.Form):
     name = forms.CharField(widget=forms.TextInput(attrs={'class':'toset', 'placeholder':'Plant Name'}),label=(''))
@@ -27,4 +29,9 @@ class Newmedium(forms.Form):
 
 
 class Newtray(forms.Form):
-    plant = 
+    plant = forms.ModelChoiceField(widget=forms.Select(attrs={'class':'toset'}), empty_label='Select the Plant',label=(''),queryset=Plant.objects.all())
+    medium = forms.ModelChoiceField(widget=forms.Select(attrs={'class':'toset'}), empty_label='Select the Medium',label=(''),queryset=Medium.objects.all())
+    seed = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'Change default'}),label=(''))
+    medium_weight = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'Medium Weight'}),label=(''))
+    start = forms.DateField(widget=forms.SelectDateWidget(attrs={'class':'toset'}),label=(''),initial=dt.date.today())
+    count = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'How many tray'}),label=(''))
