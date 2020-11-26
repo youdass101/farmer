@@ -1,6 +1,6 @@
 from django import forms
 from .models import *
-import datetime as dt
+from datetime import datetime
 
 
 class Newplant(forms.Form):
@@ -31,7 +31,7 @@ class Newmedium(forms.Form):
 class Newtray(forms.Form):
     plant = forms.ModelChoiceField(widget=forms.Select(attrs={'class':'toset'}), empty_label='Select the Plant',label=(''),queryset=Plant.objects.all())
     medium = forms.ModelChoiceField(widget=forms.Select(attrs={'class':'toset'}), empty_label='Select the Medium',label=(''),queryset=Medium.objects.all())
-    seed = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'Change default'}),label=(''))
-    medium_weight = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'Medium Weight'}),label=(''))
-    start = forms.DateField(widget=forms.SelectDateWidget(attrs={'class':'toset'}),label=(''),initial=dt.date.today())
-    count = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'How many tray'}),label=(''))
+    seed = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset'}),label=(''), required=False)
+    medium_weight = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset',"value":"130", 'placeholder':'Medium Weight'}),label=(''))
+    start = forms.DateField(widget=forms.SelectDateWidget(attrs={'class':'toset'}),label=(''),initial=datetime.today())
+    count = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'How many tray', 'value':'1'}),label=(''))

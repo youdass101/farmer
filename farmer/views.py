@@ -26,14 +26,20 @@ def index(request):
                 medium_weight = form.cleaned_data['medium_weight']
                 start = form.cleaned_data['start']
                 count = form.cleaned_data['count']
-
-                # plant = Plant.objects.get(name=name)
+                if not seed or seed == name.seeds:
+                    seed = name.seeds 
+                try: 
+                    qtt = Tray.objects.filter(name=name).count()                   
+                except:
+                    qtt = 0
+        
                 for i in range(count):
-                    Tray.objects.create(name=name, medium=medium, seeds_weight=seed, medium_weight=medium_weight, start=start)
+                    c = qtt+i+1
+                    Tray.objects.create(name=name, number= c, medium=medium, seeds_weight=seed, medium_weight=medium_weight, start=start)
                 return HttpResponseRedirect(reverse("index"))
 
-        data = Tray.objects.all()   
-        print(data)      
+        sdata = Tray.objects.all()  
+        data = [row.serialize() for row in sdata] 
         return render(request, "farmer/index.html", {"form": Newtray(), "data":data})
     else:
         return HttpResponseRedirect(reverse("login"))
@@ -99,7 +105,8 @@ def plants(request):
         if tp == "get":
             pp = json.loads(request.body)['data']
             data = Plant.objects.get(id=pp)
-            return JsonResponse({"result": data}, status=201)
+            print(data.seeds)
+            return JsonResponse({"result": data.seeds}, status=201)
 
         
         if tp == "create":

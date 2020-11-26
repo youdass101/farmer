@@ -38,7 +38,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     output : document.querySelector('#id_output').value
                 }
             // ADDING CSRF FOR FETSH
-            const csrftoken = getCookie('csrftoken');
             // REQEST CREATE NEW PLANT VIEW 
             fetch('/plants',{
                 method: 'POST',
@@ -47,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     type : "create"
                 }),
                 headers: {
-                    'X-CSRFToken': csrftoken
+                    'X-CSRFToken': getCookie('csrftoken')
                 },
             })
             // GET NEW DATA 
@@ -262,6 +261,67 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         })
+    }
+
+    if (document.querySelector(".countdown")){
+        document.querySelectorAll(".countdown").forEach (cell => {
+            var parent = (cell.parentElement).querySelector(".end").innerHTML
+            
+            
+            var countDownDate = new Date(parent).getTime();
+
+            // Update the count down every 1 second
+            var x = setInterval(function() {
+
+            // Get today's date and time
+            var now = new Date().getTime();
+
+            // Find the distance between now and the count down date
+            var distance = countDownDate - now;
+
+            // Time calculations for days, hours, minutes and seconds
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Display the result in the element with id="demo"
+            cell.innerHTML = days + "d " + hours + "h "
+            + minutes + "m " + seconds + "s ";
+            
+            
+            // If the count down is finished, write some text
+            if (distance < 0) {
+                clearInterval(x);
+                cell.innerHTML = "EXPIRED";
+            }
+            }, 1000);
+
+        })
+    }
+
+    if (document.querySelector("#id_plant")){
+        select = document.querySelector("#id_plant")
+        
+        select.addEventListener('change', (event) =>{
+            var s = select.value
+            fetch('/plants', {
+                method: 'POST',
+                body: JSON.stringify({
+                    data: s,
+                    type: "get"  
+                }),
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            })
+            // REQUESTING REPLY INFO AND DATA FROM VIEW 
+            .then (response => response.json())
+            .then (result => {
+                document.querySelector("#id_seed").value = result.result
+            })
+        })
+
     }
 
     // CSRF token function  

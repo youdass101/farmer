@@ -51,7 +51,7 @@
                 <th scope="col">Start</th>
                 <th scope="col">End</th>
                 <th scope="col">CountDown</th>
-                <th scope="col">CountDown</th>
+                <th scope="col">Harvest</th>
                 <th scope="col">Edit</th>
                 
             </tr>
@@ -62,16 +62,14 @@
             <tr>
                 <!-- if not harvest -->
                 <td> <li style="margin-left: 25%;"></li></td>
-                <td style = "text-transform:capitalize;">{{i.name}}</td>
-                <td></td>
+                <td style = "text-transform:capitalize;">{{i.name}}{{i.number}}</td>
+                <td>{{i.days.days}}</td>
                 <td>{{i.medium_weight}}</td>
                 <td>{{i.seeds_weight}}</td>
                 <td>{{i.medium}}</td>
                 <td>{{i.start}}</td>
-                <td>
-                    
-                </td>
-                <td></td>
+                <td class="end">{{i.end}}</td>
+                <td class="countdown" value="{{i.date}}"></td>
                 <td>
                     <form action="tray_updates" method="POST"> 
                         <input name="tray_id" type="hidden" value="idt"/>

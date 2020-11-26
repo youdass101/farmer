@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.conf import settings
 
 class User(AbstractUser):
@@ -30,12 +30,35 @@ class Medium(models.Model):
 
 class Tray(models.Model):
     name = models.ForeignKey(Plant, on_delete=models.CASCADE)
+    number = models.IntegerField()
     medium = models.ForeignKey(Medium, on_delete=models.CASCADE)
-    start = models.DateTimeField(auto_now_add=True)
+    start = models.DateTimeField()
     medium_weight = models.IntegerField()
     seeds_weight = models.IntegerField()
 
-   
-
     def __str__(self):
-        return f"{self.name} start:{self.start}"
+            return f"{self.name} start:{self.start}"
+
+    def serialize(self):
+        today = datetime.today()
+        days = datetime.date(today) - datetime.date(self.start)
+        end = datetime.date(self.start) + timedelta(self.name.harvest)
+        return {
+            "end": end,
+            "days": days,
+            "id": self.id,
+            "name": self.name,
+            "number": self.number,
+            "medium": self.medium,
+            "date" : self.start,
+            "start": datetime.date(self.start),
+            "medium_weight": self.medium_weight,
+            "seeds_weight": self.seeds_weight,
+        }
+
+class Harvest(models.Model):
+    tray = models.ForeignKey(Tray, on_delete=models.CASCADE)
+    date = models.DateField()
+    output = models.IntegerField()
+
+    
