@@ -175,3 +175,7 @@ def medium(request):
 
     mediumlist = Medium.objects.all()
     return render(request, "farmer/medium.html", {"form": Newmedium(), "data": mediumlist})
+
+@login_required
+def harvest(request):
+    return None
