@@ -9,8 +9,9 @@
         </div>
         <div>
             <form action="{% url 'index' %}" method="POST">
+                {% csrf_token %}
                 {{form}}
-                <button id="newtray" type="submit" class="subbtn">Create</button>
+                <input id="newtray" type="submit" class="subbtn" value="Create">
             </form>
         </div>
     </div>
@@ -56,11 +57,11 @@
         </thead>
     <!-- created plants list -->
         <tbody>
-            <!-- for row -->
+            {% for i in data %}
             <tr>
                 <!-- if not harvest -->
                 <td> <li style="margin-left: 25%;"></li></td>
-                <td style = "text-transform:capitalize;"></td>
+                <td style = "text-transform:capitalize;">{{i.name}}</td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -83,7 +84,7 @@
                 </td>    
             </tr>
             <!--end if -->
-            <!-- end for  -->
+            {% endfor %}
         </tbody>
     </table>
 </ol>  

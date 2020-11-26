@@ -9,13 +9,30 @@ from django.views.decorators.csrf import csrf_exempt
 
 from .models import *
 from .forms import *
+from django.contrib.auth.decorators import login_required
+
 
 regcode = "123456"
 
 # INDEX PAGE LOAD 
 def index(request):
     if request.user.is_authenticated:
-        return render (request, "farmer/index.html", {"form": Newtray()})
+        if request.method == "POST":
+            form = Newtray(request.POST)
+            if form.is_valid():
+                name = form.cleaned_data['plant']
+                medium = form.cleaned_data['medium']
+                seed = form.cleaned_data['seed']
+                medium_weight = form.cleaned_data['medium_weight']
+                start = form.cleaned_data['start']
+                count = form.cleaned_data['count']
+
+                # plant = Plant.objects.get(name=name)
+                for i in range(count):
+                    Tray.objects.create(name=name, medium=medium, seeds_weight=seed, medium_weight=medium_weight, start=start)
+                  
+        data = Tray.objects.all()         
+        return render(request, "farmer/index.html", {"form": Newtray(), "data":data})
     else:
         return HttpResponseRedirect(reverse("login"))
 
@@ -73,6 +90,7 @@ def register_view(request):
         return render(request, "farmer/register.html", {"form": Register()})
 
 #plants view 
+@login_required
 def plants(request):
     if request.method == "POST":
         tp = json.loads(request.body)['type']
@@ -117,6 +135,7 @@ def plants(request):
     return render(request, "farmer/plants.html", {"form": Newplant(), "plants": plantslist})
     
 # MEDIUM 
+@login_required
 def medium(request):
     if request.method == "POST":
         tp = json.loads(request.body)
