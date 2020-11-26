@@ -49,7 +49,8 @@
                 <th scope="col">Seeds Weight</th>
                 <th scope="col">Medium</th>
                 <th scope="col">Start</th>
-                <th scope="col">end</th>
+                <th scope="col">End</th>
+                <th scope="col">CountDown</th>
                 <th scope="col">CountDown</th>
                 <th scope="col">Edit</th>
                 
@@ -63,23 +64,27 @@
                 <td> <li style="margin-left: 25%;"></li></td>
                 <td style = "text-transform:capitalize;">{{i.name}}</td>
                 <td></td>
+                <td>{{i.medium_weight}}</td>
+                <td>{{i.seeds_weight}}</td>
+                <td>{{i.medium}}</td>
+                <td>{{i.start}}</td>
+                <td>
+                    
+                </td>
                 <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>
+                    <form action="tray_updates" method="POST"> 
+                        <input name="tray_id" type="hidden" value="idt"/>
+                        <input name="plant_name" type="hidden" value="name"/>    
+                        <button type="submit">Harvest</button>
+                    </form>
+                </td>
                 <td>
                     <form action="edittray" method="POST">
                         <input name="tray_id" type="hidden" value="idt"/>
                         <input name="plant_name" type="hidden" value="name"/>  
                         <input name="mname" type="hidden" value="mname"/>    
                         <button type="submit">Edit</button>
-                    </form>
-                </td>
-                <td>
-                    <form action="tray_updates" method="POST"> 
-                        <input name="tray_id" type="hidden" value="idt"/>
-                        <input name="plant_name" type="hidden" value="name"/>    
-                        <button type="submit">Updates</button>
                     </form>
                 </td>    
             </tr>

@@ -30,8 +30,10 @@ def index(request):
                 # plant = Plant.objects.get(name=name)
                 for i in range(count):
                     Tray.objects.create(name=name, medium=medium, seeds_weight=seed, medium_weight=medium_weight, start=start)
-                  
-        data = Tray.objects.all()         
+                return HttpResponseRedirect(reverse("index"))
+
+        data = Tray.objects.all()   
+        print(data)      
         return render(request, "farmer/index.html", {"form": Newtray(), "data":data})
     else:
         return HttpResponseRedirect(reverse("login"))
