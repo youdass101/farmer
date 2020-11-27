@@ -33,7 +33,7 @@ body {
     }
 
 /* The Close Button */
-.close {
+.close, .cls {
     float: right;
     color:black;
     font-size: 25px; 
@@ -42,6 +42,13 @@ body {
   
   .close:hover,
   .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .cls:hover,
+  .cls:focus {
     color: black;
     text-decoration: none;
     cursor: pointer;

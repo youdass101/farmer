@@ -24,6 +24,22 @@
             <a class="navbar-brand flex-sm-fill text-sm-center" href="register">Register</a>
         {% endif %}
         </nav> 
+        <div id="myModal" class="modal">
+            <!-- NEW PLANT Modal content -->
+            <div class="modal-content">
+                <div>
+                    <span class="close">&times;</span>
+                    <h4>{% block creator %}{% endblock %}</h4>
+                </div>
+                <div>
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{form}}
+                        <button id="{% block id_new %}{% endblock %}" type="submit" class="subbtn">Create</button>
+                    </form>
+                </div>
+            </div>
+        </div>
             {% block body %} {% endblock %}  
     </body>
 </html>

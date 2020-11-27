@@ -1,20 +1,7 @@
 {% extends "farmer/layout.html" %}
+{% block creator %}<h1>New Medium</h1>{% endblock %}
 {% block body %}
-<div id="myModal" class="modal">
-    <!-- NEW PLANT Modal content -->
-    <div class="modal-content">
-        <div>
-            <span class="close">&times;</span>
-            <h4>New Medium</h4>
-        </div>
-        <div>
-            <form action="{% url 'medium' %}" method="POST">
-                {{form}}
-                <button id="newmedium" type="submit" class="subbtn">Create</button>
-            </form>
-        </div>
-    </div>
-</div>
+{% block id_new %}newmedium{% endblock %}
 
 <table class="filter">
     <tr>

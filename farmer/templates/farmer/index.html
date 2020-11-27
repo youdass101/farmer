@@ -1,21 +1,25 @@
 {% extends "farmer/layout.html" %}
+{% block creator %}<h1>New Tray</h1>{% endblock %}
 {% block body %}
-<div id="myModal" class="modal">
+{% block id_new %}{% endblock %}
+<div id="MyEdit" class="modal">
     <!-- NEW PLANT Modal content -->
     <div class="modal-content">
         <div>
-            <span class="close">&times;</span>
-            <h4>New Tray</h4>
+            <span class="cls">&times;</span>
+            <h4 class="edit_title">Edit Tray</h4>
         </div>
         <div>
             <form action="{% url 'index' %}" method="POST">
-                {% csrf_token %}
-                {{form}}
-                <input id="newtray" type="submit" class="subbtn" value="Create">
+                {{edit}}
+                <button id="save_tray" type="submit" class="save">Save</button>
+                
             </form>
+            <button id="delete_tray"  class="delete">DELETE</button>
         </div>
     </div>
 </div>
+
 
 <!-- filters and search  -->
 <table class="filter">
@@ -32,7 +36,7 @@
         </td>
         <td>    
         <!-- create new tray -->
-        <button id="myBtn" class="subbtn">New Mix</button>        
+        <button id="myBtn" class="subbtn">New Tray</button>        
         </td>
     </tr>           
 </table>
@@ -64,10 +68,10 @@
                 <td> <li style="margin-left: 25%;"></li></td>
                 <td style = "text-transform:capitalize;">{{i.name}}{{i.number}}</td>
                 <td>{{i.days.days}}</td>
-                <td>{{i.medium_weight}}</td>
-                <td>{{i.seeds_weight}}</td>
-                <td>{{i.medium}}</td>
-                <td>{{i.start}}</td>
+                <td class="mw">{{i.medium_weight}}</td>
+                <td class="sw">{{i.seeds_weight}}</td>
+                <td class="mt">{{i.medium}}</td>
+                <td class="ts">{{i.start}}</td>
                 <td class="end">{{i.end}}</td>
                 <td class="countdown" value="{{i.date}}"></td>
                 <td>  

@@ -17,6 +17,10 @@ regcode = "123456"
 # INDEX PAGE LOAD 
 def index(request):
     if request.user.is_authenticated:
+        if request.method == "PUT":
+            form = json.loads(request.body)
+            print(form)
+            return True
         if request.method == "POST":
             form = Newtray(request.POST)
             if form.is_valid():
@@ -40,7 +44,7 @@ def index(request):
 
         sdata = Tray.objects.all()  
         data = [row.serialize() for row in sdata] 
-        return render(request, "farmer/index.html", {"form": Newtray(), "data":data})
+        return render(request, "farmer/index.html", {"edit": Edittray(), "form": Newtray(), "data":data})
     else:
         return HttpResponseRedirect(reverse("login"))
 

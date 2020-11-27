@@ -323,6 +323,70 @@ document.addEventListener('DOMContentLoaded', function() {
         })
 
     }
+    // EDIT TRAY 
+    // Get the modal
+    if(document.querySelectorAll('.edit_tray')){
+        document.querySelectorAll('.edit_tray').forEach (button => {
+            var edit = document.getElementById("MyEdit")
+            button.onclick = () => {
+                parent = (button.parentElement).parentElement
+                mw = parent.querySelector(".mw").innerHTML
+                sw = parent.querySelector(".sw").innerHTML
+                mt = parent.querySelector(".mt").innerHTML
+                ts = parent.querySelector(".ts").innerHTML
+
+                op = document.getElementById("id_medium").options
+                for (var i = 0; i < op.length; i++){
+                    if (document.getElementById("id_medium").options[`${i}`].innerHTML == mt){
+                        edit.querySelector("#id_medium").selectedIndex = i
+                    }
+                }
+                
+                edit.querySelector("#id_seed").value = sw
+                edit.querySelector("#id_medium_weight").value = mw
+                edit.querySelector("#id_start").value = ts
+
+                edit.querySelector("#save_tray").onsubmit = () =>{
+                    var medium = edit.getElementById("#id_medium")
+                    var seed = edit.querySelector("#id_medium_weight").value
+                    var medium_weight = edit.querySelector("#id_medium_weight").value
+                    var start = edit.querySelector("#id_start").value
+
+                    fetch('/index', {
+                        method: 'PUT',
+                        body: JSON.stringify({
+                            medium : medium.options[medium.selectedIndex].value,
+                            seed : seed,
+                            medium_weight : medium_weight,
+                            start : start
+                        }),
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken')
+                        }
+
+                    })
+
+                }
+
+                edit.style.display = "block";
+                // Get the <span> element that closes the modal
+                var sp = document.getElementsByClassName("cls")[0];
+                sp.onclick = function() {
+                    edit.style.display = "none";
+                }
+            
+                // When the user clicks anywhere outside of the modal, close it
+                window.onclick = function(event) {
+                    if (event.target == edit) {
+                        edit.style.display = "none";
+                    }
+                }
+
+            }
+
+        })
+    }
+    
 
     // CSRF token function  
     function getCookie(name) {
