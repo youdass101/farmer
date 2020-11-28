@@ -346,16 +346,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 edit.querySelector("#id_medium_weight").value = mw
                 edit.querySelector("#id_start").value = ts
 
-                edit.querySelector("#save_tray").onsubmit = () =>{
+                document.querySelector("#save_tray").onclick = () =>{
                     var medium = edit.getElementById("#id_medium")
                     var seed = edit.querySelector("#id_medium_weight").value
                     var medium_weight = edit.querySelector("#id_medium_weight").value
                     var start = edit.querySelector("#id_start").value
 
-                    fetch('/index', {
+                    fetch('/', {
                         method: 'PUT',
                         body: JSON.stringify({
-                            medium : medium.options[medium.selectedIndex].value,
+                            // medium : medium.options[medium.selectedIndex].value,
                             seed : seed,
                             medium_weight : medium_weight,
                             start : start

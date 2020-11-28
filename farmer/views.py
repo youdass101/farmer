@@ -18,8 +18,9 @@ regcode = "123456"
 def index(request):
     if request.user.is_authenticated:
         if request.method == "PUT":
+            print("start here")
             form = json.loads(request.body)
-            print(form)
+            print("this is ",form)
             return True
         if request.method == "POST":
             form = Newtray(request.POST)
@@ -41,7 +42,7 @@ def index(request):
                     c = qtt+i+1
                     Tray.objects.create(name=name, number= c, medium=medium, seeds_weight=seed, medium_weight=medium_weight, start=start)
                 return HttpResponseRedirect(reverse("index"))
-
+        
         sdata = Tray.objects.all()  
         data = [row.serialize() for row in sdata] 
         return render(request, "farmer/index.html", {"edit": Edittray(), "form": Newtray(), "data":data})
