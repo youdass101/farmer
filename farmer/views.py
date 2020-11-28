@@ -18,10 +18,20 @@ regcode = "123456"
 def index(request):
     if request.user.is_authenticated:
         if request.method == "PUT":
-            print("start here")
             form = json.loads(request.body)
-            print("this is ",form)
-            return True
+            if form['delete']:
+                tray = Tray.objects.get(id=form['id'])
+                tray.delete()
+                return JsonResponse({"result": True, "msg": "Success"}, status=201)
+            medium = Medium.objects.get(name=form["medium"])
+            tray = Tray.objects.get(id=form['id'])
+            tray.medium = medium
+            tray.medium_weight = form['medium_weight']
+            tray.seeds_weight = form['seed']
+            tray.start = datetime.strptime(form['start'], '%b. %d, %Y')
+            tray.save()
+            return JsonResponse({"result": True, "msg": "Success"}, status=201)
+
         if request.method == "POST":
             form = Newtray(request.POST)
             if form.is_valid():
@@ -43,9 +53,11 @@ def index(request):
                     Tray.objects.create(name=name, number= c, medium=medium, seeds_weight=seed, medium_weight=medium_weight, start=start)
                 return HttpResponseRedirect(reverse("index"))
         
-        sdata = Tray.objects.all()  
+        sdata = Tray.objects.all()
         data = [row.serialize() for row in sdata] 
-        return render(request, "farmer/index.html", {"edit": Edittray(), "form": Newtray(), "data":data})
+        cd = str(datetime.date(datetime.today()))
+        print(data)
+        return render(request, "farmer/index.html", {"cd":cd, "edit": Edittray(), "form": Newtray(), "data":data})
     else:
         return HttpResponseRedirect(reverse("login"))
 
@@ -183,4 +195,14 @@ def medium(request):
 
 @login_required
 def harvest(request):
-    return None
+    if request.method == "POST":
+        form = json.loads(request.body)
+        tray = Tray.objects.get(id=form['id'])
+        Harvest.objects.create(tray=tray, date=form['d'], output=form['h'])
+        return JsonResponse({"result": True, "msg": "Success"}, status=201)
+
+@login_required
+def history(request):
+    sdata = Tray.objects.all()
+    data = [row.serialize() for row in sdata] 
+    return render(request, "farmer/history.html", {"data":data})

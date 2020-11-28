@@ -1,36 +1,7 @@
 {% extends "farmer/layout.html" %}
-{% block creator %}<h1>New Tray</h1>{% endblock %}
 {% block body %}
 {% block id_new %}{% endblock %}
-<div id="MyEdit" class="modal">
-    <!-- NEW PLANT Modal content -->
-    <div class="modal-content">
-        <div>
-            <span class="cls">&times;</span>
-            <h4 class="edit_title"></h4>
-        </div>
-        <div>
-            {{edit}}
-            <button id="save_tray" type="submit" class="save">Save</button> 
-            <button id="delete_tray"  class="delete">DELETE</button>
-        </div>
-    </div>
-</div>
-<!-- HARVEST POP -->
-<div id="Harvest" class="modal">
-    <!-- NEW PLANT Modal content -->
-    <div class="modal-content">
-        <div>
-            <span class="clsh">&times;</span>
-            <h4 class="harvest_title"></h4>
-        </div>
-        <div>
-            <input id="harvest_weight" type="number" placeholder="Harvest Weight" required>
-            <input id="harvest_date" type="date" value="{{cd}}">
-            <button id="harvest_tray" type="submit" class="save">Harvest</button> 
-        </div>
-    </div>
-</div>
+
 
 
 <!-- filters and search  -->
@@ -46,10 +17,7 @@
                 <button type="submit">Filter</button>
             </form>
         </td>
-        <td>    
-        <!-- create new tray -->
-        <button id="myBtn" class="subbtn">New Tray</button>        
-        </td>
+     
     </tr>           
 </table>
 
@@ -65,35 +33,28 @@
                 <th scope="col">Seeds Weight</th>
                 <th scope="col">Medium</th>
                 <th scope="col">Start</th>
-                <th scope="col">End</th>
-                <th scope="col">CountDown</th>
+                <th scope="col">Best End</th>
+                <th scope="col">Harvest Date</th>
                 <th scope="col">Harvest</th>
-                <th scope="col">Edit</th>
-                
             </tr>
         </thead>
     <!-- created plants list -->
         <tbody>
             {% for i in data %}
-                {% if  not i.harvest %}
+                {% if i.harvest %}
                     <tr>
                         <!-- if not harvest -->
                         <td> <li style="margin-left: 25%;"></li></td>
                         <td class="tn" style = "text-transform:capitalize;">{{i.name}}{{i.number}}</td>
-                        <td>{{i.days.days}}</td>
+                        <td>{{i.dh.days}}</td>
                         <td class="mw">{{i.medium_weight}}</td>
                         <td class="sw">{{i.seeds_weight}}</td>
                         <td class="mt">{{i.medium}}</td>
                         <td class="ts">{{i.start}}</td>
                         <td class="end">{{i.end}}</td>
-                        <td class="countdown" value="{{i.date}}"></td>
-                        <td>  
-                            <button class="harvest" type="submit" value="{{i.id}}">Harvest</button>
-                        </td>
-                        <td>   
-                            <button class="edit_tray" type="submit" value="{{i.id}}">Edit</button>
-                        </td>    
-                    </tr>
+                        <td>{{i.harvest_date}}</td>
+                        <td>{{i.harvest_weight}} grams</td>
+                    
                 {%endif%}
             {% endfor %}
         </tbody>

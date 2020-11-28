@@ -9,4 +9,5 @@ urlpatterns = [
     path("plants", views.plants, name="plants"),
     path("medium", views.medium, name="medium"),
     path("harvest", views.harvest, name="harvest"),
+    path("history", views.history, name="history"),
 ]

@@ -43,6 +43,17 @@ class Tray(models.Model):
         today = datetime.today()
         days = datetime.date(today) - datetime.date(self.start)
         end = datetime.date(self.start) + timedelta(self.name.harvest)
+        try:
+            h = Harvest.objects.get(tray=self)
+            harvest_weight = h.output
+            harvest = True
+            harvest_date = h.date
+            dh = h.date - datetime.date(self.start)
+        except:
+            harvest = False
+            harvest_weight = None
+            dh = None
+            harvest_date = None
         return {
             "end": end,
             "days": days,
@@ -54,6 +65,10 @@ class Tray(models.Model):
             "start": datetime.date(self.start),
             "medium_weight": self.medium_weight,
             "seeds_weight": self.seeds_weight,
+            "harvest" : harvest,
+            "harvest_weight": harvest_weight,
+            "dh" : dh,
+            "harvest_date" : harvest_date
         }
 
 class Harvest(models.Model):

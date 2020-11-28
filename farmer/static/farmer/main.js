@@ -262,7 +262,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
     }
-
+    //Countdown 
     if (document.querySelector(".countdown")){
         document.querySelectorAll(".countdown").forEach (cell => {
             var parent = (cell.parentElement).querySelector(".end").innerHTML
@@ -293,13 +293,13 @@ document.addEventListener('DOMContentLoaded', function() {
             // If the count down is finished, write some text
             if (distance < 0) {
                 clearInterval(x);
-                cell.innerHTML = "EXPIRED";
+                cell.innerHTML = "HARVEST NOW";
             }
             }, 1000);
 
         })
     }
-
+    // Select Item change seeds weight in new plant creation 
     if (document.querySelector("#id_plant")){
         select = document.querySelector("#id_plant")
         
@@ -324,7 +324,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     }
     // EDIT TRAY 
-    // Get the modal
     if(document.querySelectorAll('.edit_tray')){
         document.querySelectorAll('.edit_tray').forEach (button => {
             var edit = document.getElementById("MyEdit")
@@ -334,6 +333,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 sw = parent.querySelector(".sw").innerHTML
                 mt = parent.querySelector(".mt").innerHTML
                 ts = parent.querySelector(".ts").innerHTML
+                tray_name = parent.querySelector(".tn").innerHTML
 
                 op = document.getElementById("id_medium").options
                 for (var i = 0; i < op.length; i++){
@@ -345,27 +345,59 @@ document.addEventListener('DOMContentLoaded', function() {
                 edit.querySelector("#id_seed").value = sw
                 edit.querySelector("#id_medium_weight").value = mw
                 edit.querySelector("#id_start").value = ts
+                document.querySelector(".edit_title").innerHTML = `Edit ${tray_name}`
+
+                document.querySelector("#delete_tray").onclick = () =>{
+                    alert(`Are you sure want to delete ${tray_name}`)
+                    fetch('/', {
+                        method: 'PUT',
+                        body: JSON.stringify({
+                            delete : true,
+                            id : button.value
+                        }),
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken')
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.result){
+                            parent.remove()
+                            edit.style.display = "none";
+                        }
+                    })
+                }
 
                 document.querySelector("#save_tray").onclick = () =>{
-                    var medium = edit.getElementById("#id_medium")
-                    var seed = edit.querySelector("#id_medium_weight").value
+                    var medium = edit.querySelector("#id_medium")
+                    var seed = edit.querySelector("#id_seed").value
                     var medium_weight = edit.querySelector("#id_medium_weight").value
                     var start = edit.querySelector("#id_start").value
 
                     fetch('/', {
                         method: 'PUT',
                         body: JSON.stringify({
-                            // medium : medium.options[medium.selectedIndex].value,
+                            medium : medium.options[medium.selectedIndex].innerHTML,
                             seed : seed,
                             medium_weight : medium_weight,
-                            start : start
+                            start : start,
+                            id : button.value,
+                            delete : false
                         }),
                         headers: {
                             'X-CSRFToken': getCookie('csrftoken')
                         }
-
                     })
-
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.result){
+                            edit.style.display = "none";
+                            parent.querySelector(".mw").innerHTML = medium_weight
+                            parent.querySelector(".sw").innerHTML = seed
+                            parent.querySelector(".mt").innerHTML = medium.options[medium.selectedIndex].innerHTML
+                            parent.querySelector(".ts").innerHTML = start
+                        }
+                    })
                 }
 
                 edit.style.display = "block";
@@ -385,7 +417,58 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
         })
+
+        document.querySelectorAll(".harvest").forEach(button => {
+            var harvest = document.getElementById("Harvest")
+            button.onclick = () =>{
+                parent = (button.parentElement).parentElement
+                tray_name = parent.querySelector(".tn").innerHTML
+                document.querySelector(".harvest_title").innerHTML = tray_name
+                harvest.style.display = "block";
+                // Get the <span> element that closes the modal
+                var sp = document.getElementsByClassName("clsh")[0];
+                sp.onclick = function() {
+                    harvest.style.display = "none";
+                }
+            
+                // When the user clicks anywhere outside of the modal, close it
+                window.onclick = function(event) {
+                    if (event.target == harvest) {
+                        harvest.style.display = "none";
+                    }
+                }
+
+                document.querySelector("#harvest_tray").onclick = () =>{
+                    h = harvest.querySelector("#harvest_weight").value
+                    d = harvest.querySelector("#harvest_date").value
+
+                    fetch('/harvest', {
+                        method : 'POST',
+                        body: JSON.stringify({
+                            h: h,
+                            d: d,
+                            id: button.value
+                        }),
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken')
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(result => {
+                        harvest.style.display = "none";
+                        parent.remove()
+                    })
+
+                }
+
+            }
+            
+        });
+
+        
     }
+
+
     
 
     // CSRF token function  
