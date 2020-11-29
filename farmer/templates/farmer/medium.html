@@ -1,18 +1,19 @@
 {% extends "farmer/layout.html" %}
 {% block creator %}<h1>New Medium</h1>{% endblock %}
-{% block body %}
 {% block id_new %}newmedium{% endblock %}
-
+{% block body %}
+<h1>Mediums</h1>
 <table class="filter">
     <tr>
         <td>
-            <form action="medium" method="POST">
+            <form action="/filter" method="POST">
+                {% csrf_token %}
+                <input value="medium" name="page" hidden>
                 <select name="filter">
-                <option value="mname">Name</option>
+                <option value="name">Name</option>
                 <option value="coco">Coco</option>
                 <option value="soil">Soil</option>
                 </select>   
-                <input name="search" type="text" placeholder="Search">
                 <button type="submit">Filter</button>
             </form>
         </td>

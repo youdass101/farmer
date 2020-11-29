@@ -2,13 +2,14 @@
 {% block creator %}<h1>New Plant</h1>{% endblock %}
 {% block id_new %}createplant{% endblock %}
 {% block body %}
-
-
+<h1>Plants</h1>
 <!-- FILTER -->
 <table class="filter">
     <tr>
         <td>
-            <form action="plants" method="POST">
+            <form action="/filter" method="POST">
+                {% csrf_token %}
+                <input value="plant" name="page" hidden>
                 <select name="filter">
                 <option value="name">Name</option>
                 <option value="harvest">Harvest</option>

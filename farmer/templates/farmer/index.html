@@ -1,6 +1,7 @@
 {% extends "farmer/layout.html" %}
 {% block creator %}<h1>New Tray</h1>{% endblock %}
 {% block body %}
+<h1>Active Trays</h1>
 {% block id_new %}{% endblock %}
 <div id="MyEdit" class="modal">
     <!-- NEW PLANT Modal content -->
@@ -37,10 +38,14 @@
 <table class="filter">
     <tr>
         <td>
-            <form action="/" method="POST">
+            <form action="/filter" method="POST">
+                {% csrf_token %}
+                <input value="index" name="page" hidden>
                 <select name="filter">
                     <option value="name">Name</option>
-                    <option value="start">date</option>
+                    <option value="days">Days</option>
+                    <option value="start">Start</option>
+                    <option value="end">End</option>
                 </select>   
                 <input name="search" type="text" placeholder="Search product">
                 <button type="submit">Filter</button>
