@@ -72,3 +72,7 @@ body {
     border-style: groove;   
 }
 
+@media screen and (min-width: 260px) and (max-width: 480px) {
+  .mobile_hide { display: none; }  
+}
+

@@ -35,6 +35,7 @@ class Tray(models.Model):
     start = models.DateTimeField()
     medium_weight = models.IntegerField()
     seeds_weight = models.IntegerField()
+    fname = models.CharField(max_length=255)
 
     def __str__(self):
             return f"{self.name} start:{self.start}"
@@ -55,6 +56,7 @@ class Tray(models.Model):
             dh = None
             harvest_date = None
         return {
+            "fname": self.fname,
             "end": end,
             "days": days,
             "id": self.id,

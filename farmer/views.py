@@ -50,7 +50,9 @@ def index(request):
         
                 for i in range(count):
                     c = qtt+i+1
-                    Tray.objects.create(name=name, number= c, medium=medium, seeds_weight=seed, medium_weight=medium_weight, start=start)
+                    print(name)
+                    fname = name.name + str(c)
+                    Tray.objects.create(name=name, fname=fname, number= c, medium=medium, seeds_weight=seed, medium_weight=medium_weight, start=start)
                 return HttpResponseRedirect(reverse("index"))
         
         sdata = Tray.objects.all()
@@ -77,7 +79,11 @@ def login_view(request):
                 "error": "Invalid username or password.", "form": form
             })  
     else:
-        return render(request, "farmer/login.html", {"form": Login()})
+        if not request.user:
+            return render(request, "farmer/login.html", {"form": Login()})
+        else:
+            return HttpResponseRedirect(reverse("index"))
+
 
 # LOGOUT FUNCTION 
 def logout_view(request):
@@ -209,7 +215,7 @@ def filter(request):
         if page == "index":
             search = request.POST['search']
             if search != "":
-                sdata = Tray.objects.filter(name__contains=search)
+                sdata = Tray.objects.filter(fname__contains=search)
                 data = [row.serialize() for row in sdata]
             else:    
                 filter = request.POST["filter"] 
@@ -234,5 +240,18 @@ def filter(request):
                 filter = request.POST["filter"]
                 data = Plant.objects.all().order_by(filter)
             return render(request, "farmer/plants.html", {"form": Newplant(), "plants": data})
+        elif page == "history":
+            search = request.POST['search']
+            if search != "":
+                sdata = Tray.objects.filter(fname__contains=search)
+                data = [row.serialize() for row in sdata]
+            else:
+                filter = request.POST["filter"] 
+                sdata = Tray.objects.all()
+                data = [row.serialize() for row in sdata]
+                data = sorted(data, key=lambda k: k[filter])
+                 
+            return render(request, "farmer/history.html", {"data":data})
+
 
 

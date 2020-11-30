@@ -6,10 +6,13 @@
 <table class="filter">
     <tr>
         <td>
-            <form action="/" method="POST">
+            <form action="/filter" method="POST">
+                {% csrf_token %}
+                <input value="history" name="page" hidden>
                 <select name="filter">
-                    <option value="name">Name</option>
-                    <option value="start">date</option>
+                    <option value="fname">Name</option>
+                    <option value="start">Start</option>
+                    <option value="harvest">Harvest</option>
                 </select>   
                 <input name="search" type="text" placeholder="Search product">
                 <button type="submit">Filter</button>

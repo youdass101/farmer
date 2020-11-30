@@ -1,6 +1,8 @@
 {% extends "farmer/layout.html" %}
 {% block creator %}<h1>New Tray</h1>{% endblock %}
+{% block action %} action="/"{% endblock %}
 {% block body %}
+
 <h1>Active Trays</h1>
 {% block id_new %}{% endblock %}
 <div id="MyEdit" class="modal">
@@ -66,9 +68,9 @@
                 <th scope="col">Count</th>
                 <th scope="col">Tray ID</th>
                 <th scope="col">Days</th>
-                <th scope="col">Mix Weight</th>    
-                <th scope="col">Seeds Weight</th>
-                <th scope="col">Medium</th>
+                <th class="mobile_hide" scope="col">Mix Weight</th>    
+                <th class="mobile_hide" scope="col">Seeds Weight</th>
+                <th class="mobile_hide" scope="col">Medium</th>
                 <th scope="col">Start</th>
                 <th scope="col">End</th>
                 <th scope="col">CountDown</th>
@@ -86,9 +88,9 @@
                         <td> <li style="margin-left: 25%;"></li></td>
                         <td class="tn" style = "text-transform:capitalize;">{{i.name}}{{i.number}}</td>
                         <td>{{i.days.days}}</td>
-                        <td class="mw">{{i.medium_weight}}</td>
-                        <td class="sw">{{i.seeds_weight}}</td>
-                        <td class="mt">{{i.medium}}</td>
+                        <td class="mw mobile_hide">{{i.medium_weight}}</td>
+                        <td class="sw mobile_hide">{{i.seeds_weight}}</td>
+                        <td class="mt mobile_hide">{{i.medium}}</td>
                         <td class="ts">{{i.start}}</td>
                         <td class="end">{{i.end}}</td>
                         <td class="countdown" value="{{i.date}}"></td>
