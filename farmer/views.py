@@ -79,7 +79,7 @@ def login_view(request):
                 "error": "Invalid username or password.", "form": form
             })  
     else:
-        if not request.user:
+        if not  request.user.is_authenticated:
             return render(request, "farmer/login.html", {"form": Login()})
         else:
             return HttpResponseRedirect(reverse("index"))
