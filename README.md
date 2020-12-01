@@ -1,4 +1,4 @@
-��# farmer
+# farmer
 This web application is a microgreens farm tracking application, where users can create plants, mediums, and trays that have been seeded to track the progress and know when to harvest active trays. Users can view trays history, plant or medium information details and can edit them.
 this application is built using django, HTML, css,and java script
 
