@@ -32,8 +32,8 @@
         <tr>
             <th scope="col">Plant</th>
             <th scope="col">Seeds</th>
-            <th scope="col">Black out</th>
-            <th scope="col">Pressure</th>
+            <th class="mobile_hide" scope="col">Black out</th>
+            <th class="mobile_hide" scope="col">Pressure</th>
             <th scope="col">Harvest</th>
             <th scope="col">Output</th>
             <th scope="col">Edit</th>
@@ -44,9 +44,9 @@
         {% for i in plants %}
         <tr>
             <td class="name" style="text-transform:capitalize;">{{i.name}}</td>
-            <td class="seeds" value="{{i.seeds}}" >{{i.seeds}}g</td>
-            <td class="blackout" value="{{i.blackout}}">{{i.blackout}} days</td>
-            <td class="pressure" value="{{i.pressure}}">{{i.pressure}} days</td>
+            <td  class="seeds" value="{{i.seeds}}" >{{i.seeds}}g</td>
+            <td  class="blackout mobile_hide" value="{{i.blackout}}">{{i.blackout}} days</td>
+            <td class="pressure mobile_hide" value="{{i.pressure}}">{{i.pressure}} days</td>
             <td class="harvest" value="{{i.harvest}}">{{i.harvest}} days</td>
             <td class="output" value="{{i.output}}">{{i.output}}g</td>
             <td>
