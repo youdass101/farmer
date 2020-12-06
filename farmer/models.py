@@ -37,6 +37,7 @@ class Tray(models.Model):
     medium_weight = models.IntegerField()
     seeds_weight = models.IntegerField()
     fname = models.CharField(max_length=255)
+    location = models.CharField(max_length=255)
 
     def __str__(self):
             return f"{self.name} start:{self.start}"
@@ -71,7 +72,8 @@ class Tray(models.Model):
             "harvest" : harvest,
             "harvest_weight": harvest_weight,
             "dh" : dh,
-            "harvest_date" : harvest_date
+            "harvest_date" : harvest_date,
+            "location" : self.location
         }
 
 class Harvest(models.Model):

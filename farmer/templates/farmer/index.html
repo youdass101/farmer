@@ -66,6 +66,7 @@
         <thead  class="thead-dark">
             <tr>
                 <th class="cc" scope="col" >Count</th>
+                <th class="location" scope="col">L</th>
                 <th scope="col">Tray ID</th>
                 <th scope="col">Days</th>
                 <th class="mobile_hide" scope="col">Mix Weight</th>    
@@ -86,6 +87,7 @@
                     <tr>
                         <!-- if not harvest -->
                         <td> <li class="count"></li></td>
+                        <td>{{i.location}}</td>
                         <td class="tn" style = "text-transform:capitalize;">{{i.name}}{{i.number}}</td>
                         <td>{{i.days.days}}</td>
                         <td class="mw mobile_hide">{{i.medium_weight}}</td>

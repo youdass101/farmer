@@ -41,6 +41,7 @@ def index(request):
                 medium_weight = form.cleaned_data['medium_weight']
                 start = form.cleaned_data['start']
                 count = form.cleaned_data['count']
+                location = form.cleaned_data['location']
                 if not seed or seed == name.seeds:
                     seed = name.seeds 
                 try: 
@@ -52,7 +53,7 @@ def index(request):
                     c = qtt+i+1
                     print(name)
                     fname = name.name + str(c)
-                    Tray.objects.create(name=name, fname=fname, number= c, medium=medium, seeds_weight=seed, medium_weight=medium_weight, start=start)
+                    Tray.objects.create(name=name, fname=fname, number= c, medium=medium, seeds_weight=seed, medium_weight=medium_weight, start=start, location=location)
                 return HttpResponseRedirect(reverse("index"))
         
         sdata = Tray.objects.all()
