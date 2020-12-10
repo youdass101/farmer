@@ -51,7 +51,6 @@ def index(request):
         
                 for i in range(count):
                     c = qtt+i+1
-                    print(name)
                     fname = name.name + str(c)
                     Tray.objects.create(name=name, fname=fname, number= c, medium=medium, seeds_weight=seed, medium_weight=medium_weight, start=start, location=location)
                 return HttpResponseRedirect(reverse("index"))
