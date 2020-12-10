@@ -337,8 +337,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 op = document.getElementById("id_medium").options
                 for (var i = 0; i < op.length; i++){
+                    
                     if (document.getElementById("id_medium").options[`${i}`].innerHTML == mt){
-                        edit.querySelector("#id_medium").selectedIndex = i
+                        edit.querySelector("#id_medium").selectedIndex = i+1
                     }
                 }
                 

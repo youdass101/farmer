@@ -35,7 +35,7 @@ class Newtray(forms.Form):
     medium_weight = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset',"value":"130", 'placeholder':'Medium Weight'}),label=(''))
     start = forms.DateField(widget=forms.SelectDateWidget(attrs={'class':'toset'}),label=(''),initial=datetime.today())
     count = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'How many tray', 'value':'1'}),label=(''))
-    location = forms.ChoiceField(widget=forms.Select(attrs={'class':'toset'}),label=('Location'),choices=(("1","H"),("2","D")))
+    location = forms.ChoiceField(widget=forms.Select(attrs={'class':'toset'}),label=('Location'),choices=(("H","H"),("D","D")))
 
 
 class Edittray(forms.Form):
