@@ -57,8 +57,9 @@ def index(request):
         
         sdata = Tray.objects.all()
         data = [row.serialize() for row in sdata] 
+        active = [x for x in data if not x["harvest"]]
         cd = str(datetime.date(datetime.today()))
-        return render(request, "farmer/index.html", {"cd":cd, "edit": Edittray(), "form": Newtray(), "data":data})
+        return render(request, "farmer/index.html", {"cd":cd, "edit": Edittray(), "form": Newtray(), "data":active, "count":len(active)})
     else:
         return HttpResponseRedirect(reverse("login"))
 
