@@ -14,26 +14,29 @@ from django.contrib.auth.decorators import login_required
 
 regcode = "123456"
 
-# INDEX PAGE LOAD 
+# INDEX PAGE LOAD TRAYS 
 def index(request):
     if request.user.is_authenticated:
         if request.method == "PUT":
             form = json.loads(request.body)
+            # DELETE TRAY
             if form['delete']:
                 tray = Tray.objects.get(id=form['id'])
                 tray.delete()
                 return JsonResponse({"result": True, "msg": "Success"}, status=201)
+            # EDIT TRAY JAVA FETCH
             medium = Medium.objects.get(name=form["medium"])
             tray = Tray.objects.get(id=form['id'])
             tray.medium = medium
             tray.medium_weight = form['medium_weight']
             tray.seeds_weight = form['seed']
             tray.start = datetime.strptime(form['start'], '%b. %d, %Y')
-            tray.save()
             return JsonResponse({"result": True, "msg": "Success"}, status=201)
-
+        
+        # CREATE NEW TRAY 
         if request.method == "POST":
             form = Newtray(request.POST)
+            # CHECK VALIDITY AND CLEAN FORM DATA 
             if form.is_valid():
                 name = form.cleaned_data['plant']
                 medium = form.cleaned_data['medium']
@@ -42,46 +45,54 @@ def index(request):
                 start = form.cleaned_data['start']
                 count = form.cleaned_data['count']
                 location = form.cleaned_data['location']
-                if not seed or seed == name.seeds:
+                # IF SEED WEGHT IS NOT INSERTED 
+                if not seed:
                     seed = name.seeds 
                 try: 
                     qtt = Tray.objects.filter(name=name).count()                   
                 except:
                     qtt = 0
-        
+                # CREATE NEW TRAY NUMBER
                 for i in range(count):
                     c = qtt+i+1
                     fname = name.name + str(c)
                     Tray.objects.create(name=name, fname=fname, number= c, medium=medium, seeds_weight=seed, medium_weight=medium_weight, start=start, location=location)
                 return HttpResponseRedirect(reverse("index"))
-        
+
+        # GET METHOD 
         sdata = Tray.objects.all()
         data = [row.serialize() for row in sdata] 
         active = [x for x in data if not x["harvest"]]
         cd = str(datetime.date(datetime.today()))
         return render(request, "farmer/index.html", {"cd":cd, "edit": Edittray(), "form": Newtray(), "data":active, "count":len(active)})
+    # IF USER NOT LOGGED-IN
     else:
         return HttpResponseRedirect(reverse("login"))
 
 #LOGIN PAGE 
 def login_view(request):
     if request.method == "POST":
+        # GET DATA
         form = Login(request.POST)
         if form.is_valid():
             username = form.cleaned_data["username"]
             password = form.cleaned_data["password"]
             user = authenticate(request, username=username, password=password)
 
+        # IF SUTHENTICATION SUCCESS
         if user is not None:
             login(request, user)
             return HttpResponseRedirect(reverse("index"))
+        # IF AUTHENTICATION FAILED 
         else:
             return render(request, "farmer/login.html", {
                 "error": "Invalid username or password.", "form": form
-            })  
+            }) 
+    # GET PAGE  
     else:
-        if not  request.user.is_authenticated:
+        if not request.user.is_authenticated:
             return render(request, "farmer/login.html", {"form": Login()})
+        # IF USER IS LOGGED IN
         else:
             return HttpResponseRedirect(reverse("index"))
 
@@ -94,6 +105,7 @@ def logout_view(request):
 # REGISTER NEW USER 
 def register_view(request):
     if request.method == "POST":
+        # GET CREDENTIALS 
         form =Register(request.POST)
         if form.is_valid():
             username = form.cleaned_data["username"]
@@ -108,38 +120,47 @@ def register_view(request):
                     new.save()
                 except:
                     return render(request, "farmer/register.html", {"error": "user already exist", "form": form})
-
+                
+                # LOGIN WITH NEW USER 
                 user = authenticate(request, username=username, password=password)
                 if user is not None:
                     login(request, user)
                     return HttpResponseRedirect(reverse("index"))
+            # ERROR
             else:
                 return render(request, "farmer/register.html", {"error": "password comfirmation or REG Code do not match", "form": form})
+        # MISSING CREDENTIALS
         else:
             return render(request, "farmer/register.html", {"error": "Missing Information"})    
+    # GET PAGE 
     else:
         return render(request, "farmer/register.html", {"form": Register()})
 
-#plants view 
+# PLANTS 
 @login_required
 def plants(request):
+    # CREATE PLANT
     if request.method == "POST":
         tp = json.loads(request.body)['type']
+        # NESTED GET METHOD TO REUSE OBJECT DATA 
         if tp == "get":
             pp = json.loads(request.body)['data']
             data = Plant.objects.get(id=pp)
             return JsonResponse({"result": data.seeds}, status=201)
-
-        
+        # CREATE NEW PLANT NESTED CREATE METHOD 
         if tp == "create":
             data = json.loads(request.body)['data']
             try:
+                # CHECK IF PLANT EXIST
                 plant = Plant.objects.get(name=data['name'])
                 return JsonResponse({"result": "exist"}, status=500)
             except:
+                # CREATE NEW PLANT OBJECT INSTANCE 
                 Plant.objects.create(name=data['name'].lower(), seeds=data['seeds'], pressure=data['pressure'], blackout=data['blackout'], harvest=data['harvest'], output=data['output'])
+                # JAVA RESPONSE RETURN
                 return JsonResponse({"result": "done"}, status=201)
-        
+
+        # EDIT OR UPDATE PLANT OBJECT INSTACNE 
         if tp == "put":
             pp = json.loads(request.body)['data']
             edit = Plant.objects.get(id=pp['id'])
@@ -148,8 +169,8 @@ def plants(request):
                     Plant.objects.get(name=pp['name'])
                     return JsonResponse({"msg":"Name already exist", "error": True}, status=206)
                 except:
-                    pas = True
-
+                    pass
+            # UPDATE PLANT 
             edit.name = pp['name']
             edit.seeds = pp['seeds']
             edit.pressure = pp['pressure']
@@ -160,8 +181,7 @@ def plants(request):
           
             return JsonResponse({"msg":"success", "error": False}, status=201)
 
-        
-    
+    # GET PAGE WITH ALL PLANTS 
     plantslist = Plant.objects.all()
     return render(request, "farmer/plants.html", {"form": Newplant(), "plants": plantslist})
     
@@ -218,6 +238,7 @@ def filter(request):
             if search != "":
                 sdata = Tray.objects.filter(fname__contains=search)
                 data = [row.serialize() for row in sdata]
+                data = [x for x in data if not x["harvest"]]
             else:    
                 filter = request.POST["filter"] 
                 if filter == "name":
