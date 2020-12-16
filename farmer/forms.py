@@ -33,7 +33,7 @@ class Newtray(forms.Form):
     medium = forms.ModelChoiceField(widget=forms.Select(attrs={'class':'toset'}), empty_label='Select the Medium',label=(''),queryset=Medium.objects.all(), initial= ['2'])
     seed = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset'}),label=(''), required=False)
     medium_weight = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset',"value":"130", 'placeholder':'Medium Weight'}),label=(''))
-    start = forms.DateField(widget=forms.SelectDateWidget(attrs={'class':'toset'}),label=(''),initial=datetime.today())
+    start = forms.DateField(widget=forms.SelectDateWidget(attrs={'class':'toset'}),label=(''),initial=datetime.now())
     count = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'How many tray', 'value':'1'}),label=(''))
     location = forms.ChoiceField(widget=forms.Select(attrs={'class':'toset'}),label=('Location'),choices=(("H","H"),("D","D")))
 
