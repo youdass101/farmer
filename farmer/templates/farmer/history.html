@@ -18,7 +18,6 @@
                 <button type="submit">Filter</button>
             </form>
         </td>
-     
     </tr>           
 </table>
 
@@ -43,9 +42,7 @@
     <!-- created plants list -->
         <tbody>
             {% for i in data %}
-                {% if i.harvest %}
                     <tr>
-                        <!-- if not harvest -->
                         <td class="mobile_hide"> <li style="margin-left: 25%;"></li></td>
                         <td>{{i.location}}</td>
                         <td class="tn" style = "text-transform:capitalize;">{{i.name}}{{i.number}}</td>
@@ -56,9 +53,7 @@
                         <td class="ts mobile_hide">{{i.start}}</td>
                         <td class="end mobile_hide">{{i.end}}</td>
                         <td>{{i.harvest_date}}</td>
-                        <td>{{i.harvest_weight}} grams</td>
-                    
-                {%endif%}
+                        <td>{{i.harvest_weight}} grams</td> 
             {% endfor %}
         </tbody>
     </table>

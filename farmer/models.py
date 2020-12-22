@@ -65,7 +65,6 @@ class Tray(models.Model):
             "name": self.name,
             "number": self.number,
             "medium": self.medium,
-            "date" : self.start,
             "start": datetime.date(self.start),
             "medium_weight": self.medium_weight,
             "seeds_weight": self.seeds_weight,

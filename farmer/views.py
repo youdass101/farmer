@@ -205,7 +205,7 @@ def medium(request):
                     Medium.objects.get(name=tp['data']['name'])
                     return JsonResponse({"msg":"Name already exist", "error": True}, status=206)
                 except:
-                    pas = True
+                    pass
             edit.name = tp['data']['name']
             edit.soil = tp['data']['soil'] 
             edit.coco = tp['data']['coco']
@@ -226,7 +226,8 @@ def harvest(request):
 @login_required
 def history(request):
     sdata = Tray.objects.all()
-    data = [row.serialize() for row in sdata] 
+    fdata = [row.serialize() for row in sdata] 
+    data = [x for x in fdata if x["harvest"]]
     return render(request, "farmer/history.html", {"data":data})
 
 @login_required
@@ -237,19 +238,20 @@ def filter(request):
             search = request.POST['search']
             if search != "":
                 sdata = Tray.objects.filter(fname__contains=search)
-                data = [row.serialize() for row in sdata]
-                data = [x for x in data if not x["harvest"]]
+                fdata = [row.serialize() for row in sdata]
+                
             else:    
                 filter = request.POST["filter"] 
                 if filter == "name":
                     sdata = Tray.objects.all().order_by('name')
-                    data = [row.serialize() for row in sdata] 
+                    fdata = [row.serialize() for row in sdata] 
                 else:
                     sdata = Tray.objects.all()
-                    data = [row.serialize() for row in sdata]
-                    data = sorted(data, key=lambda k: k[filter])
+                    vdata = [row.serialize() for row in sdata]
+                    fdata = sorted(vdata, key=lambda k: k[filter])
             cd = str(datetime.date(datetime.today()))
-            return render(request, "farmer/index.html", {"cd":cd, "edit": Edittray(), "form": Newtray(), "data":data})
+            data = [x for x in fdata if not x["harvest"]]
+            return render(request, "farmer/index.html", {"cd":cd, "edit": Edittray(), "form": Newtray(), "data":data, "count": len(data)})
         elif page == "medium":
             filter = request.POST["filter"]
             data = Medium.objects.all().order_by(filter)
@@ -266,14 +268,17 @@ def filter(request):
             search = request.POST['search']
             if search != "":
                 sdata = Tray.objects.filter(fname__contains=search)
-                data = [row.serialize() for row in sdata]
+                fdata = [row.serialize() for row in sdata]
             else:
                 filter = request.POST["filter"] 
                 sdata = Tray.objects.all()
-                data = [row.serialize() for row in sdata]
-                data = sorted(data, key=lambda k: k[filter])
+                vdata = [row.serialize() for row in sdata]
+                fdata = sorted(vdata, key=lambda k: k[filter])
+            data = [x for x in fdata if x["harvest"]]
                  
             return render(request, "farmer/history.html", {"data":data})
 
-
+@login_required
+def analytics(request):
+    pass
 
