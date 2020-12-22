@@ -10,6 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import *
 from .forms import *
 from django.contrib.auth.decorators import login_required
+import pandas as pd
 
 
 regcode = "123456"
@@ -280,5 +281,16 @@ def filter(request):
 
 @login_required
 def analytics(request):
-    pass
+    all = Tray.objects.all()
+    sall = [row.serialize() for row in all]
+    active = [x for x in sall if not x['harvest']]
+    pan = pd.DataFrame(active)
+    pan = pan.astype({"name":str})
+    group = pan.groupby(['name', 'start', 'days'])
+    groupa = pan.groupby(['name', 'start', 'days']).size().reset_index(name='count')
+
+
+
+
+    return None
 
