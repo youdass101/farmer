@@ -1,6 +1,7 @@
 {%extends "farmer/layout.html"%}
 {%block body%}
-
-
-
-{%endblock}
+{% for i in size %}
+{{i}}
+<h1>{{data.name.i}}</h1>
+{% endfor %}
+{%endblock%}
