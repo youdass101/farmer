@@ -286,8 +286,8 @@ def analytics(request):
     active = [x for x in sall if not x['harvest']]
     pan = pd.DataFrame(active)
     pan = pan.astype({"name":str})
-    group = pan.groupby(['name', 'start', 'days'])
+    group = pan.groupby(['name', 'start', 'days', 'end'])
     cn = pan.groupby(['name', 'start']).size().reset_index(name='cnt')
-    return render(request, "farmer/analytics.html", {"data":zip(group, cn.cnt) })
+    return render(request, "farmer/analytics.html", {"data":zip(group, cn.cnt), "form": Newtray() })
 
 

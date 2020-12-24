@@ -89,13 +89,25 @@ body {
   .maintable {margin: 0;
     padding-left: 10px;
     font-size: 12.5px;
-}
+  }
   .count{width: 50%;}
   #planttable {font-size: 15px;}
-
   .cc {font-size: 0px;}
-
-  
-
 }
 
+.analytics{
+  padding-top: 20px;
+}
+
+.tray_number {
+  color: green;
+  font-size: 17px;
+  font-weight: 900;
+}
+
+.tray_name {
+  font: outline;
+  font-weight: 700;
+  font-size: 16px;
+  text-transform:capitalize;
+}

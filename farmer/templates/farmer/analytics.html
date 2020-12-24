@@ -1,8 +1,14 @@
 {%extends "farmer/layout.html"%}
+{% block creator %}<h1>Analytc</h1>{% endblock %}
+{% block action %} action="/"{% endblock %}
 {%block body%}
+<button id="myBtn" class="subbtn">New Tray</button>        
+
+<div class="analytics">
 {% for i, s in data %}
-<button> <div>{{s}} trays {{i.0.0}}</div><div>{{i.0.1}}</div> <div>{{i.0.2.days}} days</div>
+<button class="analytic_box"> <div><span class="tray_number">{{s}} trays</span><span class="tray_name"> {{i.0.0}}</span></div>
+    <div>{{i.0.1}}</div> <div class="end">{{i.0.3}}</div> <div>{{i.0.2.days}} days</div><div class="countdown"></div>
 </button>
 {% endfor %}
-
+</div>
 {%endblock%}
