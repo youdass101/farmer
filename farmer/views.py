@@ -279,19 +279,24 @@ def filter(request):
                 data = [x for x in fdata if x["harvest"]]
                 return render(request, "farmer/history.html", {"data":data})
         except:
-            dt = json.loads(request.body)['data']
-            pname = dt['name']
+            # dt = json.loads(request.body)['data']
+            print("here we go")
+            dt = request.POST["start"]
+            pname = request.POST["tray_name"]
+            print(dt)
             name = Plant.objects.get(name=pname.strip())
-            sdata = Tray.objects.filter(name=name, start=datetime.strptime(dt['start'], '%b. %d, %Y'))
+            sdata = Tray.objects.filter(name=name, start=datetime.strptime(dt, '%b. %d, %Y'))
             vdata = [row.serialize() for row in sdata]
             data = [x for x in vdata if not x['harvest']]
             cd = str(datetime.date(datetime.today()))
+            print("GO GO GO GO GO GO GO GO")
 
             return render(request, "farmer/index.html", {"cd":cd, "edit": Edittray(), "form": Newtray(), "data":data, "count": len(data)})
          
 
 @login_required
 def analytics(request):
+
     all = Tray.objects.all()
     sall = [row.serialize() for row in all]
     active = [x for x in sall if not x['harvest']]

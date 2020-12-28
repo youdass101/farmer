@@ -463,31 +463,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }); 
     }
 
-    if (document.querySelector('.analytic_box')){
-        document.querySelectorAll('.analytic_box').forEach (button => {
-            button.onclick = () => {
-                var data = {
-                    name : button.querySelector('.tray_name').innerHTML,
-                    start : button.querySelector('.start').innerHTML
-                }
-
-                fetch ('/filter', {
-                    method : 'POST',
-                    body : JSON.stringify({
-                        data
-                    }),
-                    headers: {
-                        'X-CSRFToken': getCookie('csrftoken')
-                    }
-                })
-                .then(response => response.json())
-            }
-        })
-
-    }
-
-
-    
 
     // CSRF token function  
     function getCookie(name) {
