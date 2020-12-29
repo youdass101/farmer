@@ -43,6 +43,3 @@ class Edittray(forms.Form):
     seed = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset'}), required=False)
     medium_weight = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset',"value":"130", 'placeholder':'Medium Weight'}))
     start = forms.DateField(initial=datetime.today())
-
-
-

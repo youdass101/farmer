@@ -83,7 +83,6 @@
     <!-- created plants list -->
         <tbody>
             {% for i in data %}
-                {% if  not i.harvest %}
                     <tr>
                         <!-- if not harvest -->
                         <td> <li class="count"></li></td>
@@ -103,7 +102,7 @@
                             <button class="edit_tray mobile_hide" type="submit" value="{{i.id}}">Edit</button>
                         </td>    
                     </tr>
-                {%endif%}
+               
             {% endfor %}
         </tbody>
     </table>

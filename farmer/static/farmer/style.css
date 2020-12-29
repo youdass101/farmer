@@ -89,13 +89,53 @@ body {
   .maintable {margin: 0;
     padding-left: 10px;
     font-size: 12.5px;
-}
+  }
   .count{width: 50%;}
   #planttable {font-size: 15px;}
-
   .cc {font-size: 0px;}
-
-  
-
 }
 
+.analytics{
+  padding-top: 20px;
+}
+
+.tray_number {
+  color: green;
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.tray_name {
+  font: outline;
+  font-weight: 700;
+  font-size: 20px;
+  text-transform:capitalize;
+  min-width: 200px;
+}
+
+.ana {
+  margin: 0;
+  padding: 5px;
+  display: inline;
+}
+
+#analytic_container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#analytic_container > div {
+  background-color: lawngreen;
+  font-size: 18px;
+  margin: 18px;
+  padding: 5px;
+  width: 200px;
+}
+
+.ana > button {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+
+
+}

@@ -267,7 +267,6 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll(".countdown").forEach (cell => {
             var parent = (cell.parentElement).querySelector(".end").innerHTML
             
-            
             var countDownDate = new Date(parent).getTime();
 
             // Update the count down every 1 second
@@ -459,18 +458,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         harvest.style.display = "none";
                         parent.remove()
                     })
-
                 }
-
-            }
-            
-        });
-
-        
+            }  
+        }); 
     }
 
-
-    
 
     // CSRF token function  
     function getCookie(name) {
