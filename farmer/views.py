@@ -289,21 +289,24 @@ def filter(request):
             vdata = [row.serialize() for row in sdata]
             data = [x for x in vdata if not x['harvest']]
             cd = str(datetime.date(datetime.today()))
-            print("GO GO GO GO GO GO GO GO")
 
             return render(request, "farmer/index.html", {"cd":cd, "edit": Edittray(), "form": Newtray(), "data":data, "count": len(data)})
          
 
 @login_required
 def analytics(request):
+    try:
+        all = Tray.objects.all()
+        sall = [row.serialize() for row in all]
+        active = [x for x in sall if not x['harvest']]
+        pan = pd.DataFrame(active)
+        pan = pan.astype({"name":str})
+        group = pan.groupby(['name', 'start', 'days', 'end'])
+        cn = pan.groupby(['name', 'start']).size().reset_index(name='cnt')
+        data = zip(group, cn.cnt)
+    except:
+        data = False
 
-    all = Tray.objects.all()
-    sall = [row.serialize() for row in all]
-    active = [x for x in sall if not x['harvest']]
-    pan = pd.DataFrame(active)
-    pan = pan.astype({"name":str})
-    group = pan.groupby(['name', 'start', 'days', 'end'])
-    cn = pan.groupby(['name', 'start']).size().reset_index(name='cnt')
-    return render(request, "farmer/analytics.html", {"data":zip(group, cn.cnt), "form": Newtray() })
+    return render(request, "farmer/analytics.html", {"data":data, "form": Newtray() })
 
 

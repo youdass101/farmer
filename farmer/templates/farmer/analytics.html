@@ -2,8 +2,9 @@
 {% block creator %}<h1>Analytc</h1>{% endblock %}
 {% block action %} action="/"{% endblock %}
 {%block body%}
-<button id="myBtn" class="subbtn">New Tray</button>        
+<button id="myBtn" class="subbtn">New Tray</button>    
 
+{% if data %}
 <div class="analytics" id="analytic_container">
 {% for i, s in data %}
 <div>
@@ -18,5 +19,8 @@
 </div>
 
 {% endfor %}
+{% else %}
+<h1>Nothing here </h1>
+{% endif %}
 </div>
 {%endblock%}
