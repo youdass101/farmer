@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-    // Get the modal
+    // Get the modal WHICH IS IN LAYOUT A FORM TO CREATE ANY NEW OBJECT
     var modal = document.getElementById("myModal");
 
     // Get the button that opens the modal
@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
             modal.style.display = "none";
         }
     }
+    // IF USER AT PLANT PAGE AND CREATE FOR IF EXIST 
     if (document.querySelector('#createplant')){
         // Create new plant
         document.querySelector('#createplant').onclick = () => {
@@ -298,7 +299,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         })
     }
-    // Select Item change seeds weight in new plant creation 
+    // AUTO GET SEED WEIGHT WHEN CREATIING NEW PLANT AND SELECT A PLANT NAME FROM LIST
     if (document.querySelector("#id_plant")){
         select = document.querySelector("#id_plant")
         
