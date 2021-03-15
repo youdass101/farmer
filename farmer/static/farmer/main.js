@@ -25,12 +25,167 @@ document.addEventListener('DOMContentLoaded', function() {
             modal.style.display = "none";
         }
     }
-    // IF USER AT PLANT PAGE AND CREATE FOR IF EXIST 
+
+    // EDIT HARVES and DELETE TRAY 
+    if(document.querySelectorAll('.edit_tray')){
+        // EDIT TRAY REQUEST
+        document.querySelectorAll('.edit_tray').forEach (button => {
+            //EDIT FORM LOADING 
+            var edit = document.getElementById("MyEdit")
+            button.onclick = () => {
+                // GATHER CURRENT TRAY DATA 
+                parent = (button.parentElement).parentElement
+                mw = parent.querySelector(".mw").innerHTML
+                sw = parent.querySelector(".sw").innerHTML
+                mt = parent.querySelector(".mt").innerHTML
+                ts = parent.querySelector(".ts").innerHTML
+                tray_name = parent.querySelector(".tn").innerHTML
+                // SELECT THE EXISTING MEDIUM FROM SELECT LIST OF EDIT 
+                op = document.getElementById("id_medium").options
+                for (var i = 0; i < op.length; i++){
+                    
+                    if (document.getElementById("id_medium").options[`${i}`].innerHTML == mt){
+                        edit.querySelector("#id_medium").selectedIndex = i+1
+                    }
+                }
+                
+                // ADD THE CURRENT EDITED TRAY DATA TO EDIT FORM
+                edit.querySelector("#id_seed").value = sw
+                edit.querySelector("#id_medium_weight").value = mw
+                edit.querySelector("#id_start").value = ts
+                document.querySelector(".edit_title").innerHTML = `Edit ${tray_name}`
+
+                // IF DELETE BUTTON PRESSED ALERT 
+                document.querySelector("#delete_tray").onclick = () =>{
+                    alert(`Are you sure want to delete ${tray_name}`)
+                    // SEND A REQUEST TO PYTHON TO DELET THE REQUESTED TRAY
+                    fetch('/', {
+                        method: 'PUT',
+                        body: JSON.stringify({
+                            delete : true,
+                            id : button.value
+                        }),
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken')
+                        }
+                    })
+                    // GET RESPONSE FROM PYTHON AND REMOVE THE TRAY ELEMENT AND CLOST THE THE FORM
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.result){
+                            parent.remove()
+                            edit.style.display = "none";
+                        }
+                    })
+                }
+                // WHEN TRAY DATA ARE EDIT AND SAVE BUTTON IS PRESSED 
+                document.querySelector("#save_tray").onclick = () =>{
+                    // NEW DATA FORM EDIT FORM 
+                    var medium = edit.querySelector("#id_medium")
+                    var seed = edit.querySelector("#id_seed").value
+                    var medium_weight = edit.querySelector("#id_medium_weight").value
+                    var start = edit.querySelector("#id_start").value
+
+                    //SEND NEW DATA TO PYTHON WITH CSRD TOKEN
+                    fetch('/', {
+                        method: 'PUT',
+                        body: JSON.stringify({
+                            medium : medium.options[medium.selectedIndex].innerHTML,
+                            seed : seed,
+                            medium_weight : medium_weight,
+                            start : start,
+                            id : button.value,
+                            delete : false
+                        }),
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken')
+                        }
+                    })
+                    // GET RESPONSE FROM PYTHON AND CHANGE DATA INSTANTLY FOR TARGET ELEMENT  
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.result){
+                            edit.style.display = "none";
+                            parent.querySelector(".mw").innerHTML = medium_weight
+                            parent.querySelector(".sw").innerHTML = seed
+                            parent.querySelector(".mt").innerHTML = medium.options[medium.selectedIndex].innerHTML
+                            parent.querySelector(".ts").innerHTML = start
+                        }
+                    })
+                }
+                //CLOSE THE FORM 
+                edit.style.display = "block";
+                // Get the <span> element that closes the modal
+                var sp = document.getElementsByClassName("cls")[0];
+                sp.onclick = function() {
+                    edit.style.display = "none";
+                } 
+                // When the user clicks anywhere outside of the modal, close it
+                window.onclick = function(event) {
+                    if (event.target == edit) {
+                        edit.style.display = "none";
+                    }
+                }
+            }
+        })
+        // HARVEST A TRAY 
+        document.querySelectorAll(".harvest").forEach(button => {
+            // LOAD HARVEST FORM 
+            var harvest = document.getElementById("Harvest")
+            button.onclick = () =>{
+                // GET TRAY DATA TO HARVES 
+                parent = (button.parentElement).parentElement
+                tray_name = parent.querySelector(".tn").innerHTML
+                // ADD TRAY NAME TO HARVEST FORM 
+                document.querySelector(".harvest_title").innerHTML = tray_name
+                // SHOW THE HARVES FORM 
+                harvest.style.display = "block";
+                // Get the <span> element that closes the modal
+                var sp = document.getElementsByClassName("clsh")[0];
+                sp.onclick = function() {
+                    harvest.style.display = "none";
+                }
+            
+                // When the user clicks anywhere outside of the modal, close it
+                window.onclick = function(event) {
+                    if (event.target == harvest) {
+                        harvest.style.display = "none";
+                    }
+                }
+                // GATHER HARVEST DATA FROM HARVEST FORM 
+                document.querySelector("#harvest_tray").onclick = () =>{
+                    h = harvest.querySelector("#harvest_weight").value
+                    d = harvest.querySelector("#harvest_date").value
+
+                    // SEND HARVEST DATA TO PYTHON WITH CSRF TOKEN 
+                    fetch('/harvest', {
+                        method : 'POST',
+                        body: JSON.stringify({
+                            h: h,
+                            d: d,
+                            id: button.value
+                        }),
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken')
+                        }
+                    })
+                    // GET ACTION RESPONSE, REMOVE TRAY ELEMENT AND CLOSE FORM 
+                    .then(response => response.json())
+                    .then(result => {
+                        harvest.style.display = "none";
+                        parent.remove()
+                    })
+                }
+            }  
+        }); 
+    }
+
+    // IF USER AT PLANT PAGE AND CREATE ID EXIST 
     if (document.querySelector('#createplant')){
         // Create new plant
         document.querySelector('#createplant').onclick = () => {
             var data = 
-                {   // Setting data in json to create new plant 
+                {   // LOADING INPUT data in json to create new plant 
                     name : document.querySelector('#id_name').value,
                     seeds : document.querySelector('#id_seeds').value,
                     pressure : document.querySelector('#id_pressure').value,
@@ -201,7 +356,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     if(document.querySelectorAll(".editmedium")){
-        // EDIT PLANT
+        // EDIT MEDIUM
         document.querySelectorAll(".editmedium").forEach (button => {
             button.onclick = () => {
                 if (!document.querySelector(".save")) {
@@ -323,146 +478,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
 
     }
-    // EDIT TRAY 
-    if(document.querySelectorAll('.edit_tray')){
-        document.querySelectorAll('.edit_tray').forEach (button => {
-            var edit = document.getElementById("MyEdit")
-            button.onclick = () => {
-                parent = (button.parentElement).parentElement
-                mw = parent.querySelector(".mw").innerHTML
-                sw = parent.querySelector(".sw").innerHTML
-                mt = parent.querySelector(".mt").innerHTML
-                ts = parent.querySelector(".ts").innerHTML
-                tray_name = parent.querySelector(".tn").innerHTML
-
-                op = document.getElementById("id_medium").options
-                for (var i = 0; i < op.length; i++){
-                    
-                    if (document.getElementById("id_medium").options[`${i}`].innerHTML == mt){
-                        edit.querySelector("#id_medium").selectedIndex = i+1
-                    }
-                }
-                
-                edit.querySelector("#id_seed").value = sw
-                edit.querySelector("#id_medium_weight").value = mw
-                edit.querySelector("#id_start").value = ts
-                document.querySelector(".edit_title").innerHTML = `Edit ${tray_name}`
-
-                document.querySelector("#delete_tray").onclick = () =>{
-                    alert(`Are you sure want to delete ${tray_name}`)
-                    fetch('/', {
-                        method: 'PUT',
-                        body: JSON.stringify({
-                            delete : true,
-                            id : button.value
-                        }),
-                        headers: {
-                            'X-CSRFToken': getCookie('csrftoken')
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(result => {
-                        if (result.result){
-                            parent.remove()
-                            edit.style.display = "none";
-                        }
-                    })
-                }
-
-                document.querySelector("#save_tray").onclick = () =>{
-                    var medium = edit.querySelector("#id_medium")
-                    var seed = edit.querySelector("#id_seed").value
-                    var medium_weight = edit.querySelector("#id_medium_weight").value
-                    var start = edit.querySelector("#id_start").value
-
-                    fetch('/', {
-                        method: 'PUT',
-                        body: JSON.stringify({
-                            medium : medium.options[medium.selectedIndex].innerHTML,
-                            seed : seed,
-                            medium_weight : medium_weight,
-                            start : start,
-                            id : button.value,
-                            delete : false
-                        }),
-                        headers: {
-                            'X-CSRFToken': getCookie('csrftoken')
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(result => {
-                        if (result.result){
-                            edit.style.display = "none";
-                            parent.querySelector(".mw").innerHTML = medium_weight
-                            parent.querySelector(".sw").innerHTML = seed
-                            parent.querySelector(".mt").innerHTML = medium.options[medium.selectedIndex].innerHTML
-                            parent.querySelector(".ts").innerHTML = start
-                        }
-                    })
-                }
-
-                edit.style.display = "block";
-                // Get the <span> element that closes the modal
-                var sp = document.getElementsByClassName("cls")[0];
-                sp.onclick = function() {
-                    edit.style.display = "none";
-                }
-            
-                // When the user clicks anywhere outside of the modal, close it
-                window.onclick = function(event) {
-                    if (event.target == edit) {
-                        edit.style.display = "none";
-                    }
-                }
-
-            }
-
-        })
-
-        document.querySelectorAll(".harvest").forEach(button => {
-            var harvest = document.getElementById("Harvest")
-            button.onclick = () =>{
-                parent = (button.parentElement).parentElement
-                tray_name = parent.querySelector(".tn").innerHTML
-                document.querySelector(".harvest_title").innerHTML = tray_name
-                harvest.style.display = "block";
-                // Get the <span> element that closes the modal
-                var sp = document.getElementsByClassName("clsh")[0];
-                sp.onclick = function() {
-                    harvest.style.display = "none";
-                }
-            
-                // When the user clicks anywhere outside of the modal, close it
-                window.onclick = function(event) {
-                    if (event.target == harvest) {
-                        harvest.style.display = "none";
-                    }
-                }
-
-                document.querySelector("#harvest_tray").onclick = () =>{
-                    h = harvest.querySelector("#harvest_weight").value
-                    d = harvest.querySelector("#harvest_date").value
-
-                    fetch('/harvest', {
-                        method : 'POST',
-                        body: JSON.stringify({
-                            h: h,
-                            d: d,
-                            id: button.value
-                        }),
-                        headers: {
-                            'X-CSRFToken': getCookie('csrftoken')
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(result => {
-                        harvest.style.display = "none";
-                        parent.remove()
-                    })
-                }
-            }  
-        }); 
-    }
+    
 
 
     // CSRF token function  

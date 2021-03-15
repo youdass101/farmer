@@ -10,9 +10,11 @@
         <title>{% block title %} Micro Greens {% endblock %}</title>
     </head>
     <body> 
-       
+        
+        <!-- PAGE TITLE -->
         <h1>{% block headtitle %}<span class="title">FARMER</span>{% endblock %}</h1>   
         <nav class="navbar navbar-light" style="background-color: lawngreen;">
+        <!-- NAVIGATON IF USER IS LOGGED IN -->
         {% if user.is_authenticated %}  
                 <a class="navbar-brand flex-sm-fill text-sm-center" href="/">Home</a>
                 <a class="navbar-brand flex-sm-fill text-sm-center" href="analytics">Analytic</a>
@@ -22,26 +24,35 @@
                 <a class="navbar-brand flex-sm-fill text-sm-center" href="logout">Logout</a>
              
         {% else %}
+            <!-- LOGIN FORM IF USER IS NOT LOGGED IN -->
             <a class="navbar-brand flex-sm-fill text-sm-center" href="login">Login</a>
             <a class="navbar-brand flex-sm-fill text-sm-center" href="register">Register</a>
         {% endif %}
         </nav> 
+
+        <!-- POP UP FORM FOR DIFFERENT USE -->
         <div id="myModal" class="modal">
             <!-- NEW PLANT Modal content -->
             <div class="modal-content">
                 <div>
+                    <!-- FORM CLOSE BUTTON -->
                     <span class="close">&times;</span>
+                    <!-- FORM TITLE VARIABLE -->
                     <h4>{% block creator %}{% endblock %}</h4>
                 </div>
                 <div>
+                    <!-- FORM ACTION VARIABLE -->
                     <form {% block action %}{% endblock %} method="POST">
+                        <!-- CSRF TOKEN FOR FORM-->
                         {% csrf_token %}
+                        <!-- GET FORM FROM PYTHON DATA SENT  -->
                         {{form}}
                         <button id="{% block id_new %}{% endblock %}" type="submit" class="subbtn">Create</button>
                     </form>
                 </div>
             </div>
         </div>
+            <!-- PAGE BODY ELEMENT -->
             {% block body %} {% endblock %}  
     </body>
 </html>

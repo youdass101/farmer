@@ -43,21 +43,27 @@ class Tray(models.Model):
             return f"{self.name} start:{self.start}"
 
     def serialize(self):
+        # TODAY DATE 
         today = datetime.today()
+        # CALCULATE DAYS COUNT OF CREATED TRAY
         days = datetime.date(today) - datetime.date(self.start)
+        # CALCULATE END DATE 
         end = datetime.date(self.start) + timedelta(self.name.harvest)
         try:
+            # IF TRAY IS HARVESTED ALREADY COLLECT DATA
             h = Harvest.objects.get(tray=self)
             harvest_weight = h.output
             harvest = True
             harvest_date = h.date
             dh = h.date - datetime.date(self.start)
         except:
+            # IF TRAY NOT HARVESTED AND STILL ACTIVE 
             harvest = False
             harvest_weight = None
             dh = None
             harvest_date = None
         return {
+            # DATA TO RETURN FOR SERIALZATION 
             "fname": self.fname,
             "end": end,
             "days": days,
