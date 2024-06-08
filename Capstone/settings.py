@@ -25,7 +25,7 @@ SECRET_KEY = 'br&vwv*acijvxy_d8zr94o!g!b=j4e@$pz25)wjf%w2h2@^68n'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['youdass.pythonanywhere.com']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -76,8 +76,12 @@ WSGI_APPLICATION = 'Capstone.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': str(BASE_DIR / 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'farmer',
+        'USER': 'postgres',
+        'PASSWORD': 'Blackgod70148082',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 

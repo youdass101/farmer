@@ -6,16 +6,24 @@
 
 {% if data %}
 <div class="analytics" id="analytic_container">
-{% for i, s in data %}
+{% for i in data %}
 <div>
 <form class="ana" action="/filter" method="POST">
     {% csrf_token %}
-    <input name="tray_name" value="{{i.0.0}}" hidden>
-    <input name="start" value="{{i.0.1}}" hidden>
-    <button type="submit" class="analytic_box"> <div><span class="tray_number">{{s}} trays </span><span class="tray_name">{{i.0.0}}</span></div>
-        <div class="start">{{i.0.1}}</div> <div class="end">{{i.0.3}}</div> <div>{{i.0.2.days}} days</div><div class="countdown"></div>
+    <input name="tray_name" value="{{i.name}}" hidden>
+    <input name="start" value="{{i.start}}" hidden>
+    <button type="submit" class="analytic_box"> 
+        <div class="tray_number">{{i.quantity}} trays </div>
+        <div class="tray_name">{{i.name}}</div>
+        <div class="seedstotal">{{i.seeds}} Grams of Seeds</div>
+        <div class="soilstotal">{{i.soil}} Litre of Soil</div>
+        <div class="start">{{i.start}}</div> 
+        <div class="end">{{i.end}}</div> 
+        <div>{{i.days.days}} days</div>
+        <div class="countdown"></div>
     </button>
 </form>
+<button class="harvest" type="submit" value="{{i.listid}}">Harvest</button>
 </div>
 
 {% endfor %}

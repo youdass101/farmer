@@ -6,12 +6,14 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 import json
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.postgres.aggregates import ArrayAgg
+
 
 from .models import *
 from .forms import *
 from django.contrib.auth.decorators import login_required
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timedelta
 regcode = "123456"
 
 # INDEX PAGE LOAD TRAYS 
@@ -362,22 +364,23 @@ def filter(request):
 @login_required
 def analytics(request):
     try:
-        # LOAD ALL TRAYS OBJECTS 
-        all = Tray.objects.all()
-        # SERIALIZE MODELS 
-        sall = [row.serialize() for row in all]
-        # FILTER ACTIVE TRAYS AND REMOVE HARVESTED TRYAS 
-        active = [x for x in sall if not x['harvest']]
-        # CREATE A PANDA DICT FROM ACTIVE SERIALIZED TRAYS 
-        pan = pd.DataFrame(active)
-        # CONVER NAME TO STRING INSTEAD OF INSTANCE 
-        pan = pan.astype({"name":str})
-        # GROUP DADA BY NAME AND START DATE
-        group = pan.groupby(['name', 'start', 'days', 'end'])
-        # GET COUNT OF EACH GROUPED DATA BY NAME AND START 
-        cn = pan.groupby(['name', 'start']).size().reset_index(name='cnt')
-        # ZIP THE TOW PANDAS ARRAY TO ALIGN COUNT AND GROUPS 
-        data = zip(group, cn.cnt)
+        # filter only non harvested trays
+        active = Tray.objects.exclude(id__in= Harvest.objects.values('tray'))
+        # group trays my name and date
+        grouped = active.values('name', 'start').annotate(qtt=models.Count('name'), seeds=models.Sum('seeds_weight'), soil=models.Sum('medium_weight'), list_id=ArrayAgg('id'))
+        # create empty list to add data
+        data=[]
+         # TODAY DATE 
+        today = datetime.today()
+        for v in grouped:
+            data.append({'name': Plant.objects.get(id=v['name']).name, 
+                            'start': datetime.date(v['start']), 'quantity': v['qtt'], 
+                        'end':datetime.date(v['start']) + timedelta(Plant.objects.get(id=v['name']).harvest),
+                        'days':datetime.date(today) - datetime.date(v['start']),
+                        'seeds': v['seeds'], 
+                        'soil': v['soil'],
+                        'listid': v['list_id'],
+                        'today': str(datetime.date(datetime.today()))})
     except:
         data = False
     # RETURN GROUPED DATA TO ANALYTIC PAGE 
