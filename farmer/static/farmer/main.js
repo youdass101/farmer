@@ -161,9 +161,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     fetch('/harvest', {
                         method : 'POST',
                         body: JSON.stringify({
+                            bulk: false,
                             h: h,
                             d: d,
-                            id: button.value
+                            tidl: [button.value],
+                            tqtt: 1
                         }),
                         headers: {
                             'X-CSRFToken': getCookie('csrftoken')
@@ -189,6 +191,49 @@ document.addEventListener('DOMContentLoaded', function() {
                 traysids = button.value
                 harvestbulk.querySelector(".modal-content").querySelector(".cells").querySelector(".harvest_bulk_trays").value = trayqtt
                 harvestbulk.style.display = "block"
+
+                // Get the <span> element that closes the modal
+                var sp = document.getElementsByClassName("clsh")[0];
+                sp.onclick = function() {
+                    harvestbulk.style.display = "none";
+                }
+                // close when click outside the block container
+                window.onclick = function(event) {
+                    if (event.target == harvestbulk) {
+                        harvestbulk.style.display = "none"
+                    }
+                }
+
+                document.querySelector("#harvest_bulk").onclick = () =>{
+                    traysqtt = harvestbulk.querySelector("#harvest_bulk_trays").value
+                    harvestweight = harvestbulk.querySelector("#harvest_bulk_weight").value
+                    harvestdate = harvestbulk.querySelector("#harvest_date").value
+
+                    fetch('/harvest', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            bulk : true,
+                            tqtt : traysqtt,
+                            hw : harvestweight,
+                            d : harvestdate,
+                            tidl : traysids,
+                            h : 0
+                        }),
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken')
+                        }
+                    })
+                    // GET ACTION RESPONSE, REMOVE TRAY ELEMENT AND CLOSE FORM 
+                    .then(response => response.json())
+                    .then(result => {
+                        harvestbulk.style.display = "none";
+                    })
+                }
+
+                
+
+
+             
 
     
             }

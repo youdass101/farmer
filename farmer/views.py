@@ -247,15 +247,41 @@ def medium(request):
 
 @login_required
 def harvest(request):
+  
     # HARVEST A TRAY ON REQUEST 
-    if request.method == "POST":
+    if request.method == "POST":   
         # GET HARVEST DATA FROM JS 
-        form = json.loads(request.body)
-        # GET TRAY MODEL OBJECT INSTANCE 
-        tray = Tray.objects.get(id=form['id'])
-        # CREATE HARVEST OBJECT IN HARVEST MODEL 
-        Harvest.objects.create(tray=tray, date=form['d'], output=form['h'])
-        return JsonResponse({"result": True, "msg": "Success"}, status=201)
+        form = json.loads(request.body)  
+        if form['bulk']:
+            form['h'] = int(form['hw']) / int(form['tqtt']) 
+            x = json.loads(form['tidl'])
+            form['tidl'] = x 
+            
+            print(int(form['tqtt']))
+        
+
+        
+        for i in range(int(form['tqtt'])):    
+            # GET TRAY MODEL OBJECT INSTANCE 
+            print("this is", form['tidl'][i])
+            tray = Tray.objects.get(id=form['tidl'][i])
+            # CREATE HARVEST OBJECT IN HARVEST MODEL 
+            Harvest.objects.create(tray=tray, date=form['d'], output=form['h'])
+
+    #  # GET HARVEST DATA FROM JS 
+    # form = json.loads(request.body)
+    # # HARVEST A TRAY ON REQUEST 
+    # if request.method == "POST":     
+    #     # GET TRAY MODEL OBJECT INSTANCE 
+    #     tray = Tray.objects.get(id=form['id'])
+    #     # CREATE HARVEST OBJECT IN HARVEST MODEL 
+    #     Harvest.objects.create(tray=tray, date=form['d'], output=form['h'])
+        
+    # if request.method == "BULK":
+    #     for i in form['trayqtt']:
+    #         tray = 
+    return JsonResponse({"result": True, "msg": "Success"}, status=201)
+        
 
 @login_required
 def history(request):
