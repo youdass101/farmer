@@ -372,6 +372,7 @@ def analytics(request):
         data=[]
          # TODAY DATE 
         today = datetime.today()
+        todayu = str(datetime.date(datetime.today()))
         for v in grouped:
             data.append({'name': Plant.objects.get(id=v['name']).name, 
                             'start': datetime.date(v['start']), 'quantity': v['qtt'], 
@@ -384,6 +385,6 @@ def analytics(request):
     except:
         data = False
     # RETURN GROUPED DATA TO ANALYTIC PAGE 
-    return render(request, "farmer/analytics.html", {"data":data, "form": Newtray() })
+    return render(request, "farmer/analytics.html", {"data":data, "form": Newtray(), "todayu": todayu })
 
 

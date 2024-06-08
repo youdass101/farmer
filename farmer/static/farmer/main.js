@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // EDIT HARVES and DELETE TRAY 
+    // EDIT HARVEST and DELETE TRAY 
     if(document.querySelectorAll('.edit_tray')){
         // EDIT TRAY REQUEST
         document.querySelectorAll('.edit_tray').forEach (button => {
@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             'X-CSRFToken': getCookie('csrftoken')
                         }
                     })
-                    // GET RESPONSE FROM PYTHON AND REMOVE THE TRAY ELEMENT AND CLOST THE THE FORM
+                    // GET RESPONSE FROM PYTHON AND REMOVE THE TRAY ELEMENT AND CLOSE THE FORM
                     .then(response => response.json())
                     .then(result => {
                         if (result.result){
@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // LOAD HARVEST FORM 
             var harvest = document.getElementById("Harvest")
             button.onclick = () =>{
-                // GET TRAY DATA TO HARVES 
+                // GET TRAY DATA TO HARVEST 
                 parent = (button.parentElement).parentElement
                 tray_name = parent.querySelector(".tn").innerHTML
                 // ADD TRAY NAME TO HARVEST FORM 
@@ -179,6 +179,22 @@ document.addEventListener('DOMContentLoaded', function() {
             }  
         }); 
     }
+
+    //Harvest bulk
+    if (document.querySelector('#harvestbulk')){
+        document.querySelectorAll(".harvestbulk").forEach(button => {
+            var harvestbulk = document.getElementById("Harvestbulkpop")
+            button.onclick = () =>{
+                trayqtt = button.parentElement.querySelector(".ana").querySelector(".analytic_box").querySelector(".tray_number").querySelector(".number").innerHTML
+                traysids = button.value
+                harvestbulk.querySelector(".modal-content").querySelector(".cells").querySelector(".harvest_bulk_trays").value = trayqtt
+                harvestbulk.style.display = "block"
+
+    
+            }
+        })
+    }
+  
 
     // IF USER AT PLANT PAGE AND CREATE ID EXIST 
     if (document.querySelector('#createplant')){
