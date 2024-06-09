@@ -17,6 +17,7 @@ class Plant(models.Model):
     blackout = models.IntegerField()
     harvest = models.IntegerField()
     output = models.IntegerField()
+    packweight = models.IntegerField()
     
     def __str__(self):
         return f"{self.name} "
@@ -85,5 +86,20 @@ class Harvest(models.Model):
     tray = models.ForeignKey(Tray, on_delete=models.CASCADE)
     date = models.DateField()
     output = models.IntegerField()
+
+
+class BulkHarvest(models.Model):
+    Product = models.ForeignKey(Plant, blank=True, null=True, on_delete=models.SET_NULL)
+    MediumMix = models.ForeignKey(Medium, blank=True, null=True, on_delete=models.SET_NULL)
+    Trays = models.IntegerField()
+    Harvestdate = models.DateField()
+    PacksQtt = models.IntegerField()
+    PacksWeight = models.IntegerField()
+    MixWeight = models.IntegerField()
+    MediumWeightpacks = models.IntegerField()
+    MediumWeightMix = models.IntegerField()
+    SeedsWeightPacks = models.IntegerField()
+    SeedsWeightMix = models.IntegerField()
+    
 
     

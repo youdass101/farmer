@@ -206,7 +206,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 document.querySelector("#harvest_bulk").onclick = () =>{
                     traysqtt = harvestbulk.querySelector("#harvest_bulk_trays").value
-                    harvestweight = harvestbulk.querySelector("#harvest_bulk_weight").value
+                    harvestmixweight = harvestbulk.querySelector("#harvest_bulk_mix_weight").value
+                    harvestpackqtt = harvestbulk.querySelector("#harvest_bulk_pack_qtt").value
                     harvestdate = harvestbulk.querySelector("#harvest_date").value
 
                     fetch('/harvest', {
@@ -214,7 +215,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         body: JSON.stringify({
                             bulk : true,
                             tqtt : traysqtt,
-                            hw : harvestweight,
+                            hmw : harvestweight,
+                            hpw: harvestpackqtt,
                             d : harvestdate,
                             tidl : traysids,
                             h : 0
@@ -229,13 +231,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         harvestbulk.style.display = "none";
                     })
                 }
-
-                
-
-
-             
-
-    
             }
         })
     }
@@ -251,6 +246,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     seeds : document.querySelector('#id_seeds').value,
                     pressure : document.querySelector('#id_pressure').value,
                     blackout : document.querySelector('#id_blackout').value,
+                    packweight : document.querySelector('#id_packweight').value,
                     harvest : document.querySelector('#id_harvest').value,
                     output : document.querySelector('#id_output').value
                 }

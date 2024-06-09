@@ -174,7 +174,8 @@ def plants(request):
                 return JsonResponse({"result": "exist"}, status=500)
             except:
                 # CREATE NEW PLANT OBJECT INSTANCE 
-                Plant.objects.create(name=data['name'].lower(), seeds=data['seeds'], pressure=data['pressure'], blackout=data['blackout'], harvest=data['harvest'], output=data['output'])
+                print(data['packweight'])
+                Plant.objects.create(name=data['name'].lower(), seeds=data['seeds'], pressure=data['pressure'], blackout=data['blackout'], packweight=data['packweight'], harvest=data['harvest'], output=data['output'])
                 # JAVA RESPONSE RETURN
                 return JsonResponse({"result": "done"}, status=201)
 
@@ -256,7 +257,7 @@ def harvest(request):
             form['h'] = int(form['hw']) / int(form['tqtt']) 
             x = json.loads(form['tidl'])
             form['tidl'] = x 
-            
+
             print(int(form['tqtt']))
         
 
@@ -268,18 +269,6 @@ def harvest(request):
             # CREATE HARVEST OBJECT IN HARVEST MODEL 
             Harvest.objects.create(tray=tray, date=form['d'], output=form['h'])
 
-    #  # GET HARVEST DATA FROM JS 
-    # form = json.loads(request.body)
-    # # HARVEST A TRAY ON REQUEST 
-    # if request.method == "POST":     
-    #     # GET TRAY MODEL OBJECT INSTANCE 
-    #     tray = Tray.objects.get(id=form['id'])
-    #     # CREATE HARVEST OBJECT IN HARVEST MODEL 
-    #     Harvest.objects.create(tray=tray, date=form['d'], output=form['h'])
-        
-    # if request.method == "BULK":
-    #     for i in form['trayqtt']:
-    #         tray = 
     return JsonResponse({"result": True, "msg": "Success"}, status=201)
         
 

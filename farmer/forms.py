@@ -8,6 +8,7 @@ class Newplant(forms.Form):
     seeds = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'seeds weight'}),label=(''))
     pressure = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'days of Presssure'}),label=(''))
     blackout = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'days of blackout'}),label=(''))
+    packweight = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'Pack weight'}),label=(''))
     harvest = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'time to harvest'}),label=(''))
     output = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'Harvest output'}),label=(''))
 
