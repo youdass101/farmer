@@ -215,7 +215,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         body: JSON.stringify({
                             bulk : true,
                             tqtt : traysqtt,
-                            hmw : harvestweight,
+                            hmw : harvestmixweight,
                             hpw: harvestpackqtt,
                             d : harvestdate,
                             tidl : traysids,

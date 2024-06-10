@@ -254,17 +254,32 @@ def harvest(request):
         # GET HARVEST DATA FROM JS 
         form = json.loads(request.body)  
         if form['bulk']:
-            form['h'] = int(form['hw']) / int(form['tqtt']) 
             x = json.loads(form['tidl'])
+            pack = Tray.objects.get(id=x[0])
+            print("this is pack", pack)
+            packweight = pack.name.packweight * int(form['hpw'])
+            print("this pack qtt", int(form['hpw']))
+            print("this is ttl pack weight", packweight)
+            ttlweight = int(packweight) + int(form['hmw'])
+            print("this is ttl weight pack and mix", ttlweight)
             form['tidl'] = x 
+            form['h'] = ttlweight / int(form['tqtt']) 
+            ttlmed = pack.medium_weight * int(form['tqtt']) 
+            ttlseed = pack.seeds_weight * int(form['tqtt'])
+            mpercent = int(form['hmw']) / ttlweight
+            ppercent = int(packweight / ttlweight)
 
-            print(int(form['tqtt']))
         
 
+            BulkHarvest.objects.create(Product=pack.name, MediumMix=pack.medium, Trays=int(form['tqtt']), Harvestdate=form['d'], 
+                               PacksQtt=int(form['hpw']), PacksWeight=packweight, MixWeight=int(form['hmw']), 
+                               MediumWeightpacks= (ttlmed * ppercent), MediumWeightMix= (ttlmed * mpercent), SeedsWeightPacks= (ttlseed * ppercent),  SeedsWeightMix= (ttlseed*mpercent) )
+
+
+        
         
         for i in range(int(form['tqtt'])):    
             # GET TRAY MODEL OBJECT INSTANCE 
-            print("this is", form['tidl'][i])
             tray = Tray.objects.get(id=form['tidl'][i])
             # CREATE HARVEST OBJECT IN HARVEST MODEL 
             Harvest.objects.create(tray=tray, date=form['d'], output=form['h'])
