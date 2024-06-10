@@ -13,7 +13,7 @@
                 <select name="filter">
                 <option value="name">Name</option>
                 <option value="harvest">Harvest</option>
-                <option value="output">Output</option>
+                <option value="medium_weight">Medium Weight</option>
                 </select>   
                 <input name="search" type="text" placeholder="Search Plants">
                 <button type="submit">Filter</button>
@@ -32,11 +32,11 @@
         <tr>
             <th scope="col">Plant</th>
             <th scope="col">Seeds</th>
+            <th scope="col">Medium Weight</th>
             <th class="mobile_hide" scope="col">Black out</th>
             <th class="mobile_hide" scope="col">Pressure</th>
             <th class="mobile_hide" scope="col">Pack gr</th>
             <th scope="col">Harvest</th>
-            <th scope="col">Output</th>
             <th scope="col">Edit</th>
         </tr>
     </thead>
@@ -46,11 +46,12 @@
         <tr>
             <td class="name" style="text-transform:capitalize;">{{i.name}}</td>
             <td  class="seeds" value="{{i.seeds}}" >{{i.seeds}}g</td>
+            <td class="medium_weight" value="{{i.medium_weight}}">{{i.medium_weight}}cl</td>
             <td  class="blackout mobile_hide" value="{{i.blackout}}">{{i.blackout}} days</td>
             <td class="pressure mobile_hide" value="{{i.pressure}}">{{i.pressure}} days</td>
-            <td class="pressure mobile_hide" value="{{i.packweight}}">{{i.packweight}} days</td>
+            <td class="packweight mobile_hide" value="{{i.packweight}}">{{i.packweight}} Gr</td>
             <td class="harvest" value="{{i.harvest}}">{{i.harvest}} days</td>
-            <td class="output" value="{{i.output}}">{{i.output}}g</td>
+           
             <td>
                 <button class="editplant" value="{{i.id}}" >Edit</button>
             </td>

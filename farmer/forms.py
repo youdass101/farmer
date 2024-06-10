@@ -6,11 +6,11 @@ from datetime import datetime
 class Newplant(forms.Form):
     name = forms.CharField(widget=forms.TextInput(attrs={'class':'toset', 'placeholder':'Plant Name'}),label=(''))
     seeds = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'seeds weight'}),label=(''))
+    medium_weight = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'Medium Weight'}),label=(''))
+    packweight = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'Pack weight'}),label=(''))
     pressure = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'days of Presssure'}),label=(''))
     blackout = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'days of blackout'}),label=(''))
-    packweight = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'Pack weight'}),label=(''))
     harvest = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'time to harvest'}),label=(''))
-    output = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'Harvest output'}),label=(''))
 
 class Login(forms.Form):
     username = forms.CharField(widget=forms.TextInput(attrs={'class':'inputs', 'placeholder':'Username'}),label=(''))
@@ -33,7 +33,7 @@ class Newtray(forms.Form):
     plant = forms.ModelChoiceField(widget=forms.Select(attrs={'class':'toset'}), empty_label='Select the Plant',label=(''),queryset=Plant.objects.all())
     medium = forms.ModelChoiceField(widget=forms.Select(attrs={'class':'toset'}), empty_label='Select the Medium',label=(''),queryset=Medium.objects.all(), initial= ['2'])
     seed = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset'}),label=(''), required=False)
-    medium_weight = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset',"value":"130", 'placeholder':'Medium Weight'}),label=(''))
+    medium_weight = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'Medium Weight'}),label=(''))
     start = forms.DateField(widget=forms.SelectDateWidget(attrs={'class':'toset'}),label=(''),initial=datetime.now())
     count = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'How many tray', 'value':'1'}),label=(''))
     location = forms.ChoiceField(widget=forms.Select(attrs={'class':'toset'}),label=('Location'),choices=(("H","H"),("D","D")))

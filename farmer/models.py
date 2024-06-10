@@ -16,7 +16,7 @@ class Plant(models.Model):
     pressure = models.IntegerField()
     blackout = models.IntegerField()
     harvest = models.IntegerField()
-    output = models.IntegerField()
+    medium_weight = models.IntegerField()
     packweight = models.IntegerField()
     
     def __str__(self):

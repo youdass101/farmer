@@ -163,7 +163,7 @@ def plants(request):
         if tp == "get":
             pp = json.loads(request.body)['data']
             data = Plant.objects.get(id=pp)
-            return JsonResponse({"result": data.seeds}, status=201)
+            return JsonResponse({"result": [data.seeds, data.medium_weight]}, status=201)
         # CREATE NEW PLANT NESTED CREATE METHOD 
         if tp == "create":
             # LOAD DATA FROM JS TO CREATE NEW PLANT 
@@ -174,8 +174,7 @@ def plants(request):
                 return JsonResponse({"result": "exist"}, status=500)
             except:
                 # CREATE NEW PLANT OBJECT INSTANCE 
-                print(data['packweight'])
-                Plant.objects.create(name=data['name'].lower(), seeds=data['seeds'], pressure=data['pressure'], blackout=data['blackout'], packweight=data['packweight'], harvest=data['harvest'], output=data['output'])
+                Plant.objects.create(name=data['name'].lower(), seeds=data['seeds'], pressure=data['pressure'], blackout=data['blackout'], packweight=data['packweight'], harvest=data['harvest'], medium_weight=data['medium_weight'])
                 # JAVA RESPONSE RETURN
                 return JsonResponse({"result": "done"}, status=201)
 
@@ -194,12 +193,14 @@ def plants(request):
                 except:
                     pass
             # UPDATE PLANT 
+            print("that is",pp['medium_weight'])
             edit.name = pp['name']
             edit.seeds = pp['seeds']
             edit.pressure = pp['pressure']
             edit.blackout = pp['blackout']
             edit.harvest = pp['harvest']
-            edit.output = pp['output']
+            edit.medium_weight = pp['medium_weight']
+            edit.packweight = pp['packweight']
             edit.save()
             # RETURN SUCCESS 
             return JsonResponse({"msg":"success", "error": False}, status=201)
@@ -267,7 +268,7 @@ def harvest(request):
             ttlmed = pack.medium_weight * int(form['tqtt']) 
             ttlseed = pack.seeds_weight * int(form['tqtt'])
             mpercent = int(form['hmw']) / ttlweight
-            ppercent = int(packweight / ttlweight)
+            ppercent = packweight / ttlweight
 
         
 
