@@ -44,3 +44,7 @@ class Edittray(forms.Form):
     seed = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset'}), required=False)
     medium_weight = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset',"value":"130", 'placeholder':'Medium Weight'}))
     start = forms.DateField(initial=datetime.today())
+
+class Reportfilter(forms.Form):
+    type = forms.ChoiceField(widget=forms.Select(attrs={'class':'toset'}),label=('select type'),choices=(("Packs","Packs"),("Mix","Mix")))
+    product = forms.ModelChoiceField(widget=forms.Select(attrs={'class':'toset'}), empty_label='product', queryset=Plant.objects.all())

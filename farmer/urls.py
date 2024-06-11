@@ -12,4 +12,5 @@ urlpatterns = [
     path("history", views.history, name="history"),
     path("filter", views.filter, name="filter"),
     path("analytics", views.analytics, name="analytics"),
+    path("report", views.report, name="report"),
 ]

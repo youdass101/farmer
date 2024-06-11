@@ -257,12 +257,8 @@ def harvest(request):
         if form['bulk']:
             x = json.loads(form['tidl'])
             pack = Tray.objects.get(id=x[0])
-            print("this is pack", pack)
             packweight = pack.name.packweight * int(form['hpw'])
-            print("this pack qtt", int(form['hpw']))
-            print("this is ttl pack weight", packweight)
             ttlweight = int(packweight) + int(form['hmw'])
-            print("this is ttl weight pack and mix", ttlweight)
             form['tidl'] = x 
             form['h'] = ttlweight / int(form['tqtt']) 
             ttlmed = pack.medium_weight * int(form['tqtt']) 
@@ -419,3 +415,14 @@ def analytics(request):
     return render(request, "farmer/analytics.html", {"data":data, "form": Newtray(), "todayu": todayu })
 
 
+@login_required
+def report(request):
+    plants = Plant.objects.values_list('name')
+    data = []
+    test = BulkHarvest.objects.all()[:10]
+    for i in test:
+        data.append ({"product": i.Product, "medium": i.MediumMix, 
+                       "trays_QTT": i.Trays, "date": i.Harvestdate, "packs_QTT": i.PacksQtt,
+                       "total_weight": i.PacksWeight, "medium_weight": i.MediumWeightpacks,
+                       "seeds_weight": i.SeedsWeightPacks})
+    return render(request, "farmer/report.html", {"data": data, "plants":plants, "fform": Reportfilter})

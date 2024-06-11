@@ -1,0 +1,56 @@
+{% extends "farmer/layout.html" %}
+{% block body %}
+{% block id_new %}{% endblock %}
+<h1>Reports</h1>
+
+<table class="report">
+    <tr>
+        <td>
+            <form action="/report" method="POST">
+                {% csrf_token %}
+                {{fform}}
+                <button type="submit">Report</button>
+            </form>
+        </td>
+    </tr>
+</table>
+
+{% if data %}
+    <div class="analytics" id="analytic_container">
+        {% for i in data %}
+        <div>
+            <table>
+                <tr><th> Product </th>
+                    <td class="product">{{i.product}}</td>
+                </tr>
+                <tr><th> Medium </th>
+                    <td class="medium">{{i.medium}}</td>
+                </tr>
+                <tr><th> Trays </th>
+                    <td class="trays_qtt">{{i.trays_QTT}}</td>
+                </tr>
+                <tr><th> Harvest </th>
+                    <td class="date">{{i.date}}</td>
+                </tr>
+                <tr><th> Packs </th>
+                    <td class="packs_QTT">{{i.packs_QTT}}</td>
+                </tr>
+                <tr><th> Total Yield </th>
+                    <td class="total_weight">{{i.total_weight}} gr</td>
+                </tr>
+                <tr><th> Medium </th>
+                    <td class="medium_weight">{{i.medium_weight}} cl</td>
+                </tr>
+                <tr><th> Seeds </th>
+                    <td class="seeds_weighth">{{i.seeds_weight}} gr</td>
+                </tr>
+            </table>
+            
+        </div>
+
+        {% endfor %}
+{% else %}
+    <h1>Nothing here </h1>
+{% endif %}
+
+{% endblock %}
