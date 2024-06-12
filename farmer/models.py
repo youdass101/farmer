@@ -100,6 +100,31 @@ class BulkHarvest(models.Model):
     MediumWeightMix = models.IntegerField()
     SeedsWeightPacks = models.IntegerField()
     SeedsWeightMix = models.IntegerField()
+
+    def serialize(self):
+        # Total yield weight
+        totalweight = self.PacksWeight + self.MixWeight
+        totalmedium = self.MediumWeightpacks + self.MediumWeightMix
+        totalseeds = self.SeedsWeightPacks + self.SeedsWeightMix
+
+        return {
+            # DATA TO RETURN FOR SERIALZATION 
+            "product": self.Product,
+            "medium": self.MediumMix,
+            "trays_QTT": self.Trays,
+            "date": self.Harvestdate,
+            "packs_QTT": self.PacksQtt,
+            "packs_weight": self.PacksWeight,
+            "mix_weight": self.MixWeight,
+            "total_weight": totalweight,
+            "packs_medium": self.MediumWeightpacks,
+            "mix_medium": self.MediumWeightMix,
+            "total_medium" : totalmedium,
+            "packs_seeds": self.SeedsWeightPacks,
+            "mix_seeds" : self.SeedsWeightMix,
+            "total_seeds" : totalseeds,
+        }
+
     
 
     

@@ -46,5 +46,8 @@ class Edittray(forms.Form):
     start = forms.DateField(initial=datetime.today())
 
 class Reportfilter(forms.Form):
-    type = forms.ChoiceField(widget=forms.Select(attrs={'class':'toset'}),label=('select type'),choices=(("Packs","Packs"),("Mix","Mix")))
-    product = forms.ModelChoiceField(widget=forms.Select(attrs={'class':'toset'}), empty_label='product', queryset=Plant.objects.all())
+    type = forms.ChoiceField(widget=forms.Select(attrs={'class':'toset'}),label=('select type'),choices=(("All","All"),("Packs","Packs"),("Mix","Mix")))
+    product = forms.ModelChoiceField(widget=forms.Select(attrs={'class':'toset'}), empty_label='All',required=False, queryset=Plant.objects.all())
+    start = forms.DateField(widget=forms.SelectDateWidget(attrs={'class': 'toset'}),label=('Starting'),initial=datetime.now())
+    end = forms.DateField(widget=forms.SelectDateWidget(attrs={'class': 'toset'}),label=('Ending'),initial=datetime.now())
+

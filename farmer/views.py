@@ -193,7 +193,6 @@ def plants(request):
                 except:
                     pass
             # UPDATE PLANT 
-            print("that is",pp['medium_weight'])
             edit.name = pp['name']
             edit.seeds = pp['seeds']
             edit.pressure = pp['pressure']
@@ -417,12 +416,68 @@ def analytics(request):
 
 @login_required
 def report(request):
-    plants = Plant.objects.values_list('name')
-    data = []
-    test = BulkHarvest.objects.all()[:10]
-    for i in test:
-        data.append ({"product": i.Product, "medium": i.MediumMix, 
-                       "trays_QTT": i.Trays, "date": i.Harvestdate, "packs_QTT": i.PacksQtt,
-                       "total_weight": i.PacksWeight, "medium_weight": i.MediumWeightpacks,
-                       "seeds_weight": i.SeedsWeightPacks})
-    return render(request, "farmer/report.html", {"data": data, "plants":plants, "fform": Reportfilter})
+    if request.method == "GET":
+        allbulk  = BulkHarvest.objects.all()[:10]
+        data = [row.serialize() for row in  allbulk]
+        filter = None  
+        medium = 0
+        totalyield = 0 
+        reportfilter = None
+
+    else:
+        form = Reportfilter(request.POST)
+        if form.is_valid():
+            
+            type = form.cleaned_data['type']
+            productname = form.cleaned_data['product']
+            start = form.cleaned_data['start']
+            end = form.cleaned_data['end']
+            medium = 0
+            totalyield = 0
+            reportfilter = Reportfilter()
+            reportfilter.initial['type'] = type
+            reportfilter.initial['product'] = productname
+            reportfilter.initial['start'] = start
+            reportfilter.initial['end'] = end
+            filter = {'type': type, 'product': productname, 'start':start, 'end':end}
+            if type=="All":
+                
+                filter = {'type': type, 'product': productname, 'start':start, 'end':end}
+                if not productname:
+                    allbulk = BulkHarvest.objects.filter(Harvestdate__range=[start, end])
+                else:
+                    allbulk = BulkHarvest.objects.filter(Product= productname, Harvestdate__range=[start, end])
+
+                data = [row.serialize() for row in  allbulk]
+                
+
+            if type=="Packs":
+                if not productname:
+                    allbulk = BulkHarvest.objects.filter(Harvestdate__range=[start, end])
+                    
+                 
+                else:
+                    allbulk = BulkHarvest.objects.filter(Product= productname, Harvestdate__range=[start, end])
+            
+                data = [row.serialize() for row in  allbulk]
+
+            if type=="Mix":
+                if not productname:
+                    allbulk = BulkHarvest.objects.filter(Harvestdate__range=[start, end])
+                    for i in allbulk:
+                        medium = medium + i.MediumWeightMix
+                        totalyield = totalyield + i.MixWeight
+                    
+                 
+                else:
+                    allbulk = BulkHarvest.objects.filter(Product= productname, Harvestdate__range=[start, end])
+                    for i in allbulk:
+                        medium = medium + i.MediumWeightMix
+                        totalyield = i.MixWeight
+                    
+            
+                data = [row.serialize() for row in  allbulk]
+
+
+             
+    return render(request, "farmer/report.html", {"data": data, "fform": Reportfilter, "filter": filter, "medium": medium, "totalyield":totalyield, "rff": reportfilter})

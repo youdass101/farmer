@@ -228,7 +228,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     // GET ACTION RESPONSE, REMOVE TRAY ELEMENT AND CLOSE FORM 
                     .then(response => response.json())
                     .then(result => {
-                        harvestbulk.style.display = "none";
+                        window.location.reload();
                     })
                 }
             }

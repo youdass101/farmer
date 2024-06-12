@@ -150,3 +150,27 @@ body {
     table-layout: fixed;
     border-collapse: collapse;
 }
+
+
+#report_container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#report_container > div {
+  background-color: white;
+  font-size: 18px;
+  margin: 10px;
+  width: 250px;
+}
+
+.report_table tr:nth-child(even) {
+  background-color: #D6EEEE;
+  
+}
+
+.report_table {
+  border: 1px solid black;
+  width: 100%;
+
+}
