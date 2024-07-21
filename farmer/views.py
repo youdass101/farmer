@@ -8,6 +8,8 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.postgres.aggregates import ArrayAgg
 
+from .dfunctions.edititems import *
+
 
 from .models import *
 from .forms import *
@@ -22,26 +24,16 @@ def index(request):
         # GET DATA FROM JS 
         if request.method == "PUT":
             form = json.loads(request.body)
-            # DELETE TRAY IF JS DATA DELETE IS TRUE 
-            if form['delete']:
-                tray = Tray.objects.get(id=form['id'])
-                tray.delete()
-                # RETURN STATUS AND MSG 
+            # DELETE TRAY IF JS DATA DELETE IS TRUE or Edit
+            if (Tray_edit(form)):
                 return JsonResponse({"result": True, "msg": "Success"}, status=201)
-            # EDIT TRAY FROM JS DATA IF DELET IS FLASE 
-            medium = Medium.objects.get(name=form["medium"])
-            tray = Tray.objects.get(id=form['id'])
-            tray.medium = medium
-            tray.medium_weight = form['medium_weight']
-            tray.seeds_weight = form['seed']
-            tray.start = datetime.strptime(form['start'], '%b. %d, %Y')
-            return JsonResponse({"result": True, "msg": "Success"}, status=201)
         
         # CREATE NEW TRAY FROM HTML REQUEST
         if request.method == "POST":
             # GET NEW DATA FROM HTML FORM 
             form = Newtray(request.POST)
-            # CHECK VALIDITY AND CLEAN FORM DATA 
+            # CHECK VALIDITY AND CLEAN FORM DATA
+            Clean_data(form)
             if form.is_valid():
                 name = form.cleaned_data['plant']
                 medium = form.cleaned_data['medium']
@@ -155,58 +147,74 @@ def register_view(request):
 # PLANTS 
 @login_required
 def plants(request):
-    # CREATE PLANT
     if request.method == "POST":
-        # LOAD JS TYPE NEST METHOD 
-        tp = json.loads(request.body)['type']
-        # NESTED GET SEEDS WEIGHT FOR AUTO ASSIGN IN FORM
-        if tp == "get":
-            pp = json.loads(request.body)['data']
-            data = Plant.objects.get(id=pp)
-            return JsonResponse({"result": [data.seeds, data.medium_weight]}, status=201)
-        # CREATE NEW PLANT NESTED CREATE METHOD 
-        if tp == "create":
-            # LOAD DATA FROM JS TO CREATE NEW PLANT 
-            data = json.loads(request.body)['data']
-            try:
-                # CHECK IF PLANT EXIST
-                plant = Plant.objects.get(name=data['name'])
-                return JsonResponse({"result": "exist"}, status=500)
-            except:
-                # CREATE NEW PLANT OBJECT INSTANCE 
-                Plant.objects.create(name=data['name'].lower(), seeds=data['seeds'], pressure=data['pressure'], blackout=data['blackout'], packweight=data['packweight'], harvest=data['harvest'], medium_weight=data['medium_weight'])
-                # JAVA RESPONSE RETURN
-                return JsonResponse({"result": "done"}, status=201)
-
-        # EDIT OR UPDATE PLANT OBJECT INSTACNE 
-        if tp == "put":
-            # LOAD EDITED DATA FROM JS 
-            pp = json.loads(request.body)['data']
-            # LOAD EXISTING OBJECT BY ID
-            edit = Plant.objects.get(id=pp['id'])
-            # IF PLANT NAME EDITED AND CHANGED 
-            if edit.name != pp['name']:
-                try:
-                    # CHECK IF NEW NAME ALREADY EXIST IF SO RETURN ERROR 
-                    Plant.objects.get(name=pp['name'])
-                    return JsonResponse({"msg":"Name already exist", "error": True}, status=206)
-                except:
-                    pass
-            # UPDATE PLANT 
-            edit.name = pp['name']
-            edit.seeds = pp['seeds']
-            edit.pressure = pp['pressure']
-            edit.blackout = pp['blackout']
-            edit.harvest = pp['harvest']
-            edit.medium_weight = pp['medium_weight']
-            edit.packweight = pp['packweight']
-            edit.save()
-            # RETURN SUCCESS 
-            return JsonResponse({"msg":"success", "error": False}, status=201)
-
-    # GET PAGE WITH ALL PLANTS TO LOAD THE PLANT PAGE 
+        nplant = Dnewplant(request.POST)
+        if nplant.is_valid():
+            nplant.save()
+            return HttpResponseRedirect("plants")
+        else:
+            return HttpResponseRedirect("index")
+    
     plantslist = Plant.objects.all()
-    return render(request, "farmer/plants.html", {"form": Newplant(), "plants": plantslist})
+
+
+    return render(request, "farmer/plants.html", {"form": Dnewplant(), "plants": plantslist})
+  
+
+
+
+    # CREATE PLANT
+    # if request.method == "POST":
+    #     # LOAD JS TYPE NEST METHOD 
+    #     tp = json.loads(request.body)['type']
+    #     # NESTED GET SEEDS WEIGHT FOR AUTO ASSIGN IN FORM
+    #     if tp == "get":
+    #         pp = json.loads(request.body)['data']
+    #         data = Plant.objects.get(id=pp)
+    #         return JsonResponse({"result": [data.seeds, data.medium_weight]}, status=201)
+    #     # CREATE NEW PLANT NESTED CREATE METHOD 
+    #     if tp == "create":
+    #         # LOAD DATA FROM JS TO CREATE NEW PLANT 
+    #         data = json.loads(request.body)['data']
+    #         try:
+    #             # CHECK IF PLANT EXIST
+    #             plant = Plant.objects.get(name=data['name'])
+    #             return JsonResponse({"result": "exist"}, status=500)
+    #         except:
+    #             # CREATE NEW PLANT OBJECT INSTANCE 
+    #             Plant.objects.create(name=data['name'].lower(), seeds=data['seeds'], pressure=data['pressure'], blackout=data['blackout'], packweight=data['packweight'], harvest=data['harvest'], medium_weight=data['medium_weight'])
+    #             # JAVA RESPONSE RETURN
+    #             return JsonResponse({"result": "done"}, status=201)
+
+    #     # EDIT OR UPDATE PLANT OBJECT INSTACNE 
+    #     if tp == "put":
+    #         # LOAD EDITED DATA FROM JS 
+    #         pp = json.loads(request.body)['data']
+    #         # LOAD EXISTING OBJECT BY ID
+    #         edit = Plant.objects.get(id=pp['id'])
+    #         # IF PLANT NAME EDITED AND CHANGED 
+    #         if edit.name != pp['name']:
+    #             try:
+    #                 # CHECK IF NEW NAME ALREADY EXIST IF SO RETURN ERROR 
+    #                 Plant.objects.get(name=pp['name'])
+    #                 return JsonResponse({"msg":"Name already exist", "error": True}, status=206)
+    #             except:
+    #                 pass
+    #         # UPDATE PLANT 
+    #         edit.name = pp['name']
+    #         edit.seeds = pp['seeds']
+    #         edit.pressure = pp['pressure']
+    #         edit.blackout = pp['blackout']
+    #         edit.harvest = pp['harvest']
+    #         edit.medium_weight = pp['medium_weight']
+    #         edit.packweight = pp['packweight']
+    #         edit.save()
+    #         # RETURN SUCCESS 
+    #         return JsonResponse({"msg":"success", "error": False}, status=201)
+
+    # # GET PAGE WITH ALL PLANTS TO LOAD THE PLANT PAGE 
+    # plantslist = Plant.objects.all()
+    # return render(request, "farmer/plants.html", {"form": Newplant(), "plants": plantslist})
     
 # MEDIUM 
 @login_required

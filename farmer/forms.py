@@ -12,6 +12,12 @@ class Newplant(forms.Form):
     blackout = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'days of blackout'}),label=(''))
     harvest = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'time to harvest'}),label=(''))
 
+class Dnewplant (forms.ModelForm):
+    class Meta:
+        model = Plant
+        fields = ["name", "seeds", "pressure", "blackout", "harvest", "medium_weight", "packweight"]
+
+
 class Login(forms.Form):
     username = forms.CharField(widget=forms.TextInput(attrs={'class':'inputs', 'placeholder':'Username'}),label=(''))
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'inputs', 'placeholder':'Password'}),label=(''))

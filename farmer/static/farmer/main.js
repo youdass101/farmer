@@ -236,57 +236,57 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   
 
-    // IF USER AT PLANT PAGE AND CREATE ID EXIST 
+    // // IF USER AT PLANT PAGE AND CREATE ID EXIST 
     if (document.querySelector('#createplant')){
-        // Create new plant
-        document.querySelector('#createplant').onclick = () => {
-            var data = 
-                {   // LOADING INPUT data in json to create new plant 
-                    name : document.querySelector('#id_name').value,
-                    seeds : document.querySelector('#id_seeds').value,
-                    pressure : document.querySelector('#id_pressure').value,
-                    blackout : document.querySelector('#id_blackout').value,
-                    packweight : document.querySelector('#id_packweight').value,
-                    harvest : document.querySelector('#id_harvest').value,
-                    medium_weight : document.querySelector('#id_medium_weight').value
-                }
-            // ADDING CSRF FOR FETSH
-            // REQEST CREATE NEW PLANT VIEW 
-            fetch('/plants',{
-                method: 'POST',
-                body: JSON.stringify({
-                    data,
-                    type : "create"
-                }),
-                headers: {
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-            })
-            // GET NEW DATA 
-            .then(response => response.json())
-            .then( result => {
-                console.log(result);
-                // CHECK IF PLANT ALREADY EXIST AND ALERT IF YES
-                if (result.result == "exist") {
-                    alert("Plant name already exist")
-                }
-                // RESET NEW PLANT FORM FROM DATA 
-                else {
-                    modal.style.display = "none";
-                    document.querySelectorAll('.toset').forEach (element => {
-                        element.value = ""
-                    });
-                    //ADDIN THE NEW PLANT TO THE TABLE ON PAGE 
-                    var table = document.getElementById("planttable");
-                    var row = table.insertRow(1);
-                    row.innerHTML = `<td class="name" style="text-transform:capitalize;">${data.name}</td><td class="seeds">${data.seeds}g</td><td class="medium_weight">${data.medium_weight}g</td>
-                        <td class="blackout">${data.blackout} days</td><td class="pressure">${data.pressure} days</td><td class="packweight">${data.packweight}g</td>
-                        <td class="harvest">${data.harvest} days</td><td><button class="editplant" value="${data.id}">Edit</button></td>`
-                }     
-            })
-            // STOP PAGE FROM RELOAD 
-            return false;
-        }
+    //     // Create new plant
+    //     document.querySelector('#createplant').onclick = () => {
+    //         var data = 
+    //             {   // LOADING INPUT data in json to create new plant 
+    //                 name : document.querySelector('#id_name').value,
+    //                 seeds : document.querySelector('#id_seeds').value,
+    //                 pressure : document.querySelector('#id_pressure').value,
+    //                 blackout : document.querySelector('#id_blackout').value,
+    //                 packweight : document.querySelector('#id_packweight').value,
+    //                 harvest : document.querySelector('#id_harvest').value,
+    //                 medium_weight : document.querySelector('#id_medium_weight').value
+    //             }
+    //         // ADDING CSRF FOR FETSH
+    //         // REQEST CREATE NEW PLANT VIEW 
+    //         fetch('/plants',{
+    //             method: 'POST',
+    //             body: JSON.stringify({
+    //                 data,
+    //                 type : "create"
+    //             }),
+    //             headers: {
+    //                 'X-CSRFToken': getCookie('csrftoken')
+    //             },
+    //         })
+    //         // GET NEW DATA 
+    //         .then(response => response.json())
+    //         .then( result => {
+    //             console.log(result);
+    //             // CHECK IF PLANT ALREADY EXIST AND ALERT IF YES
+    //             if (result.result == "exist") {
+    //                 alert("Plant name already exist")
+    //             }
+    //             // RESET NEW PLANT FORM FROM DATA 
+    //             else {
+    //                 modal.style.display = "none";
+    //                 document.querySelectorAll('.toset').forEach (element => {
+    //                     element.value = ""
+    //                 });
+    //                 //ADDIN THE NEW PLANT TO THE TABLE ON PAGE 
+    //                 var table = document.getElementById("planttable");
+    //                 var row = table.insertRow(1);
+    //                 row.innerHTML = `<td class="name" style="text-transform:capitalize;">${data.name}</td><td class="seeds">${data.seeds}g</td><td class="medium_weight">${data.medium_weight}g</td>
+    //                     <td class="blackout">${data.blackout} days</td><td class="pressure">${data.pressure} days</td><td class="packweight">${data.packweight}g</td>
+    //                     <td class="harvest">${data.harvest} days</td><td><button class="editplant" value="${data.id}">Edit</button></td>`
+    //             }     
+    //         })
+    //         // STOP PAGE FROM RELOAD 
+    //         return false;
+    //     }
     }
 
     if(document.querySelectorAll(".editplant")){

@@ -11,13 +11,17 @@ class User(AbstractUser):
         return f"Username: {self.username}"
 
 class Plant(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     seeds = models.IntegerField()
     pressure = models.IntegerField()
     blackout = models.IntegerField()
     harvest = models.IntegerField()
     medium_weight = models.IntegerField()
     packweight = models.IntegerField()
+
+    def clean(self):
+        self.name = self.name.capitalize()
+        return super().clean()
     
     def __str__(self):
         return f"{self.name} "
