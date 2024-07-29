@@ -237,7 +237,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
 
     // // IF USER AT PLANT PAGE AND CREATE ID EXIST 
-    if (document.querySelector('#createplant')){
+    // if (document.querySelector('#createplant')){
     //     // Create new plant
     //     document.querySelector('#createplant').onclick = () => {
     //         var data = 
@@ -287,7 +287,7 @@ document.addEventListener('DOMContentLoaded', function() {
     //         // STOP PAGE FROM RELOAD 
     //         return false;
     //     }
-    }
+    // }
 
     if(document.querySelectorAll(".editplant")){
         // EDIT PLANT

@@ -32,34 +32,7 @@ def index(request):
         if request.method == "POST":
             # GET NEW DATA FROM HTML FORM 
             form = Newtray(request.POST)
-            # CHECK VALIDITY AND CLEAN FORM DATA
-            Clean_data(form)
-            if form.is_valid():
-                name = form.cleaned_data['plant']
-                medium = form.cleaned_data['medium']
-                seed = form.cleaned_data['seed']
-                medium_weight = form.cleaned_data['medium_weight']
-                start = form.cleaned_data['start']
-                count = form.cleaned_data['count']
-                location = form.cleaned_data['location']
-                # IF SEED WEGHT IS NOT INSERTED 
-                if not seed:
-                    #DEFAULT SEEDS WEIGHT 
-                    seed = name.seeds 
-                try: 
-                    # GET COUNT OF TRAY BASED ON PLANT NAME 
-                    qtt = Tray.objects.filter(name=name).count()                   
-                except:
-                    # IF THIS IS THE FRIST TRAY OF IT KIND 
-                    qtt = 0
-                # CREATE NEW TRAY NUMBER
-                for i in range(count):
-                    # TRAY NUMBER BY NAME
-                    c = qtt+i+1
-                    # ADD NUMBER TO NAME 
-                    fname = name.name + str(c)
-                    # CREATE THE TRAY IN THE MODEL 
-                    Tray.objects.create(name=name, fname=fname, number= c, medium=medium, seeds_weight=seed, medium_weight=medium_weight, start=start, location=location)
+            if(Clean_data(form)):
                 return HttpResponseRedirect(reverse("index"))
 
         # GET METHOD TO LOAD PAGE WITH UPDATED DATA 
@@ -147,13 +120,20 @@ def register_view(request):
 # PLANTS 
 @login_required
 def plants(request):
+    tp = json.loads(request.body)['type']
+    # NESTED GET SEEDS WEIGHT FOR AUTO ASSIGN IN FORM
+    if tp == "get":
+        pp = json.loads(request.body)['data']
+        data = Plant.objects.get(id=pp)
+        return JsonResponse({"result": [data.seeds, data.medium_weight]}, status=201)
+    # CREATE NEW PLANT NESTED CREATE METHOD 
     if request.method == "POST":
         nplant = Dnewplant(request.POST)
         if nplant.is_valid():
             nplant.save()
             return HttpResponseRedirect("plants")
         else:
-            return HttpResponseRedirect("index")
+            return HttpResponseRedirect("plants")
     
     plantslist = Plant.objects.all()
 
