@@ -120,22 +120,24 @@ def register_view(request):
 # PLANTS 
 @login_required
 def plants(request):
-    tp = json.loads(request.body)['type']
-    # NESTED GET SEEDS WEIGHT FOR AUTO ASSIGN IN FORM
-    if tp == "get":
-        pp = json.loads(request.body)['data']
-        data = Plant.objects.get(id=pp)
-        return JsonResponse({"result": [data.seeds, data.medium_weight]}, status=201)
-    # CREATE NEW PLANT NESTED CREATE METHOD 
-    if request.method == "POST":
-        nplant = Dnewplant(request.POST)
-        if nplant.is_valid():
-            nplant.save()
-            return HttpResponseRedirect("plants")
-        else:
-            return HttpResponseRedirect("plants")
-    
-    plantslist = Plant.objects.all()
+    try: 
+        tp = json.loads(request.body)['type']
+        # NESTED GET SEEDS WEIGHT FOR AUTO ASSIGN IN FORM
+        if tp == "fetch":
+            pp = json.loads(request.body)['data']
+            data = Plant.objects.get(id=pp)
+            return JsonResponse({"result": [data.seeds, data.medium_weight]}, status=201)
+    except:
+        # CREATE NEW PLANT NESTED CREATE METHOD 
+        if request.method == "POST":
+            nplant = Dnewplant(request.POST)
+            if nplant.is_valid():
+                nplant.save()
+                return HttpResponseRedirect("plants")
+            else:
+                return HttpResponseRedirect("plants")
+        
+        plantslist = Plant.objects.all()
 
 
     return render(request, "farmer/plants.html", {"form": Dnewplant(), "plants": plantslist})

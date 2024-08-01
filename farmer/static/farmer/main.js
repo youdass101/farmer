@@ -530,7 +530,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 method: 'POST',
                 body: JSON.stringify({
                     data: s,
-                    type: "get"  
+                    type: "fetch"  
                 }),
                 headers: {
                     'X-CSRFToken': getCookie('csrftoken')
