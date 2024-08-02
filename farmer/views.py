@@ -130,12 +130,22 @@ def plants(request):
     except:
         # CREATE NEW PLANT NESTED CREATE METHOD 
         if request.method == "POST":
-            nplant = Dnewplant(request.POST)
-            if nplant.is_valid():
-                nplant.save()
-                return HttpResponseRedirect("plants")
-            else:
-                return HttpResponseRedirect("plants")
+            try: 
+                idp = request.POST["plantid"]
+                plant = Plant.objects.get(id=idp)
+                form = Dnewplant(instance=plant)
+                plantslist = Plant.objects.all()
+
+                return render(request, "farmer/plants.html", {"editform": form, "form": Dnewplant(), "plants": plantslist})
+            except:
+
+                nplant = Dnewplant(request.POST)
+                if nplant.is_valid():
+                    nplant.save()
+                    return HttpResponseRedirect("plants")
+                else:
+                    return HttpResponseRedirect("plants")
+    
         
         plantslist = Plant.objects.all()
 

@@ -53,10 +53,40 @@
             <td class="harvest" value="{{i.harvest}}">{{i.harvest}} days</td>
            
             <td>
-                <button class="editplant" value="{{i.id}}" >Edit</button>
+                <form action="/plants" method="POST">
+                    <!-- CSRF TOKEN FOR FORM-->
+                    {% csrf_token %}
+                    <!-- GET FORM FROM PYTHON DATA SENT  -->
+                     <input name="type" value="put" hidden>
+                    <input value="{{i.id}}" name="plantid" hidden>
+                    <button class="editplant" type="submit" class="subbtn">Edit</button>
+                </form>
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+    {% if editform %}
+    <!-- POP UP FORM FOR DIFFERENT EDIT USE -->
+    <div id="myEditModal" class="modaledit">
+        <!-- NEW PLANT Modal content -->
+        <div class="modal-content">
+            <div>
+                <!-- FORM CLOSE BUTTON -->
+                <span class="close">&times;</span>
+                <!-- FORM TITLE VARIABLE -->
+                <h4>{% block edit %}{% endblock %}</h4>
+            </div>
+            <div>
+                <!-- FORM ACTION VARIABLE -->
+                <form {% block editaction %}{% endblock %} method="POST">
+                    <!-- CSRF TOKEN FOR FORM-->
+                    {% csrf_token %}
+                    <!-- GET FORM FROM PYTHON DATA SENT  -->
+                    {{editform}}
+                    <button id="{% block id_edit %}{% endblock %}" type="submit" class="subbtn">Save</button>
+                </form>
+            </div>
+        </div>
+    {%endif%}
 {% endblock %}
