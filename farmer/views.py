@@ -122,7 +122,7 @@ def register_view(request):
 def plants(request):
     try: 
         tp = json.loads(request.body)['type']
-        # NESTED GET SEEDS WEIGHT FOR AUTO ASSIGN IN FORM
+        # FETCH DATA FOR NEW TRAY PLANT DATA
         if tp == "fetch":
             pp = json.loads(request.body)['data']
             data = Plant.objects.get(id=pp)
@@ -130,21 +130,32 @@ def plants(request):
     except:
         # CREATE NEW PLANT NESTED CREATE METHOD 
         if request.method == "POST":
-            try: 
+            dpost = request.POST
+            if dpost['type']  == "loadedit": 
+                # EDIT BUTTON PRESSED TO EDIT PLANT
                 idp = request.POST["plantid"]
                 plant = Plant.objects.get(id=idp)
                 form = Dnewplant(instance=plant)
                 plantslist = Plant.objects.all()
 
                 return render(request, "farmer/plants.html", {"editform": form, "form": Dnewplant(), "plants": plantslist})
-            except:
 
-                nplant = Dnewplant(request.POST)
-                if nplant.is_valid():
-                    nplant.save()
-                    return HttpResponseRedirect("plants")
-                else:
-                    return HttpResponseRedirect("plants")
+                # Create New plant
+
+            if dpost['type'] == "delete":
+                plant = Plant.objects.get(name=request.POST['plant'])
+                plant.delete()
+            
+            nplant = Dnewplant(request.POST)
+            if dpost['type'] == "edit":
+                plant = Plant.objects.get(name=nplant.data['name'])
+                nplant = Dnewplant(request.POST, instance=plant)
+
+
+            if nplant.is_valid():
+                
+                nplant.save()              
+            return HttpResponseRedirect("plants")
     
         
         plantslist = Plant.objects.all()

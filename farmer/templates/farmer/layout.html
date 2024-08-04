@@ -48,6 +48,7 @@
                         {% csrf_token %}
                         <!-- GET FORM FROM PYTHON DATA SENT  -->
                         {{form}}
+                        <input name="type" value="new" hidden>
                         <button id="{% block id_new %}{% endblock %}" type="submit" class="subbtn">Create</button>
                     </form>
                 </div>

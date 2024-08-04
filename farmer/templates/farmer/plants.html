@@ -57,7 +57,7 @@
                     <!-- CSRF TOKEN FOR FORM-->
                     {% csrf_token %}
                     <!-- GET FORM FROM PYTHON DATA SENT  -->
-                     <input name="type" value="put" hidden>
+                     <input name="type" value="loadedit" hidden>
                     <input value="{{i.id}}" name="plantid" hidden>
                     <button class="editplant" type="submit" class="subbtn">Edit</button>
                 </form>
@@ -79,12 +79,19 @@
             </div>
             <div>
                 <!-- FORM ACTION VARIABLE -->
-                <form {% block editaction %}{% endblock %} method="POST">
+                <form method="POST">
                     <!-- CSRF TOKEN FOR FORM-->
                     {% csrf_token %}
                     <!-- GET FORM FROM PYTHON DATA SENT  -->
                     {{editform}}
-                    <button id="{% block id_edit %}{% endblock %}" type="submit" class="subbtn">Save</button>
+                    <input name="type", value="edit" hidden>
+                    <button  type="submit" class="subbtn">Save</button>
+                </form>
+                <form method="POST">
+                    {% csrf_token %}
+                    <input name="type", value="delete" hidden>
+                    <input name="plant" value="{{editform.name.value}}" hidden>
+                    <button type="submit">Delete</button>
                 </form>
             </div>
         </div>

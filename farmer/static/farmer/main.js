@@ -9,8 +9,14 @@ document.addEventListener('DOMContentLoaded', function() {
     var btn = document.getElementById("myBtn");
 
     // Get the <span> element that closes the modal
+    if (document.getElementsByClassName("close")[1]) {
+        var espan = document.getElementsByClassName("close")[1];
+    }
+    
     var span = document.getElementsByClassName("close")[0];
-    var editspan = document.getElementsByClassName("close")[1];
+
+    
+    // var editspan = document.getElementsByClassName("close")[1];
 
     // When the user clicks on the button, open the modal
     btn.onclick = function() {
@@ -22,9 +28,8 @@ document.addEventListener('DOMContentLoaded', function() {
         modal.style.display = "none";
     }
 
-    editspan.onclick = function() {
+    espan.onclick = function() {
         modaledit.style.display = "none";
-
     }
 
     // When the user clicks anywhere outside of the modal, close it
@@ -34,11 +39,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    window.onclick = function(event) {
-        if (event.target == modaledit) {
-            modaledit.style.display = "none";
-        }
-    }
+    // window.onclick = function(event) {
+    //     if (event.target == modaledit) {
+    //         modaledit.style.display = "none";
+    //     }
+    // }
 
     // EDIT HARVEST and DELETE TRAY 
     if(document.querySelectorAll('.edit_tray')){
