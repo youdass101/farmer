@@ -32,7 +32,7 @@ def index(request):
         if request.method == "POST":
             # GET NEW DATA FROM HTML FORM 
             form = Newtray(request.POST)
-            if(Clean_data(form)):
+            if(createnewtrays(form)):
                 return HttpResponseRedirect(reverse("index"))
 
         # GET METHOD TO LOAD PAGE WITH UPDATED DATA 
