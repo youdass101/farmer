@@ -19,7 +19,6 @@ document.addEventListener('DOMContentLoaded', function() {
     var span = document.getElementsByClassName("close")[0];
 
     
-    // var editspan = document.getElementsByClassName("close")[1];
 
     // When the user clicks on the button, open the modal
     btn.onclick = function() {
@@ -31,9 +30,6 @@ document.addEventListener('DOMContentLoaded', function() {
         modal.style.display = "none";
     }
 
-    // espan.onclick = function() {
-    //     modaledit.style.display = "none";
-    // }
 
     // When the user clicks anywhere outside of the modal, close it
     window.onclick = function(event) {
@@ -42,11 +38,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // window.onclick = function(event) {
-    //     if (event.target == modaledit) {
-    //         modaledit.style.display = "none";
-    //     }
-    // }
 
     // EDIT HARVEST and DELETE TRAY 
     if(document.querySelectorAll('.edit_tray')){
@@ -325,154 +316,60 @@ document.addEventListener('DOMContentLoaded', function() {
                         'X-CSRFToken': getCookie('csrftoken')
                     }
                 })
-                // // REQUESTING REPLY INFO AND DATA FROM VIEW 
-                // .then (response => response.json())
-                // .then (result => {
-                //     console.log(editform)
-                //     // REFORM TABLE TO NORMAL VIEW
-                //     if (editform.error){
-                //         alert(result.msg)
-                //     }
-                //     else {
-                //         alert("we are here")
-                //         var editmodel = document.getElementById("myEditModal")
-                //         editmodel.style.display = "block"
-                //     }
-                // })
             }
         })
     }
 
 
 
-                
-                // if (!document.querySelector(".save")) {
-                //     // COLLECT PLANT TO EDIT CURRENT DATA
-                //     parent = (button.parentElement).parentElement;
-                //     i = button.value
-                //     n = parent.querySelector(".name").innerHTML;
-                //     s = parent.querySelector(".seeds").getAttribute('value');
-                //     o = parent.querySelector(".medium_weight").getAttribute('value');
-                //     b = parent.querySelector(".blackout").getAttribute('value');
-                //     p = parent.querySelector(".pressure").getAttribute('value');
-                //     pw = parent.querySelector(".packweight").getAttribute('value');
-                //     h = parent.querySelector(".harvest").getAttribute('value');
-                    
-                //     // REPLACE DATA TABLE WITH INPUT TABLE TO EDIT CURRENT DATA 
-                //     parent.innerHTML=`<td style="text-transform:capitalize;">
-                //     <input class="namee" value="${n}"></td>
-                //     <td ><input class="seedse" value="${s}"></td>
-                //     <td ><input class="medium_weighte" value="${o}"></td>
-                //     <td ><input class="blackoute" value="${b}"></td>
-                //     <td ><input class="pressuree" value="${p}"></td>
-                //     <td ><input class="packweighte" value="${pw}"></td>
-                //     <td ><input class="harveste" value="${h}"></td>
-              
-                //     <td>
-                //         <button value="${i}" class="save">Save</button>
-                //     </td>`
-                //     // WHEN SAVE BUTTON IS CLICKED 
-                //     document.querySelector(".save").onclick = () => {
-                //         // COLLECTING NEW DATA 
-                //         var data = {
-                //             name : document.querySelector(".namee").value,
-                //             seeds : document.querySelector(".seedse").value,
-                //             blackout : document.querySelector(".blackoute").value,
-                //             pressure : document.querySelector(".pressuree").value,
-                //             harvest : document.querySelector(".harveste").value,
-                //             packweight : document.querySelector(".packweighte").value,  
-                //             medium_weight : document.querySelector(".medium_weighte").value,
-                //             id : document.querySelector(".save").value
-                //         }  
-                //         // REQUESTING EDIT FROM VIEW 
-                //         fetch('/plants', {
-                //             method: 'POST',
-                //             body: JSON.stringify({
-                //                 data,
-                //                 type: "put"  
-                //             }),
-                //             headers: {
-                //                 'X-CSRFToken': getCookie('csrftoken')
-                //             }
-                //         })
-                //         // REQUESTING REPLY INFO AND DATA FROM VIEW 
-                //         .then (response => response.json())
-                //         .then (result => {
-                //             console.log(result)
-                //             // REFORM TABLE TO NORMAL VIEW
-                //             if (result.error){
-                //                 alert(result.msg)
-                //             }
-                //             else {
-                //                 // REDITING ROW TO VIEW DATA 
-                //                 select = (document.querySelector(".save").parentElement).parentElement
-                //                 select.innerHTML = ` 
-                //                     <td class="name" style="text-transform:capitalize;">${data.name}</td>
-                //                     <td class="seeds">${data.seeds}g</td>
-                //                     <td class="medium_weight">${data.medium_weight}g</td>
-                //                     <td class="blackout">${data.blackout} days</td>
-                //                     <td class="pressure">${data.pressure} days</td>
-                //                     <td class="packweight">${data.packweight} g</td>
-                //                     <td class="harvest">${data.harvest} days</td>
-                                    
-                //                     <td>
-                //                         <button class="editplant" value="${data.id}" >Edit</button>
-                //                     </td>`
-                //             }
-                //         })
-                //     }
-                // }
-    //         }
-    //     })
-    // }
     // CREATE NEW MEDIUM
-    if (document.querySelector('#newmedium')){
-        document.querySelector('#newmedium').onclick = () => {
-            var data = 
-                {   // Setting data in json to create new plant 
-                    name : document.querySelector('#id_name').value,
-                    soil : document.querySelector('#id_soil').value,
-                    coco : document.querySelector('#id_coco').value
-                }
-            // REQEST CREATE NEW PLANT VIEW 
-            fetch('/medium',{
-                method: 'POST',
-                body: JSON.stringify({
-                    data,
-                    type : "create"
-                }),
-                headers: {
-                    'X-CSRFToken': getCookie('csrftoken')
-                }
-            })
-            // GET NEW DATA 
-            .then(response => response.json())
-            .then( result => {
-                console.log(result);
-                // CHECK IF PLANT ALREADY EXIST AND ALERT IF YES
-                if (result.result == "exist") {
-                    alert("Plant name already exist")
-                }
-                // RESET NEW PLANT FORM FROM DATA 
-                else {
-                    modal.style.display = "none";
-                    document.querySelectorAll('.toset').forEach (element => {
-                        element.value = ""
-                    });
-                    //ADDIN THE NEW PLANT TO THE TABLE ON PAGE 
-                    var table = document.getElementById("mediumtable");
-                    var row = table.insertRow(1);
-                    row.innerHTML = `<td style = "text-transform:capitalize;">${data.name}</td>
-                        <td>${data.soil}%</td>
-                        <td>${data.coco}%</td>
-                        <td>
-                                <button class="editmedium" value="${data.id}">Edit</button>
-                            </td>`
-                }
-            })
-            return false
-        }
-    }
+    // if (document.querySelector('#newmedium')){
+    //     document.querySelector('#newmedium').onclick = () => {
+    //         var data = 
+    //             {   // Setting data in json to create new plant 
+    //                 name : document.querySelector('#id_name').value,
+    //                 soil : document.querySelector('#id_soil').value,
+    //                 coco : document.querySelector('#id_coco').value
+    //             }
+    //         // REQEST CREATE NEW PLANT VIEW 
+    //         fetch('/medium',{
+    //             method: 'POST',
+    //             body: JSON.stringify({
+    //                 data,
+    //                 type : "create"
+    //             }),
+    //             headers: {
+    //                 'X-CSRFToken': getCookie('csrftoken')
+    //             }
+    //         })
+    //         // GET NEW DATA 
+    //         .then(response => response.json())
+    //         .then( result => {
+    //             console.log(result);
+    //             // CHECK IF PLANT ALREADY EXIST AND ALERT IF YES
+    //             if (result.result == "exist") {
+    //                 alert("Plant name already exist")
+    //             }
+    //             // RESET NEW PLANT FORM FROM DATA 
+    //             else {
+    //                 modal.style.display = "none";
+    //                 document.querySelectorAll('.toset').forEach (element => {
+    //                     element.value = ""
+    //                 });
+    //                 //ADDIN THE NEW PLANT TO THE TABLE ON PAGE 
+    //                 var table = document.getElementById("mediumtable");
+    //                 var row = table.insertRow(1);
+    //                 row.innerHTML = `<td style = "text-transform:capitalize;">${data.name}</td>
+    //                     <td>${data.soil}%</td>
+    //                     <td>${data.coco}%</td>
+    //                     <td>
+    //                             <button class="editmedium" value="${data.id}">Edit</button>
+    //                         </td>`
+    //             }
+    //         })
+    //         return false
+    //     }
+    // }
 
     if(document.querySelectorAll(".editmedium")){
         // EDIT MEDIUM

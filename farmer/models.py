@@ -27,9 +27,13 @@ class Plant(models.Model):
         return f"{self.name} "
 
 class Medium(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     soil = models.IntegerField()
     coco = models.IntegerField()
+
+    def clean(self):
+        self.name = self.name.capitalize()
+        return super().clean()
 
     def __str__(self):
         return f"{self.name}"

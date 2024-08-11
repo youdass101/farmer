@@ -63,3 +63,4 @@ def createnewtrays (form):
             Tray.objects.create(name=name, fname=fname, number= c, medium=medium, seeds_weight=seed, medium_weight=medium_weight, start=start, location=location)
         
         return True
+

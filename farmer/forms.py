@@ -2,16 +2,6 @@ from django import forms
 from .models import *
 from datetime import datetime
 
-
-class Newplant(forms.Form):
-    name = forms.CharField(widget=forms.TextInput(attrs={'class':'toset', 'placeholder':'Plant Name'}),label=(''))
-    seeds = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'seeds weight'}),label=(''))
-    medium_weight = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'Medium Weight'}),label=(''))
-    packweight = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'Pack weight'}),label=(''))
-    pressure = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'days of Presssure'}),label=(''))
-    blackout = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'days of blackout'}),label=(''))
-    harvest = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'time to harvest'}),label=(''))
-
 class Dnewplant (forms.ModelForm):
     class Meta:
         model = Plant
@@ -33,6 +23,11 @@ class Newmedium(forms.Form):
     name =  forms.CharField(widget=forms.TextInput(attrs={'class':'toset', 'placeholder':'Medium name'}),label=(''))
     soil = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'Soil percentage'}),label=(''))
     coco = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'coco percentage'}),label=(''))
+
+class Dnewmedium (forms.ModelForm):
+    class Meta:
+        model = Medium
+        fields = ["name", "soil", "coco"]
 
 
 class Newtray(forms.Form):

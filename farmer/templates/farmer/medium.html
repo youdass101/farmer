@@ -48,4 +48,35 @@
         {% endfor %}
     </tbody>
 </table>
+
+{% if editform %}
+    <!-- POP UP FORM FOR DIFFERENT EDIT USE -->
+    <div id="myEditModal" class="modaledit">
+        <!-- NEW PLANT Modal content -->
+        <div class="modal-content">
+            <div>
+                <!-- FORM CLOSE BUTTON -->
+                <span class="close">&times;</span>
+                <!-- FORM TITLE VARIABLE -->
+                <h4>{% block edit %}{% endblock %}</h4>
+            </div>
+            <div>
+                <!-- FORM ACTION VARIABLE -->
+                <form method="POST">
+                    <!-- CSRF TOKEN FOR FORM-->
+                    {% csrf_token %}
+                    <!-- GET FORM FROM PYTHON DATA SENT  -->
+                    {{editform}}
+                    <input name="type", value="edit" hidden>
+                    <button  type="submit" class="subbtn">Save</button>
+                </form>
+                <form method="POST">
+                    {% csrf_token %}
+                    <input name="type", value="delete" hidden>
+                    <input name="plant" value="{{editform.name.value}}" hidden>
+                    <button type="submit">Delete</button>
+                </form>
+            </div>
+        </div>
+    {%endif%}
 {% endblock %}

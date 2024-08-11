@@ -121,14 +121,17 @@ def register_view(request):
 @login_required
 def plants(request):
     try: 
+        # LOAD JS DATA 
         tp = json.loads(request.body)['type']
-        # FETCH DATA FOR NEW TRAY PLANT DATA
+
+        # JS DATA FOR NEW TRAY CREATION 
         if tp == "fetch":
             pp = json.loads(request.body)['data']
             data = Plant.objects.get(id=pp)
+             
             return JsonResponse({"result": [data.seeds, data.medium_weight]}, status=201)
     except:
-        # CREATE NEW PLANT NESTED CREATE METHOD 
+        # LOAD PLANT DATA TO EDIT FORM  
         if request.method == "POST":
             dpost = request.POST
             if dpost['type']  == "loadedit": 
@@ -140,101 +143,50 @@ def plants(request):
 
                 return render(request, "farmer/plants.html", {"editform": form, "form": Dnewplant(), "plants": plantslist})
 
-                # Create New plant
-
+            # DELETE PLANT
             if dpost['type'] == "delete":
                 plant = Plant.objects.get(name=request.POST['plant'])
                 plant.delete()
-            
-            nplant = Dnewplant(request.POST)
+
+            # EDIT PLANT
             if dpost['type'] == "edit":
                 plant = Plant.objects.get(name=nplant.data['name'])
                 nplant = Dnewplant(request.POST, instance=plant)
 
+            # CREATE NEW PLANT
+            nplant = Dnewplant(request.POST)
 
+            #  CHECK FORM DATA VALIDITY OF EDIT OR CREATE
             if nplant.is_valid():
-                
                 nplant.save()              
             return HttpResponseRedirect("plants")
     
-        
         plantslist = Plant.objects.all()
-
 
     return render(request, "farmer/plants.html", {"form": Dnewplant(), "plants": plantslist})
   
 
 
-
-    # CREATE PLANT
-    # if request.method == "POST":
-    #     # LOAD JS TYPE NEST METHOD 
-    #     tp = json.loads(request.body)['type']
-    #     # NESTED GET SEEDS WEIGHT FOR AUTO ASSIGN IN FORM
-    #     if tp == "get":
-    #         pp = json.loads(request.body)['data']
-    #         data = Plant.objects.get(id=pp)
-    #         return JsonResponse({"result": [data.seeds, data.medium_weight]}, status=201)
-    #     # CREATE NEW PLANT NESTED CREATE METHOD 
-    #     if tp == "create":
-    #         # LOAD DATA FROM JS TO CREATE NEW PLANT 
-    #         data = json.loads(request.body)['data']
-    #         try:
-    #             # CHECK IF PLANT EXIST
-    #             plant = Plant.objects.get(name=data['name'])
-    #             return JsonResponse({"result": "exist"}, status=500)
-    #         except:
-    #             # CREATE NEW PLANT OBJECT INSTANCE 
-    #             Plant.objects.create(name=data['name'].lower(), seeds=data['seeds'], pressure=data['pressure'], blackout=data['blackout'], packweight=data['packweight'], harvest=data['harvest'], medium_weight=data['medium_weight'])
-    #             # JAVA RESPONSE RETURN
-    #             return JsonResponse({"result": "done"}, status=201)
-
-    #     # EDIT OR UPDATE PLANT OBJECT INSTACNE 
-    #     if tp == "put":
-    #         # LOAD EDITED DATA FROM JS 
-    #         pp = json.loads(request.body)['data']
-    #         # LOAD EXISTING OBJECT BY ID
-    #         edit = Plant.objects.get(id=pp['id'])
-    #         # IF PLANT NAME EDITED AND CHANGED 
-    #         if edit.name != pp['name']:
-    #             try:
-    #                 # CHECK IF NEW NAME ALREADY EXIST IF SO RETURN ERROR 
-    #                 Plant.objects.get(name=pp['name'])
-    #                 return JsonResponse({"msg":"Name already exist", "error": True}, status=206)
-    #             except:
-    #                 pass
-    #         # UPDATE PLANT 
-    #         edit.name = pp['name']
-    #         edit.seeds = pp['seeds']
-    #         edit.pressure = pp['pressure']
-    #         edit.blackout = pp['blackout']
-    #         edit.harvest = pp['harvest']
-    #         edit.medium_weight = pp['medium_weight']
-    #         edit.packweight = pp['packweight']
-    #         edit.save()
-    #         # RETURN SUCCESS 
-    #         return JsonResponse({"msg":"success", "error": False}, status=201)
-
-    # # GET PAGE WITH ALL PLANTS TO LOAD THE PLANT PAGE 
-    # plantslist = Plant.objects.all()
-    # return render(request, "farmer/plants.html", {"form": Newplant(), "plants": plantslist})
-    
 # MEDIUM 
 @login_required
 def medium(request):
     if request.method == "POST":
         # LOAD DATA FROM JS
-        tp = json.loads(request.body)
-        # IF NESTED METHOD IS CREATE 
-        if tp['type'] == "create":
-            try:
-                # CHECK IF MEDIUM NAME EXIST RETURN ERROR
-                Medium.objects.get(name=tp['data']['name'])
-                return JsonResponse({"result": "exist"}, status=500)
-            except:
-                # IF MEDIUM NAME DOESN'T EXIST CREATE NEW MEDIUM 
-                Medium.objects.create(name=tp['data']['name'].lower(), soil=tp['data']['soil'], coco=tp['data']['coco'])
-                return JsonResponse({"result": "done"}, status=201)
+        nmedium = Dnewmedium(request.POST)
+        if nmedium.is_valid():
+            nmedium.save()
+        return HttpResponseRedirect("medium")
+        # tp = json.loads(request.body)
+        # # IF NESTED METHOD IS CREATE 
+        # if tp['type'] == "create":
+        #     try:
+        #         # CHECK IF MEDIUM NAME EXIST RETURN ERROR
+        #         Medium.objects.get(name=tp['data']['name'])
+        #         return JsonResponse({"result": "exist"}, status=500)
+        #     except:
+        #         # IF MEDIUM NAME DOESN'T EXIST CREATE NEW MEDIUM 
+        #         Medium.objects.create(name=tp['data']['name'].lower(), soil=tp['data']['soil'], coco=tp['data']['coco'])
+        #         return JsonResponse({"result": "done"}, status=201)
         # IF NESTED JS METHOD IS PUT 
         if tp['type'] == "put":
             # LOAD THE REQUEST MEDUIM MODEL OBJECT TO EDIT
@@ -255,7 +207,7 @@ def medium(request):
             return JsonResponse({"msg":"success", "error": False}, status=201)       
     # LOAD MEDIUM PAGE 
     mediumlist = Medium.objects.all()
-    return render(request, "farmer/medium.html", {"form": Newmedium(), "data": mediumlist})
+    return render(request, "farmer/medium.html", {"form": Dnewmedium(), "data": mediumlist})
 
 @login_required
 def harvest(request):
@@ -360,7 +312,7 @@ def filter(request):
                     # FILTER MODEL BY FILTER LOAD 
                     data = Plant.objects.all().order_by(filter)
                 # RETURN FILTERED DATA 
-                return render(request, "farmer/plants.html", {"form": Newplant(), "plants": data})
+                return render(request, "farmer/plants.html", {"form": Dnewplant(), "plants": data})
             # IF FILTER IS HISTORY PAGE 
             elif page == "history":
                 # REQUEST SEARCH STRING FROM PAGE 
