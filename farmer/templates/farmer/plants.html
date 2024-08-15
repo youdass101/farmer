@@ -84,13 +84,14 @@
                     {% csrf_token %}
                     <!-- GET FORM FROM PYTHON DATA SENT  -->
                     {{editform}}
+                    <input name="oname" value="{{editform.name.value}}" hidden>
                     <input name="type", value="edit" hidden>
                     <button  type="submit" class="subbtn">Save</button>
                 </form>
                 <form method="POST">
                     {% csrf_token %}
                     <input name="type", value="delete" hidden>
-                    <input name="plant" value="{{editform.name.value}}" hidden>
+                    <input name="oname" value="{{editform.name.value}}" hidden>
                     <button type="submit">Delete</button>
                 </form>
             </div>

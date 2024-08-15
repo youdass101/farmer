@@ -145,16 +145,20 @@ def plants(request):
 
             # DELETE PLANT
             if dpost['type'] == "delete":
-                plant = Plant.objects.get(name=request.POST['plant'])
+                plant = Plant.objects.get(name=request.POST['oname'])
                 plant.delete()
+                return HttpResponseRedirect("plants")
+
 
             # EDIT PLANT
             if dpost['type'] == "edit":
-                plant = Plant.objects.get(name=nplant.data['name'])
+                plant = Plant.objects.get(name= dpost['oname'])
                 nplant = Dnewplant(request.POST, instance=plant)
+            
+            if dpost['type'] == "new":
+                # CREATE NEW PLANT
+                nplant = Dnewplant(request.POST)
 
-            # CREATE NEW PLANT
-            nplant = Dnewplant(request.POST)
 
             #  CHECK FORM DATA VALIDITY OF EDIT OR CREATE
             if nplant.is_valid():
@@ -171,41 +175,30 @@ def plants(request):
 @login_required
 def medium(request):
     if request.method == "POST":
-        # LOAD DATA FROM JS
-        nmedium = Dnewmedium(request.POST)
+        dpost = request.POST
+        if dpost['type'] == "loadedit":
+            idm = request.POST["mediumid"]
+            medium = Medium.objects.get(id=idm)
+            form = Dnewmedium(instance=medium)
+            mediumlist = Medium.objects.all()
+            return render(request, "farmer/medium.html", { "editform": form, "form": Dnewmedium(), "data": mediumlist})
+        
+        if dpost['type'] == "edit":
+            medium = Medium.objects.get(name=dpost['oname'])
+            nmedium = Dnewmedium(request.POST, instance=medium)
+
+        if dpost['type'] == "new":
+            nmedium = Dnewmedium(request.POST)
+
+        if dpost['type'] == "delete":
+            medium = Medium.objects.get(name=request.POST['oname'])
+            medium.delete()
+            return HttpResponseRedirect("medium")
+
         if nmedium.is_valid():
             nmedium.save()
         return HttpResponseRedirect("medium")
-        # tp = json.loads(request.body)
-        # # IF NESTED METHOD IS CREATE 
-        # if tp['type'] == "create":
-        #     try:
-        #         # CHECK IF MEDIUM NAME EXIST RETURN ERROR
-        #         Medium.objects.get(name=tp['data']['name'])
-        #         return JsonResponse({"result": "exist"}, status=500)
-        #     except:
-        #         # IF MEDIUM NAME DOESN'T EXIST CREATE NEW MEDIUM 
-        #         Medium.objects.create(name=tp['data']['name'].lower(), soil=tp['data']['soil'], coco=tp['data']['coco'])
-        #         return JsonResponse({"result": "done"}, status=201)
-        # IF NESTED JS METHOD IS PUT 
-        if tp['type'] == "put":
-            # LOAD THE REQUEST MEDUIM MODEL OBJECT TO EDIT
-            edit = Medium.objects.get(id=tp['data']['id'])
-            # IF EDIT MEDIUM NAME CHANGED
-            if edit.name != tp['data']['name']:
-                try:
-                    # CHECK IF NAME ALREADY EXIST IF YES RETURN ERROR
-                    Medium.objects.get(name=tp['data']['name'])
-                    return JsonResponse({"msg":"Name already exist", "error": True}, status=206)
-                except:
-                    pass
-            # EDIT MEDIUM OBJECT DATA 
-            edit.name = tp['data']['name']
-            edit.soil = tp['data']['soil'] 
-            edit.coco = tp['data']['coco']
-            edit.save()
-            return JsonResponse({"msg":"success", "error": False}, status=201)       
-    # LOAD MEDIUM PAGE 
+
     mediumlist = Medium.objects.all()
     return render(request, "farmer/medium.html", {"form": Dnewmedium(), "data": mediumlist})
 

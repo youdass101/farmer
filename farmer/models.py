@@ -39,9 +39,9 @@ class Medium(models.Model):
         return f"{self.name}"
 
 class Tray(models.Model):
-    name = models.ForeignKey(Plant, on_delete=models.CASCADE)
+    name = models.ForeignKey(Plant, on_delete=models.PROTECT)
     number = models.IntegerField()
-    medium = models.ForeignKey(Medium, on_delete=models.CASCADE)
+    medium = models.ForeignKey(Medium, on_delete=models.PROTECT)
     start = models.DateTimeField()
     medium_weight = models.IntegerField()
     seeds_weight = models.IntegerField()

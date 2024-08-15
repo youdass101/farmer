@@ -42,7 +42,12 @@
             <td class="soil" value="{{i.soil}}">{{i.soil}}%</td>
             <td class="coco" value="{{i.coco}}">{{i.coco}}%</td>
             <td>
-                <button class="editmedium" value="{{i.id}}">Edit</button>
+                <form action="/medium" method="POST">
+                    {% csrf_token %}
+                    <input name="type" value="loadedit" hidden>
+                    <input name="mediumid" value="{{i.id}}" hidden>
+                    <button class="editmedium" type="submit">Edit</button>
+                </form>
             </td>
         </tr>
         {% endfor %}
@@ -68,12 +73,14 @@
                     <!-- GET FORM FROM PYTHON DATA SENT  -->
                     {{editform}}
                     <input name="type", value="edit" hidden>
+                    <input name="oname" value="{{editform.name.value}}" hidden>
+
                     <button  type="submit" class="subbtn">Save</button>
                 </form>
                 <form method="POST">
                     {% csrf_token %}
                     <input name="type", value="delete" hidden>
-                    <input name="plant" value="{{editform.name.value}}" hidden>
+                    <input name="oname" value="{{editform.name.value}}" hidden>
                     <button type="submit">Delete</button>
                 </form>
             </div>
