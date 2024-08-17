@@ -136,7 +136,7 @@ def plants(request):
             dpost = request.POST
             if dpost['type']  == "loadedit": 
                 # EDIT BUTTON PRESSED TO EDIT PLANT
-                idp = request.POST["plantid"]
+                idp = request.POST["itemid"]
                 plant = Plant.objects.get(id=idp)
                 form = Dnewplant(instance=plant)
                 plantslist = Plant.objects.all()
@@ -171,36 +171,28 @@ def plants(request):
   
 
 
-# MEDIUM 
+# MEDIUM PAGE 
 @login_required
 def medium(request):
+    # LOADING DATA AND PAGE
+    if request.method == "GET":
+        mediumlist = Medium.objects.all()
+
+        return render(request, "farmer/medium.html", {"form": Dnewmedium(), "data": mediumlist})
+    
+    # FETCH, EDIT, DELETE OBJECT
     if request.method == "POST":
-        dpost = request.POST
-        if dpost['type'] == "loadedit":
-            idm = request.POST["mediumid"]
-            medium = Medium.objects.get(id=idm)
-            form = Dnewmedium(instance=medium)
-            mediumlist = Medium.objects.all()
-            return render(request, "farmer/medium.html", { "editform": form, "form": Dnewmedium(), "data": mediumlist})
-        
-        if dpost['type'] == "edit":
-            medium = Medium.objects.get(name=dpost['oname'])
-            nmedium = Dnewmedium(request.POST, instance=medium)
+        uitem = updateitem(request.POST, Medium, Dnewmedium)
 
-        if dpost['type'] == "new":
-            nmedium = Dnewmedium(request.POST)
-
-        if dpost['type'] == "delete":
-            medium = Medium.objects.get(name=request.POST['oname'])
-            medium.delete()
-            return HttpResponseRedirect("medium")
-
-        if nmedium.is_valid():
-            nmedium.save()
+    if uitem == True:
         return HttpResponseRedirect("medium")
+    
+    if uitem == False:
+        print("IT IS FALSE")
+        return render(request, "farmer/medium.html",{"error": "SOMETHING WENT WRONG"})
 
-    mediumlist = Medium.objects.all()
-    return render(request, "farmer/medium.html", {"form": Dnewmedium(), "data": mediumlist})
+    return render(request, "farmer/medium.html", uitem)
+
 
 @login_required
 def harvest(request):

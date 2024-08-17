@@ -64,3 +64,38 @@ def createnewtrays (form):
         
         return True
 
+def updateitem (data, dobject, dform):
+
+    type = data["type"]
+    if type == "loadedit":
+        idi = data["itemid"]
+        item = dobject.objects.get(id=idi)
+        form = dform(instance=item)
+        list = dobject.objects.all()
+
+        return {"editform": form, "form": Dnewmedium(), "data": list}
+    
+    if type == "delete":
+        item = dobject.objects.get(name=data['oname'])
+        item.delete()
+        list = dobject.objects.all()
+        return True
+
+    if type == "edit":
+        item = dobject.objects.get(name=data['oname'])
+        nitem = dform(data, instance=item)
+
+    if type == "new":
+        nitem = dform(data)
+
+    if nitem.is_valid():
+        nitem.save()
+    else:
+        return False
+    
+    list = dobject.objects.all()
+
+
+    return True
+
+    

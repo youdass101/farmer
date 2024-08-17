@@ -37,6 +37,7 @@ class Medium(models.Model):
 
     def __str__(self):
         return f"{self.name}"
+    
 
 class Tray(models.Model):
     name = models.ForeignKey(Plant, on_delete=models.PROTECT)
