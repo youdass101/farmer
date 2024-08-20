@@ -23,18 +23,10 @@ def Tray_edit(form):
 
     return True
 
-def Clean_data(form):
-
-    if form.is_valid():
-        for key in form.cleaned_data.items():
-            print(key[0], key[1]) 
-            exec(key[0] + '=key[1]')
-
 
 def createnewtrays (form):
   
     # CHECK VALIDITY AND CLEAN FORM DATA
-    Clean_data(form)
     if form.is_valid():
         name = form.cleaned_data['plant']
         medium = form.cleaned_data['medium']

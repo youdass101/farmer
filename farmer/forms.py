@@ -19,10 +19,6 @@ class Register(forms.Form):
     confirm = forms.CharField(widget=forms.PasswordInput(attrs={'class':'inputs', 'placeholder':'Comfirm password'}),label=(''))
     regcode = forms.CharField(widget=forms.TextInput(attrs={'class':'inputs', 'placeholder':'Registration Code'}),label=(''))
 
-class Newmedium(forms.Form):
-    name =  forms.CharField(widget=forms.TextInput(attrs={'class':'toset', 'placeholder':'Medium name'}),label=(''))
-    soil = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'Soil percentage'}),label=(''))
-    coco = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'coco percentage'}),label=(''))
 
 class Dnewmedium (forms.ModelForm):
     class Meta:
@@ -38,6 +34,19 @@ class Newtray(forms.Form):
     start = forms.DateField(widget=forms.SelectDateWidget(attrs={'class':'toset'}),label=(''),initial=datetime.now())
     count = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'toset', 'placeholder':'How many tray', 'value':'1'}),label=(''))
     location = forms.ChoiceField(widget=forms.Select(attrs={'class':'toset'}),label=('Location'),choices=(("H","H"),("D","D")))
+
+class Dnewtray(forms.ModelForm):
+    count = forms.IntegerField()
+    class Meta:
+        model = Tray
+        fields = ["name", "medium", "seeds_weight", "medium_weight", "start"]
+        widgets = {
+        'start': forms.DateInput(format=('%m/%d/%Y'), attrs={'class':'toset', 'placeholder':'Select a date', 'type':'date'}),
+    }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['start'].initial = datetime.now()
 
 
 class Edittray(forms.Form):

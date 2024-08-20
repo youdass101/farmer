@@ -19,103 +19,35 @@ from datetime import datetime, timedelta
 regcode = "123456"
 
 # INDEX PAGE LOAD TRAYS 
+@login_required
 def index(request):
-    if request.user.is_authenticated:
-        # GET DATA FROM JS 
-        if request.method == "PUT":
-            form = json.loads(request.body)
-            # DELETE TRAY IF JS DATA DELETE IS TRUE or Edit
-            if (Tray_edit(form)):
-                return JsonResponse({"result": True, "msg": "Success"}, status=201)
-        
-        # CREATE NEW TRAY FROM HTML REQUEST
-        if request.method == "POST":
-            # GET NEW DATA FROM HTML FORM 
-            form = Newtray(request.POST)
-            if(createnewtrays(form)):
-                return HttpResponseRedirect(reverse("index"))
-
-        # GET METHOD TO LOAD PAGE WITH UPDATED DATA 
-        # GET ALL CREATED TRAYS
-        sdata = Tray.objects.all()
-        # SERIALIZE EACH ROW WITH DETAILED DATA 
-        data = [row.serialize() for row in sdata] 
-        # GET ONLY ACTIVE NONE HARVEST TRAYS
-        active = [x for x in data if not x["harvest"]]
-        # GET TODAYS DATE 
-        cd = str(datetime.date(datetime.today()))
-        # SEND DATA TO HTML INDEX PAGE 
-        return render(request, "farmer/index.html", {"cd":cd, "edit": Edittray(), "form": Newtray(), "data":active, "count":len(active)})
-    # IF USER NOT LOGGED-IN REDIRECT TO LOGIN PAGE 
-    else:
-        return HttpResponseRedirect(reverse("login"))
-
-#LOGIN PAGE 
-def login_view(request):
+    # GET DATA FROM JS 
+    if request.method == "PUT":
+        form = json.loads(request.body)
+        # DELETE TRAY IF JS DATA DELETE IS TRUE or Edit
+        if (Tray_edit(form)):
+            return JsonResponse({"result": True, "msg": "Success"}, status=201)
+    
+    # CREATE NEW TRAY FROM HTML REQUEST
     if request.method == "POST":
-        # GET DATA
-        form = Login(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data["username"]
-            password = form.cleaned_data["password"]
-            user = authenticate(request, username=username, password=password)
-
-        # IF AUTHENTICATION SUCCESS
-        if user is not None:
-            login(request, user)
-            return HttpResponseRedirect(reverse("index"))
-        # IF AUTHENTICATION FAILED 
-        else:
-            return render(request, "farmer/login.html", {
-                "error": "Invalid username or password.", "form": form
-            }) 
-    # GET METHOD TO LOAD LOGIN PAGE  
-    else:
-        if not request.user.is_authenticated:
-            return render(request, "farmer/login.html", {"form": Login()})
-        # IF USER IS ALREADY LOGGED IN LOAD INDEX PAGE 
-        else:
+        # GET NEW DATA FROM HTML FORM 
+        form = Newtray(request.POST)
+        if(createnewtrays(form)):
             return HttpResponseRedirect(reverse("index"))
 
+    # GET METHOD TO LOAD PAGE WITH UPDATED DATA 
+    # GET ALL CREATED TRAYS
+    sdata = Tray.objects.all()
+    # SERIALIZE EACH ROW WITH DETAILED DATA 
+    data = [row.serialize() for row in sdata] 
+    # GET ONLY ACTIVE NONE HARVEST TRAYS
+    active = [x for x in data if not x["harvest"]]
+    # GET TODAYS DATE 
+    cd = str(datetime.date(datetime.today()))
+    # SEND DATA TO HTML INDEX PAGE 
+    return render(request, "farmer/index.html", {"cd":cd, "edit": Edittray(), "form": Newtray(), "data":active, "count":len(active)})
 
-# LOGOUT FUNCTION 
-def logout_view(request):
-    logout(request)
-    return HttpResponseRedirect(reverse("index"))
 
-# REGISTER NEW USER 
-def register_view(request):
-    if request.method == "POST":
-        # GET CREDENTIALS 
-        form =Register(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data["username"]
-            email = form.cleaned_data["email"]
-            password = form.cleaned_data["password"]
-            comfirm = form.cleaned_data["confirm"]
-            reg = form.cleaned_data["regcode"]
-            # Check password and code
-            if password == comfirm and reg == regcode:
-                try:
-                    new = User.objects.create_user(username, email, password)
-                    new.save()
-                except:
-                    return render(request, "farmer/register.html", {"error": "user already exist", "form": form})
-                
-                # LOGIN WITH NEW USER 
-                user = authenticate(request, username=username, password=password)
-                if user is not None:
-                    login(request, user)
-                    return HttpResponseRedirect(reverse("index"))
-            # ERROR
-            else:
-                return render(request, "farmer/register.html", {"error": "password comfirmation or REG Code do not match", "form": form})
-        # MISSING CREDENTIALS
-        else:
-            return render(request, "farmer/register.html", {"error": "Missing Information"})    
-    # GET PAGE 
-    else:
-        return render(request, "farmer/register.html", {"form": Register()})
 
 # PLANTS 
 @login_required
@@ -131,44 +63,23 @@ def plants(request):
              
             return JsonResponse({"result": [data.seeds, data.medium_weight]}, status=201)
     except:
-        # LOAD PLANT DATA TO EDIT FORM  
+        if request.method == "GET":
+            plantslist = Plant.objects.all()
+
+            return render(request, "farmer/plants.html", {"form": Dnewplant(), "plants": plantslist})
+
         if request.method == "POST":
-            dpost = request.POST
-            if dpost['type']  == "loadedit": 
-                # EDIT BUTTON PRESSED TO EDIT PLANT
-                idp = request.POST["itemid"]
-                plant = Plant.objects.get(id=idp)
-                form = Dnewplant(instance=plant)
-                plantslist = Plant.objects.all()
+            uitem = updateitem(request.POST, Plant, Dnewplant)
 
-                return render(request, "farmer/plants.html", {"editform": form, "form": Dnewplant(), "plants": plantslist})
-
-            # DELETE PLANT
-            if dpost['type'] == "delete":
-                plant = Plant.objects.get(name=request.POST['oname'])
-                plant.delete()
-                return HttpResponseRedirect("plants")
-
-
-            # EDIT PLANT
-            if dpost['type'] == "edit":
-                plant = Plant.objects.get(name= dpost['oname'])
-                nplant = Dnewplant(request.POST, instance=plant)
-            
-            if dpost['type'] == "new":
-                # CREATE NEW PLANT
-                nplant = Dnewplant(request.POST)
-
-
-            #  CHECK FORM DATA VALIDITY OF EDIT OR CREATE
-            if nplant.is_valid():
-                nplant.save()              
+        if uitem == True:
             return HttpResponseRedirect("plants")
-    
-        plantslist = Plant.objects.all()
-
-    return render(request, "farmer/plants.html", {"form": Dnewplant(), "plants": plantslist})
-  
+        
+        if uitem == False:
+            print("it is False")
+            return render(request, "farmer/plants.html",{"error": "SOMETHING WENT WRONG"})
+        
+        return render(request, "farmer/plants.html", uitem)
+        
 
 
 # MEDIUM PAGE 
@@ -429,3 +340,71 @@ def report(request):
 
              
     return render(request, "farmer/report.html", {"data": data, "fform": Reportfilter, "filter": filter, "medium": medium, "totalyield":totalyield, "rff": reportfilter})
+
+
+#LOGIN PAGE 
+def login_view(request):
+    if request.method == "POST":
+        # GET DATA
+        form = Login(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password"]
+            user = authenticate(request, username=username, password=password)
+
+        # IF AUTHENTICATION SUCCESS
+        if user is not None:
+            login(request, user)
+            return HttpResponseRedirect(reverse("index"))
+        # IF AUTHENTICATION FAILED 
+        else:
+            return render(request, "farmer/login.html", {
+                "error": "Invalid username or password.", "form": form
+            }) 
+    # GET METHOD TO LOAD LOGIN PAGE  
+    else:
+        if not request.user.is_authenticated:
+            return render(request, "farmer/login.html", {"form": Login()})
+        # IF USER IS ALREADY LOGGED IN LOAD INDEX PAGE 
+        else:
+            return HttpResponseRedirect(reverse("index"))
+
+
+# LOGOUT FUNCTION 
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect(reverse("index"))
+
+# REGISTER NEW USER 
+def register_view(request):
+    if request.method == "POST":
+        # GET CREDENTIALS 
+        form =Register(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data["username"]
+            email = form.cleaned_data["email"]
+            password = form.cleaned_data["password"]
+            comfirm = form.cleaned_data["confirm"]
+            reg = form.cleaned_data["regcode"]
+            # Check password and code
+            if password == comfirm and reg == regcode:
+                try:
+                    new = User.objects.create_user(username, email, password)
+                    new.save()
+                except:
+                    return render(request, "farmer/register.html", {"error": "user already exist", "form": form})
+                
+                # LOGIN WITH NEW USER 
+                user = authenticate(request, username=username, password=password)
+                if user is not None:
+                    login(request, user)
+                    return HttpResponseRedirect(reverse("index"))
+            # ERROR
+            else:
+                return render(request, "farmer/register.html", {"error": "password comfirmation or REG Code do not match", "form": form})
+        # MISSING CREDENTIALS
+        else:
+            return render(request, "farmer/register.html", {"error": "Missing Information"})    
+    # GET PAGE 
+    else:
+        return render(request, "farmer/register.html", {"form": Register()})
