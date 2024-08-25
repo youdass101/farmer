@@ -21,32 +21,40 @@ regcode = "123456"
 # INDEX PAGE LOAD TRAYS 
 @login_required
 def index(request):
-    # GET DATA FROM JS 
-    if request.method == "PUT":
-        form = json.loads(request.body)
-        # DELETE TRAY IF JS DATA DELETE IS TRUE or Edit
-        if (Tray_edit(form)):
-            return JsonResponse({"result": True, "msg": "Success"}, status=201)
-    
-    # CREATE NEW TRAY FROM HTML REQUEST
+    if request.method == "GET":
+        # GET ALL active CREATED TRAYS
+        data = trayser("active")
+        # SEND DATA TO HTML INDEX PAGE 
+        return render(request, "farmer/index.html", {"cd":data["cd"], "form": Dnewtray(), "data":data["active"], "count":len(data["active"])})
     if request.method == "POST":
-        # GET NEW DATA FROM HTML FORM 
-        form = Newtray(request.POST)
-        if(createnewtrays(form)):
-            return HttpResponseRedirect(reverse("index"))
+        if request.POST["type"] =="new":
+            form = request.POST.copy()
+            try: 
+                # GET COUNT OF TRAY BASED ON PLANT NAME 
+                qtt = Tray.objects.filter(name=form['name']).count() 
+            except:
+                # IF THIS IS THE FRIST TRAY OF IT KIND 
+                qtt = 0
+            # CREATE NEW TRAY NUMBER
+            for i in range(int(form['count'])):
+                # TRAY NUMBER BY NAME
+                c =check_number(qtt, Tray, form['name'])
+                # ADD NUMBER TO NAME 
+                form.update({'number':c})
+                uitem = updateitem(form, Tray, Dnewtray)
+        else:
+            uitem = updateitem(request.POST, Tray, Dnewtray)
 
-    # GET METHOD TO LOAD PAGE WITH UPDATED DATA 
-    # GET ALL CREATED TRAYS
-    sdata = Tray.objects.all()
-    # SERIALIZE EACH ROW WITH DETAILED DATA 
-    data = [row.serialize() for row in sdata] 
-    # GET ONLY ACTIVE NONE HARVEST TRAYS
-    active = [x for x in data if not x["harvest"]]
-    # GET TODAYS DATE 
-    cd = str(datetime.date(datetime.today()))
-    # SEND DATA TO HTML INDEX PAGE 
-    return render(request, "farmer/index.html", {"cd":cd, "edit": Edittray(), "form": Newtray(), "data":active, "count":len(active)})
+        if uitem == True:
+            return HttpResponseRedirect(reverse("index"))    
+        if uitem == False:
+            return render(request, "farmer/index.html",{"error": "SOMETHING WENT WRONG"})
+        
+        # Load edit form
+        data = trayser("active")
 
+        return render(request, "farmer/index.html", {"cd":data["cd"], "form": Dnewtray(), "data":data["active"], 
+                                                     "count":len(data["active"]), "editform":uitem['editform'],})
 
 
 # PLANTS 
@@ -55,7 +63,6 @@ def plants(request):
     try: 
         # LOAD JS DATA 
         tp = json.loads(request.body)['type']
-
         # JS DATA FOR NEW TRAY CREATION 
         if tp == "fetch":
             pp = json.loads(request.body)['data']
@@ -65,8 +72,7 @@ def plants(request):
     except:
         if request.method == "GET":
             plantslist = Plant.objects.all()
-
-            return render(request, "farmer/plants.html", {"form": Dnewplant(), "plants": plantslist})
+            return render(request, "farmer/plants.html", {"form": Dnewplant(), "data": plantslist})
 
         if request.method == "POST":
             uitem = updateitem(request.POST, Plant, Dnewplant)
@@ -75,12 +81,10 @@ def plants(request):
             return HttpResponseRedirect("plants")
         
         if uitem == False:
-            print("it is False")
             return render(request, "farmer/plants.html",{"error": "SOMETHING WENT WRONG"})
         
         return render(request, "farmer/plants.html", uitem)
         
-
 
 # MEDIUM PAGE 
 @login_required
@@ -88,7 +92,6 @@ def medium(request):
     # LOADING DATA AND PAGE
     if request.method == "GET":
         mediumlist = Medium.objects.all()
-
         return render(request, "farmer/medium.html", {"form": Dnewmedium(), "data": mediumlist})
     
     # FETCH, EDIT, DELETE OBJECT
@@ -99,7 +102,6 @@ def medium(request):
         return HttpResponseRedirect("medium")
     
     if uitem == False:
-        print("IT IS FALSE")
         return render(request, "farmer/medium.html",{"error": "SOMETHING WENT WRONG"})
 
     return render(request, "farmer/medium.html", uitem)

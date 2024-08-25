@@ -47,7 +47,7 @@ class Tray(models.Model):
     medium_weight = models.IntegerField()
     seeds_weight = models.IntegerField()
     fname = models.CharField(max_length=255)
-    location = models.CharField(max_length=255)
+    location = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
             return f"{self.name} start:{self.start}"

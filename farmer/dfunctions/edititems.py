@@ -1,60 +1,21 @@
 from ..models import *
 from ..forms import *
 
+def trayser(type):
+    sdata = Tray.objects.all()
+    # GET TODAYS DATE 
+    cd = str(datetime.date(datetime.today()))
+
+    data = [row.serialize() for row in sdata] 
+    if type == "active":
+        # SERIALIZE EACH ROW WITH DETAILED DATA 
+        data = [row.serialize() for row in sdata] 
+        # GET ONLY ACTIVE NONE HARVEST TRAYS
+        active = [x for x in data if not x["harvest"]]
+    
+        return {"cd": cd, "active": active}
 
 
-def Tray_edit(form):
-
-    tray = Tray.objects.get(id=form['id'])
-
-    if form['delete']:
-        tray = Tray.objects.get(id=form['id'])
-        tray.delete()
-        # RETURN STATUS AND MSG 
-    else:
-        # EDIT TRAY FROM JS DATA IF DELET IS FLASE 
-        medium = Medium.objects.get(name=form["medium"])
-        tray = Tray.objects.get(id=form['id'])
-        tray.medium = medium
-        tray.medium_weight = form['medium_weight']
-        tray.seeds_weight = form['seed']
-        tray.start = datetime.strptime(form['start'], '%B %d, %Y')
-        tray.save()
-
-    return True
-
-
-def createnewtrays (form):
-  
-    # CHECK VALIDITY AND CLEAN FORM DATA
-    if form.is_valid():
-        name = form.cleaned_data['plant']
-        medium = form.cleaned_data['medium']
-        seed = form.cleaned_data['seed']
-        medium_weight = form.cleaned_data['medium_weight']
-        start = form.cleaned_data['start']
-        count = form.cleaned_data['count']
-        location = form.cleaned_data['location']
-        # IF SEED WEGHT IS NOT INSERTED 
-        if not seed:
-            #DEFAULT SEEDS WEIGHT 
-            seed = name.seeds 
-        try: 
-            # GET COUNT OF TRAY BASED ON PLANT NAME 
-            qtt = Tray.objects.filter(name=name).count()                   
-        except:
-            # IF THIS IS THE FRIST TRAY OF IT KIND 
-            qtt = 0
-        # CREATE NEW TRAY NUMBER
-        for i in range(count):
-            # TRAY NUMBER BY NAME
-            c = qtt+i+1
-            # ADD NUMBER TO NAME 
-            fname = name.name + str(c)
-            # CREATE THE TRAY IN THE MODEL 
-            Tray.objects.create(name=name, fname=fname, number= c, medium=medium, seeds_weight=seed, medium_weight=medium_weight, start=start, location=location)
-        
-        return True
 
 def updateitem (data, dobject, dform):
 
@@ -63,18 +24,19 @@ def updateitem (data, dobject, dform):
         idi = data["itemid"]
         item = dobject.objects.get(id=idi)
         form = dform(instance=item)
+        form.id = idi
         list = dobject.objects.all()
 
         return {"editform": form, "form": Dnewmedium(), "data": list}
     
     if type == "delete":
-        item = dobject.objects.get(name=data['oname'])
+        item = dobject.objects.get(id=data['poid'])
         item.delete()
         list = dobject.objects.all()
         return True
 
     if type == "edit":
-        item = dobject.objects.get(name=data['oname'])
+        item = dobject.objects.get(id=data['poid'])
         nitem = dform(data, instance=item)
 
     if type == "new":
@@ -89,5 +51,21 @@ def updateitem (data, dobject, dform):
 
 
     return True
+
+
+def check_number(count, cobject, item):
+    try: 
+        cobject.objects.get(number=count, name=item)
+        count += 1
+        count = check_number(count, cobject, item)
+    except:
+        if count == 0:
+            count = 1
+        else:
+            return count
+                
+    return count
+    
+
 
     
