@@ -44,13 +44,12 @@ def updateitem (data, dobject, dform):
 
     if nitem.is_valid():
         nitem.save()
+        return True
+
     else:
         return False
-    
-    list = dobject.objects.all()
 
 
-    return True
 
 
 def check_number(count, cobject, item):

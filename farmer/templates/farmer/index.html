@@ -93,11 +93,10 @@
                         <td class="ts mobile_hide">{{i.start}}</td>
                         <td class="end mobile_hide">{{i.end}}</td>
                         <td class="countdown" value="{{i.date}}"></td>
-                        <td>  
-                            <button class="harvest" type="submit" value="{{i.id}}">Harvest</button>
+                        <td>
+                            <button class="harvestbt" value="{{i.id}}" type="submit">Harvest</button>
                         </td>
                         <td>   
-                            <!-- <button class="edit_tray mobile_hide" type="submit" value="{{i.id}}">Edit</button> -->
                             <form action="/" method="POST">
                                 <!-- CSRF TOKEN FOR FORM-->
                                 {% csrf_token %}
@@ -113,4 +112,31 @@
         </tbody>
     </table>
 </ol>  
+
+
+<!-- POP UP FORM FOR DIFFERENT EDIT USE -->
+<div id="myHarvestModal" class="modalharvest">
+    <!-- NEW PLANT Modal content -->
+    <div class="modal-content">
+        <div>
+            <!-- FORM CLOSE BUTTON -->
+            <span class="clsh" id="clsh">&times;</span>
+            <!-- FORM TITLE VARIABLE -->
+            <h4>{% block edit %}{% endblock %}</h4>
+        </div>
+        <div>
+            <!-- FORM ACTION VARIABLE -->
+            <form method="POST" action="/harvest">
+                <!-- CSRF TOKEN FOR FORM-->
+                {% csrf_token %}
+                <!-- GET FORM FROM PYTHON DATA SENT  -->
+                {{harvestform}}
+                <h1>{{harvestform.0.name}}</h1>
+                <input name="type", value="new" hidden>
+
+                <button  type="submit" class="subbtn">Harvest</button>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}
