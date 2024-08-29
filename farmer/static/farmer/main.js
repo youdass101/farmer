@@ -39,8 +39,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
-    // EDIT HARVEST and DELETE TRAY 
-    if(document.querySelectorAll('.harvestbt')){    //     
+    // Harvest button popup and data
+    if(document.querySelectorAll('.harvestbt')){    
         // HARVEST A TRAY 
         document.querySelectorAll(".harvestbt").forEach(button => {
             // LOAD HARVEST FORM 
@@ -49,31 +49,23 @@ document.addEventListener('DOMContentLoaded', function() {
             button.onclick = () =>{
                 harvestpop.style.display = "block";
                 document.querySelector("#id_tray").value = trayid
+                document.querySelector("#harvestplantname").innerHTML = button.parentElement.querySelector(".hplantname").value
 
+                // close icon action
                 var harvstbt = document.getElementById("clsh");
                 harvstbt.onclick = function() {
                     harvestpop.style.display = "none";
                 }
-
+                // press outside the form window to close it
                 window.onclick = function(event) {
                     if (event.target == harvestpop) {
                         harvestpop.style.display = "none";
                     }
                 }
-                
             }
         })
     }
                 
-        
-  
-    //             // SHOW THE HARVES FORM 
-    //             harvest.style.display = "block";
-    //             // Get the <span> element that closes the modal
-    //             var sp = document.getElementsByClassName("clsh")[0];
-    //             sp.onclick = function() {
-    //                 harvest.style.display = "none";
-    //             }
             
 
     //Harvest bulk

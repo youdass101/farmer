@@ -27,6 +27,13 @@ def index(request):
         # SEND DATA TO HTML INDEX PAGE 
         return render(request, "farmer/index.html", {"cd":data["cd"], "form": Dnewtray(), "data":data["active"], "count":len(data["active"]), "harvestform": Nharvest })
     if request.method == "POST":
+        # bulk delete by checkbox
+        if request.POST["type"] == "bulkdelete":
+            listdel = request.POST.getlist('dbid')
+            for i in listdel:
+                uitem = updateitem(({'type':'delete', 'poid': i}), Tray, Dnewmedium)
+            return HttpResponseRedirect(reverse("index"))    
+
         if request.POST["type"] =="new":
             form = request.POST.copy()
             try: 
@@ -151,14 +158,42 @@ def harvest(request):
 
 @login_required
 def history(request):
-    # LOAD HISTORY PAGE 
-    sdata = Tray.objects.all()
-    # SERIALIZE HISTORY PAGE TRAYS DATA 
-    fdata = [row.serialize() for row in sdata] 
-    # FILTER ONLY HARVESTED TRAYS 
-    data = [x for x in fdata if x["harvest"]]
-    # SEND DATA TO HTML PAGE 
-    return render(request, "farmer/history.html", {"data":data})
+    if request.method == "GET":
+        # LOAD HISTORY PAGE 
+        sdata = Tray.objects.all()
+        # SERIALIZE HISTORY PAGE TRAYS DATA 
+        fdata = [row.serialize() for row in sdata] 
+        # FILTER ONLY HARVESTED TRAYS 
+        data = [x for x in fdata if x["harvest"]]
+        # SEND DATA TO HTML PAGE 
+        return render(request, "farmer/history.html", {"data":data})
+    if request.method == "POST":
+
+        if request.POST["type"] == "bulkdelete":
+            listdel = request.POST.getlist('dbid')
+            for i in listdel:
+                updateitem({'type': 'delete', 'poid':i}, Harvest, Nharvest)
+            return HttpResponseRedirect(reverse("history")) 
+
+        uitem = updateitem(request.POST, Harvest, Nharvest)
+
+        if uitem == True:
+            return HttpResponseRedirect(reverse("history")) 
+        if uitem == False:
+            return render(request, "farmer/index.html",{"error": "SOMETHING WENT WRONG"})
+        
+        
+        # load edit form
+        data = trayser("inactive")
+        return render(request, "farmer/history.html", {"data":data['active'],"editform":uitem["editform"] })
+
+
+
+        
+
+
+
+
 
 @login_required
 def filter(request):
@@ -277,7 +312,7 @@ def analytics(request):
     except:
         data = False
     # RETURN GROUPED DATA TO ANALYTIC PAGE 
-    return render(request, "farmer/analytics.html", {"data":data, "form": Newtray(), "todayu": todayu })
+    return render(request, "farmer/analytics.html", {"data":data, "form": Dnewtray(), "todayu": todayu })
 
 
 @login_required

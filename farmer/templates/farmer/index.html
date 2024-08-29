@@ -65,6 +65,7 @@
     <table  class="table table-striped">
         <thead  class="thead-dark">
             <tr>
+                <th>DELETE</th>
                 <th class="cc" scope="col" >Count</th>
                 <th scope="col">Tray ID</th>
                 <th scope="col">Days</th>
@@ -81,9 +82,15 @@
         </thead>
     <!-- created plants list -->
         <tbody>
+            <form action="/" method="POST" id="deletebulkform">
+                {% csrf_token %}
+                <input name="type" value="bulkdelete" hidden>
+                <button type="submit">DELETE</button>
+            </form>
             {% for i in data %}
                     <tr>
                         <!-- if not harvest -->
+                        <td><input type="checkbox" name="dbid" value="{{i.id}}" form="deletebulkform"></td>
                         <td> <li class="count"></li></td>
                         <td class="tn" style = "text-transform:capitalize;">{{i.name}}{{i.number}}</td>
                         <td>{{i.days.days}}</td>
@@ -94,6 +101,7 @@
                         <td class="end mobile_hide">{{i.end}}</td>
                         <td class="countdown" value="{{i.date}}"></td>
                         <td>
+                            <input value="{{i.name}}{{i.number}}" class="hplantname" hidden>
                             <button class="harvestbt" value="{{i.id}}" type="submit">Harvest</button>
                         </td>
                         <td>   
@@ -106,8 +114,7 @@
                                 <button class="editplant" type="submit" class="subbtn">Edit</button>
                             </form>
                         </td>    
-                    </tr>
-               
+                    </tr>     
             {% endfor %}
         </tbody>
     </table>
@@ -130,8 +137,9 @@
                 <!-- CSRF TOKEN FOR FORM-->
                 {% csrf_token %}
                 <!-- GET FORM FROM PYTHON DATA SENT  -->
+                <h1 id="harvestplantname"></h1>
+
                 {{harvestform}}
-                <h1>{{harvestform.0.name}}</h1>
                 <input name="type", value="new" hidden>
 
                 <button  type="submit" class="subbtn">Harvest</button>

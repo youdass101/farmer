@@ -65,9 +65,11 @@ class Tray(models.Model):
             harvest_weight = h.output
             harvest = True
             harvest_date = h.date
+            harvest_id = h.pk
             dh = h.date - datetime.date(self.start)
         except:
             # IF TRAY NOT HARVESTED AND STILL ACTIVE 
+            harvest_id = None
             harvest = False
             harvest_weight = None
             dh = None
@@ -88,6 +90,7 @@ class Tray(models.Model):
             "harvest_weight": harvest_weight,
             "dh" : dh,
             "harvest_date" : harvest_date,
+            "harvest_id": harvest_id,
             "location" : self.location
         }
 

@@ -8,12 +8,12 @@ def trayser(type):
 
     data = [row.serialize() for row in sdata] 
     if type == "active":
-        # SERIALIZE EACH ROW WITH DETAILED DATA 
-        data = [row.serialize() for row in sdata] 
         # GET ONLY ACTIVE NONE HARVEST TRAYS
         active = [x for x in data if not x["harvest"]]
+    else:
+        active = [x for x in data if x["harvest"]]
     
-        return {"cd": cd, "active": active}
+    return {"cd": cd, "active": active}
 
 
 
@@ -32,7 +32,6 @@ def updateitem (data, dobject, dform):
     if type == "delete":
         item = dobject.objects.get(id=data['poid'])
         item.delete()
-        list = dobject.objects.all()
         return True
 
     if type == "edit":

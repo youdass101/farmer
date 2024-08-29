@@ -22,7 +22,8 @@ class Dnewmedium (forms.ModelForm):
         fields = ["name", "soil", "coco", "id"]
 
 class Nharvest (forms.ModelForm):
-
+    id = forms.IntegerField(required=False)
+    id.widget = id.hidden_widget()
     class Meta:
         model = Harvest
         fields = "__all__"

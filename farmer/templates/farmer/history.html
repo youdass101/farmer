@@ -26,6 +26,7 @@
     <table class="table table-striped">
         <thead class="thead-dark">
             <tr>
+                <th>DELETE</th>
                 <th class="mobile_hide" scope="col">Count</th>
                 <th scope="col">L</th>
                 <th scope="col">Tray ID</th>
@@ -37,12 +38,19 @@
                 <th class="mobile_hide" scope="col">Best End</th>
                 <th scope="col">Harvest Date</th>
                 <th scope="col">Harvest</th>
+                <th class="mobile_hide" scope="col">Edit</th>
             </tr>
         </thead>
     <!-- created plants list -->
         <tbody>
+            <form action="/history" method="POST" id="deletebulkform">
+                {% csrf_token %}
+                <input name="type" value="bulkdelete" hidden>
+                <button type="submit">DELETE</button>
+            </form>
             {% for i in data %}
                     <tr>
+                        <td><input type="checkbox" name="dbid" value="{{i.harvest_id}}" form="deletebulkform"></td>
                         <td class="mobile_hide"> <li style="margin-left: 25%;"></li></td>
                         <td>{{i.location}}</td>
                         <td class="tn" style = "text-transform:capitalize;">{{i.name}}{{i.number}}</td>
@@ -54,6 +62,16 @@
                         <td class="end mobile_hide">{{i.end}}</td>
                         <td>{{i.harvest_date}}</td>
                         <td>{{i.harvest_weight}} grams</td> 
+                        <td>   
+                            <form action="/history" method="POST">
+                                <!-- CSRF TOKEN FOR FORM-->
+                                {% csrf_token %}
+                                <!-- GET FORM FROM PYTHON DATA SENT  -->
+                                 <input name="type" value="loadedit" hidden>
+                                <input value="{{i.harvest_id}}" name="itemid" hidden>
+                                <button class="editplant" type="submit" class="subbtn">Edit</button>
+                            </form>
+                        </td>    
             {% endfor %}
         </tbody>
     </table>
