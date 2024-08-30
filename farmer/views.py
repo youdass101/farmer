@@ -189,11 +189,6 @@ def history(request):
 
 
 
-        
-
-
-
-
 
 @login_required
 def filter(request):
@@ -228,14 +223,14 @@ def filter(request):
                 # FILTER ACTIVE TRAYS 
                 data = [x for x in fdata if not x["harvest"]]
                 # RETURN FILTER DATA WITH NEEDE DEFAULT FORMS 
-                return render(request, "farmer/index.html", {"cd":cd, "edit": Edittray(), "form": Newtray(), "data":data, "count": len(data)})
+                return render(request, "farmer/index.html", {"cd":cd, "edit": Dnewtray(), "form": Dnewtray(), "data":data, "count": len(data)})
             # FILTER FROM MEDIUM PAGE 
             elif page == "medium":
                 # REQUEST FILTER DATA 
                 filter = request.POST["filter"]
                 # LOAD ALL MEDIUMS MODELS AND FILTER THEM BY LOADED FILTER 
                 data = Medium.objects.all().order_by(filter)
-                return render(request, "farmer/medium.html", {"form": Newmedium(), "data": data})
+                return render(request, "farmer/medium.html", {"form": Dnewmedium(), "data": data})
             # FILTER PAGE IS PLANTS 
             elif page == "plant":
                 # REQUEST SEARCH STRING
@@ -279,40 +274,42 @@ def filter(request):
             dt = request.POST["start"]
             pname = request.POST["tray_name"]
             name = Plant.objects.get(name=pname.strip())
-            sdata = Tray.objects.filter(name=name, start=datetime.strptime(dt, '%B %d, %Y'))
-            print("here is success")
+            sdata = Tray.objects.filter(name=name, start=datetime.strptime(dt, '%b. %d, %Y'))
             vdata = [row.serialize() for row in sdata]
             data = [x for x in vdata if not x['harvest']]
             cd = str(datetime.date(datetime.today()))
 
-            return render(request, "farmer/index.html", {"cd":cd, "edit": Edittray(), "form": Newtray(), "data":data, "count": len(data)})
+            return render(request, "farmer/index.html", {"cd":cd, "edit": Dnewtray(), "form": Dnewtray(), "data":data, "count": len(data)})
          
 # PAGE TO GROUP ACTIVE TRAYS BY NAME AND START DATE 
 @login_required
 def analytics(request):
-    try:
-        # filter only non harvested trays
-        active = Tray.objects.exclude(id__in= Harvest.objects.values('tray'))
-        # group trays my name and date
-        grouped = active.values('name', 'start').annotate(qtt=models.Count('name'), seeds=models.Sum('seeds_weight'), soil=models.Sum('medium_weight'), list_id=ArrayAgg('id'))
-        # create empty list to add data
-        data=[]
-         # TODAY DATE 
-        today = datetime.today()
-        todayu = str(datetime.date(datetime.today()))
-        for v in grouped:
-            data.append({'name': Plant.objects.get(id=v['name']).name, 
-                            'start': datetime.date(v['start']), 'quantity': v['qtt'], 
-                        'end':datetime.date(v['start']) + timedelta(Plant.objects.get(id=v['name']).harvest),
-                        'days':datetime.date(today) - datetime.date(v['start']),
-                        'seeds': v['seeds'], 
-                        'soil': v['soil'],
-                        'listid': v['list_id'],
-                        'today': str(datetime.date(datetime.today()))})
-    except:
-        data = False
-    # RETURN GROUPED DATA TO ANALYTIC PAGE 
-    return render(request, "farmer/analytics.html", {"data":data, "form": Dnewtray(), "todayu": todayu })
+    if request.method == "GET":
+        try:
+            # filter only non harvested trays
+            active = Tray.objects.exclude(id__in= Harvest.objects.values('tray'))
+            # group trays my name and date
+            grouped = active.values('name', 'start').annotate(qtt=models.Count('name'), seeds=models.Sum('seeds_weight'), 
+                                                            soil=models.Sum('medium_weight'), list_id=ArrayAgg('id'))
+            
+            # create empty list to add data
+            data=[]
+            # TODAY DATE 
+            today = datetime.today()
+            todayu = str(datetime.date(datetime.today()))
+            for v in grouped:
+                data.append({'name': Plant.objects.get(id=v['name']).name, 
+                                'start': datetime.date(v['start']), 'quantity': v['qtt'], 
+                            'end':datetime.date(v['start']) + timedelta(Plant.objects.get(id=v['name']).harvest),
+                            'days':datetime.date(today) - datetime.date(v['start']),
+                            'seeds': v['seeds'], 
+                            'soil': v['soil'],
+                            'listid': v['list_id'],
+                            'today': str(datetime.date(datetime.today()))})
+        except:
+            data = False
+        # RETURN GROUPED DATA TO ANALYTIC PAGE 
+        return render(request, "farmer/analytics.html", {"data":data, "form": Dnewtray(), "todayu": todayu })
 
 
 @login_required
