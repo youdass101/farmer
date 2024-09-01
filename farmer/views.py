@@ -10,6 +10,8 @@ from django.contrib.postgres.aggregates import ArrayAgg
 
 from .dfunctions.edititems import *
 
+import ast
+
 
 from .models import *
 from .forms import *
@@ -35,20 +37,7 @@ def index(request):
             return HttpResponseRedirect(reverse("index"))    
 
         if request.POST["type"] =="new":
-            form = request.POST.copy()
-            try: 
-                # GET COUNT OF TRAY BASED ON PLANT NAME 
-                qtt = Tray.objects.filter(name=form['name']).count() 
-            except:
-                # IF THIS IS THE FRIST TRAY OF IT KIND 
-                qtt = 0
-            # CREATE NEW TRAY NUMBER
-            for i in range(int(form['count'])):
-                # TRAY NUMBER BY NAME
-                c =check_number(qtt, Tray, form['name'])
-                # ADD NUMBER TO NAME 
-                form.update({'number':c})
-                uitem = updateitem(form, Tray, Dnewtray)
+            uitem = newobject(request.POST.copy(), Tray, Dnewtray)
         else:
             uitem = updateitem(request.POST, Tray, Dnewtray)
 
@@ -291,25 +280,41 @@ def analytics(request):
             # group trays my name and date
             grouped = active.values('name', 'start').annotate(qtt=models.Count('name'), seeds=models.Sum('seeds_weight'), 
                                                             soil=models.Sum('medium_weight'), list_id=ArrayAgg('id'))
-            
+            print("before serialize")
             # create empty list to add data
-            data=[]
+            data= [collectanalyticdata(row) for row in grouped]
             # TODAY DATE 
-            today = datetime.today()
             todayu = str(datetime.date(datetime.today()))
-            for v in grouped:
-                data.append({'name': Plant.objects.get(id=v['name']).name, 
-                                'start': datetime.date(v['start']), 'quantity': v['qtt'], 
-                            'end':datetime.date(v['start']) + timedelta(Plant.objects.get(id=v['name']).harvest),
-                            'days':datetime.date(today) - datetime.date(v['start']),
-                            'seeds': v['seeds'], 
-                            'soil': v['soil'],
-                            'listid': v['list_id'],
-                            'today': str(datetime.date(datetime.today()))})
+           
         except:
             data = False
         # RETURN GROUPED DATA TO ANALYTIC PAGE 
         return render(request, "farmer/analytics.html", {"data":data, "form": Dnewtray(), "todayu": todayu })
+    if request.method == "POST":
+        if request.POST["type"]=="new":
+            uitem = newobject(request.POST.copy(), Tray, Dnewtray)
+        
+        if request.POST["type"]=="loadedit":
+            list = ast.literal_eval(request.POST['itemid'])
+            data = {"type": request.POST["type"] ,"itemid": list[1]}
+            uitem = updateitem(data, Tray, Dnewtray)
+            # filter only non harvested trays
+            active = Tray.objects.exclude(id__in= Harvest.objects.values('tray'))
+            # group trays my name and date
+            grouped = active.values('name', 'start').annotate(qtt=models.Count('name'), seeds=models.Sum('seeds_weight'), 
+                                                            soil=models.Sum('medium_weight'), list_id=ArrayAgg('id'))
+            # create empty list to add data
+            data= [collectanalyticdata(row) for row in grouped]
+            # TODAY DATE 
+            todayu = str(datetime.date(datetime.today()))
+            return render(request, "farmer/analytics.html", {"data":data,"editform": uitem["editform"], "form": Dnewtray(), "todayu": todayu })
+
+        if uitem == True:
+            return HttpResponseRedirect(reverse("analytics"))    
+        if uitem == False:
+            return render(request, "farmer/analytics.html",{"error": "SOMETHING WENT WRONG"}) 
+
+
 
 
 @login_required

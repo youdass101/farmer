@@ -1,6 +1,6 @@
 {%extends "farmer/layout.html"%}
 {% block creator %}<h1>New Tray</h1>{% endblock %}
-{% block action %} action="/"{% endblock %}
+{% block action %} action="/analytics"{% endblock %}
 {%block body%}
 <button id="myBtn" class="subbtn">New Tray</button>    
 
@@ -24,6 +24,16 @@
                 </button>
             </form>
             <button id="harvestbulk" class="harvestbulk" type="submit" value="{{i.listid}}">Harvest</button>
+            <div>
+                <form action="/analytics" method="POST">
+                    <!-- CSRF TOKEN FOR FORM-->
+                    {% csrf_token %}
+                    <!-- GET FORM FROM PYTHON DATA SENT  -->
+                    <input name="type" value="loadedit" hidden>
+                    <input value="{{i.listid}}" name="itemid" hidden>
+                    <button class="editplant" type="submit" class="subbtn">Edit</button>
+                </form>
+            </div>
         </div>
 
         {% endfor %}
@@ -46,6 +56,7 @@
             <input id="harvest_bulk_pack_qtt" type="number" placeholder="Harvest Packs QTTY" required>
             <input id="harvest_date" type="date" value="{{todayu}}">
             <button id="harvest_bulk" type="submit" class="save">Harvest All</button> 
+            
         </div>
     </div>
 </div>

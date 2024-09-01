@@ -50,7 +50,6 @@ def updateitem (data, dobject, dform):
 
 
 
-
 def check_number(count, cobject, item):
     try: 
         cobject.objects.get(number=count, name=item)
@@ -63,6 +62,38 @@ def check_number(count, cobject, item):
             return count
                 
     return count
+
+def collectanalyticdata(object):
+    today = datetime.today()
+    return {
+        'name': Plant.objects.get(id=object['name']).name, 
+        'start': datetime.date(object['start']), 
+        'quantity': object['qtt'], 
+        'end':datetime.date(object['start']) + timedelta(Plant.objects.get(id=object['name']).harvest),
+        'days':datetime.date(today) - datetime.date(object['start']),
+        'seeds': object['seeds'], 
+        'soil': object['soil'],
+        'listid': object['list_id'],
+        'today': str(datetime.date(datetime.today()))
+    }
+
+def newobject(data, object, form ):
+    try: 
+        # GET COUNT OF TRAY BASED ON PLANT NAME 
+        qtt = Tray.objects.filter(name=data['name']).count() 
+    except:
+        # IF THIS IS THE FRIST TRAY OF IT KIND 
+        qtt = 0
+    # CREATE NEW TRAY NUMBER
+    for i in range(int(data['count'])):
+        # TRAY NUMBER BY NAME
+        c =check_number(qtt, Tray, data['name'])
+        # ADD NUMBER TO NAME 
+        data.update({'number':c})
+        item = updateitem(data, object, form)
+    return item
+
+ 
     
 
 

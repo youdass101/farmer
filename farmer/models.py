@@ -93,6 +93,7 @@ class Tray(models.Model):
             "harvest_id": harvest_id,
             "location" : self.location
         }
+    
 
 class Harvest(models.Model):
     tray = models.ForeignKey(Tray, on_delete=models.CASCADE)
