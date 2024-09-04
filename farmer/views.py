@@ -27,7 +27,9 @@ def index(request):
         # GET ALL active CREATED TRAYS
         data = trayser("active")
         # SEND DATA TO HTML INDEX PAGE 
-        return render(request, "farmer/index.html", {"cd":data["cd"], "form": Dnewtray(), "data":data["active"], "count":len(data["active"]), "harvestform": Nharvest })
+        return render(request, "farmer/index.html", {"cd":data["cd"], "form": Dnewtray(),
+                                                      "data":data["active"], "count":len(data["active"]),
+                                                        "harvestform": Nharvest })
     if request.method == "POST":
         # bulk delete by checkbox
         if request.POST["type"] == "bulkdelete":
@@ -48,9 +50,11 @@ def index(request):
         
         # Load edit form
         data = trayser("active")
+        print("WHAT THE HELL IS GOING ON")
 
         return render(request, "farmer/index.html", {"cd":data["cd"], "form": Dnewtray(), "data":data["active"], 
-                                                     "count":len(data["active"]), "editform":uitem['editform'],})
+                                                     "count":len(data["active"]), "editform":uitem['editform'],
+                                                     "harvestform": Nharvest})
 
 
 # PLANTS 
@@ -178,6 +182,118 @@ def history(request):
 
 
 
+# PAGE TO GROUP ACTIVE TRAYS BY NAME AND START DATE 
+@login_required
+def analytics(request):
+    # TODAY DATE 
+    todayu = str(datetime.date(datetime.today()))
+
+    if request.method == "GET":
+        data = groupingtrays()
+        # RETURN GROUPED DATA TO ANALYTIC PAGE 
+        return render(request, "farmer/analytics.html", {"data":data, "form": Dnewtray(), "todayu": todayu })
+    
+    if request.method == "POST":
+        if request.POST["type"]=="new":
+            uitem = newobject(request.POST.copy(), Tray, Dnewtray)
+        
+        elif request.POST["type"]=="loadedit":
+            list = ast.literal_eval(request.POST['itemid'])
+            data = {"type": request.POST["type"] ,"itemid": list[0]}
+            uitem = updateitem(data, Tray, Dnewtray)
+            # filter only non harvested trays
+            data = groupingtrays()
+
+            return render(request, "farmer/analytics.html", {"data":data,"editform": uitem["editform"],
+                                                              "form": Dnewtray(), "todayu": todayu })
+        else:
+            req = request.POST.copy()
+            object = Tray.objects.get(id=req['poid'])
+            count = int(req['count'])
+            listobject = Tray.objects.filter(name=object.name, start=object.start)
+            for i in listobject:
+                if count == 0:
+                    break
+                else:
+                    count -= 1
+                    req.update({'poid':i.id})
+                    uitem = updateitem(req, Tray, Dnewtray)
+
+        if uitem == True:
+            return HttpResponseRedirect(reverse("analytics"))    
+        if uitem == False:
+            return render(request, "farmer/analytics.html",{"error": "SOMETHING WENT WRONG"}) 
+
+
+
+
+@login_required
+def report(request):
+    if request.method == "GET":
+        allbulk  = BulkHarvest.objects.all()[:10]
+        data = [row.serialize() for row in  allbulk]
+        filter = None  
+        medium = 0
+        totalyield = 0 
+        reportfilter = None
+
+    else:
+        form = Reportfilter(request.POST)
+        if form.is_valid():
+            
+            type = form.cleaned_data['type']
+            productname = form.cleaned_data['product']
+            start = form.cleaned_data['start']
+            end = form.cleaned_data['end']
+            medium = 0
+            totalyield = 0
+            reportfilter = Reportfilter()
+            reportfilter.initial['type'] = type
+            reportfilter.initial['product'] = productname
+            reportfilter.initial['start'] = start
+            reportfilter.initial['end'] = end
+            filter = {'type': type, 'product': productname, 'start':start, 'end':end}
+            if type=="All":
+                
+                filter = {'type': type, 'product': productname, 'start':start, 'end':end}
+                if not productname:
+                    allbulk = BulkHarvest.objects.filter(Harvestdate__range=[start, end])
+                else:
+                    allbulk = BulkHarvest.objects.filter(Product= productname, Harvestdate__range=[start, end])
+
+                data = [row.serialize() for row in  allbulk]
+                
+
+            if type=="Packs":
+                if not productname:
+                    allbulk = BulkHarvest.objects.filter(Harvestdate__range=[start, end])
+                    
+                 
+                else:
+                    allbulk = BulkHarvest.objects.filter(Product= productname, Harvestdate__range=[start, end])
+            
+                data = [row.serialize() for row in  allbulk]
+
+            if type=="Mix":
+                if not productname:
+                    allbulk = BulkHarvest.objects.filter(Harvestdate__range=[start, end])
+                    for i in allbulk:
+                        medium = medium + i.MediumWeightMix
+                        totalyield = totalyield + i.MixWeight
+                    
+                 
+                else:
+                    allbulk = BulkHarvest.objects.filter(Product= productname, Harvestdate__range=[start, end])
+                    for i in allbulk:
+                        medium = medium + i.MediumWeightMix
+                        totalyield = i.MixWeight
+                    
+            
+                data = [row.serialize() for row in  allbulk]
+
+
+             
+    return render(request, "farmer/report.html", {"data": data, "fform": Reportfilter, "filter": filter, "medium": medium, "totalyield":totalyield, "rff": reportfilter})
 
 @login_required
 def filter(request):
@@ -270,120 +386,6 @@ def filter(request):
 
             return render(request, "farmer/index.html", {"cd":cd, "edit": Dnewtray(), "form": Dnewtray(), "data":data, "count": len(data)})
          
-# PAGE TO GROUP ACTIVE TRAYS BY NAME AND START DATE 
-@login_required
-def analytics(request):
-    if request.method == "GET":
-        try:
-            # filter only non harvested trays
-            active = Tray.objects.exclude(id__in= Harvest.objects.values('tray'))
-            # group trays my name and date
-            grouped = active.values('name', 'start').annotate(qtt=models.Count('name'), seeds=models.Sum('seeds_weight'), 
-                                                            soil=models.Sum('medium_weight'), list_id=ArrayAgg('id'))
-            print("before serialize")
-            # create empty list to add data
-            data= [collectanalyticdata(row) for row in grouped]
-            # TODAY DATE 
-            todayu = str(datetime.date(datetime.today()))
-           
-        except:
-            data = False
-        # RETURN GROUPED DATA TO ANALYTIC PAGE 
-        return render(request, "farmer/analytics.html", {"data":data, "form": Dnewtray(), "todayu": todayu })
-    if request.method == "POST":
-        if request.POST["type"]=="new":
-            uitem = newobject(request.POST.copy(), Tray, Dnewtray)
-        
-        if request.POST["type"]=="loadedit":
-            list = ast.literal_eval(request.POST['itemid'])
-            data = {"type": request.POST["type"] ,"itemid": list[1]}
-            uitem = updateitem(data, Tray, Dnewtray)
-            # filter only non harvested trays
-            active = Tray.objects.exclude(id__in= Harvest.objects.values('tray'))
-            # group trays my name and date
-            grouped = active.values('name', 'start').annotate(qtt=models.Count('name'), seeds=models.Sum('seeds_weight'), 
-                                                            soil=models.Sum('medium_weight'), list_id=ArrayAgg('id'))
-            # create empty list to add data
-            data= [collectanalyticdata(row) for row in grouped]
-            # TODAY DATE 
-            todayu = str(datetime.date(datetime.today()))
-            return render(request, "farmer/analytics.html", {"data":data,"editform": uitem["editform"], "form": Dnewtray(), "todayu": todayu })
-
-        if uitem == True:
-            return HttpResponseRedirect(reverse("analytics"))    
-        if uitem == False:
-            return render(request, "farmer/analytics.html",{"error": "SOMETHING WENT WRONG"}) 
-
-
-
-
-@login_required
-def report(request):
-    if request.method == "GET":
-        allbulk  = BulkHarvest.objects.all()[:10]
-        data = [row.serialize() for row in  allbulk]
-        filter = None  
-        medium = 0
-        totalyield = 0 
-        reportfilter = None
-
-    else:
-        form = Reportfilter(request.POST)
-        if form.is_valid():
-            
-            type = form.cleaned_data['type']
-            productname = form.cleaned_data['product']
-            start = form.cleaned_data['start']
-            end = form.cleaned_data['end']
-            medium = 0
-            totalyield = 0
-            reportfilter = Reportfilter()
-            reportfilter.initial['type'] = type
-            reportfilter.initial['product'] = productname
-            reportfilter.initial['start'] = start
-            reportfilter.initial['end'] = end
-            filter = {'type': type, 'product': productname, 'start':start, 'end':end}
-            if type=="All":
-                
-                filter = {'type': type, 'product': productname, 'start':start, 'end':end}
-                if not productname:
-                    allbulk = BulkHarvest.objects.filter(Harvestdate__range=[start, end])
-                else:
-                    allbulk = BulkHarvest.objects.filter(Product= productname, Harvestdate__range=[start, end])
-
-                data = [row.serialize() for row in  allbulk]
-                
-
-            if type=="Packs":
-                if not productname:
-                    allbulk = BulkHarvest.objects.filter(Harvestdate__range=[start, end])
-                    
-                 
-                else:
-                    allbulk = BulkHarvest.objects.filter(Product= productname, Harvestdate__range=[start, end])
-            
-                data = [row.serialize() for row in  allbulk]
-
-            if type=="Mix":
-                if not productname:
-                    allbulk = BulkHarvest.objects.filter(Harvestdate__range=[start, end])
-                    for i in allbulk:
-                        medium = medium + i.MediumWeightMix
-                        totalyield = totalyield + i.MixWeight
-                    
-                 
-                else:
-                    allbulk = BulkHarvest.objects.filter(Product= productname, Harvestdate__range=[start, end])
-                    for i in allbulk:
-                        medium = medium + i.MediumWeightMix
-                        totalyield = i.MixWeight
-                    
-            
-                data = [row.serialize() for row in  allbulk]
-
-
-             
-    return render(request, "farmer/report.html", {"data": data, "fform": Reportfilter, "filter": filter, "medium": medium, "totalyield":totalyield, "rff": reportfilter})
 
 
 #LOGIN PAGE 

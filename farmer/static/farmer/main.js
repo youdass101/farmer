@@ -160,6 +160,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         })
     }
+    
     // AUTO GET SEED WEIGHT WHEN CREATIING NEW PLANT AND SELECT A PLANT NAME FROM LIST
     if (document.querySelector("#id_name")){
         select = document.querySelector("#id_name")

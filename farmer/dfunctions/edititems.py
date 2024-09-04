@@ -1,5 +1,7 @@
 from ..models import *
 from ..forms import *
+from django.contrib.postgres.aggregates import ArrayAgg
+
 
 def trayser(type):
     sdata = Tray.objects.all()
@@ -27,7 +29,7 @@ def updateitem (data, dobject, dform):
         form.id = idi
         list = dobject.objects.all()
 
-        return {"editform": form, "form": Dnewmedium(), "data": list}
+        return {"editform": form, "form": dform(), "data": list}
     
     if type == "delete":
         item = dobject.objects.get(id=data['poid'])
@@ -93,6 +95,20 @@ def newobject(data, object, form ):
         item = updateitem(data, object, form)
     return item
 
+def groupingtrays ():
+    try:
+        # filter only non harvested trays
+        active = Tray.objects.exclude(id__in= Harvest.objects.values('tray'))
+        # group trays my name and date
+        grouped = active.values('name', 'start').annotate(qtt=models.Count('name'), seeds=models.Sum('seeds_weight'), 
+                                                        soil=models.Sum('medium_weight'), list_id=ArrayAgg('id'))
+        # create empty list to add data
+        data= [collectanalyticdata(row) for row in grouped]
+    except:
+        data = False
+
+
+    return data
  
     
 
