@@ -35,7 +35,7 @@ def index(request):
         if request.POST["type"] == "bulkdelete":
             listdel = request.POST.getlist('dbid')
             for i in listdel:
-                uitem = updateitem(({'type':'delete', 'poid': i}), Tray, Dnewmedium)
+                uitem = updateitem(({'type':'delete', 'id': i}), Tray, Dnewmedium)
             return HttpResponseRedirect(reverse("index"))    
 
         if request.POST["type"] =="new":
@@ -116,7 +116,7 @@ def harvest(request):
         if uitem == False:
             return render(request, "farmer/index.html",{"error": "SOMETHING WENT WRONG"})            
 
-  
+    
     # # HARVEST A TRAY ON REQUEST 
     # if request.method == "POST":   
     #     # GET HARVEST DATA FROM JS 
@@ -165,9 +165,8 @@ def history(request):
         if request.POST["type"] == "bulkdelete":
             listdel = request.POST.getlist('dbid')
             for i in listdel:
-                updateitem({'type': 'delete', 'poid':i}, Harvest, Nharvest)
+                updateitem({'type': 'delete', 'id':i}, Harvest, Nharvest)
             return HttpResponseRedirect(reverse("history")) 
-
         uitem = updateitem(request.POST, Harvest, Nharvest)
 
         if uitem == True:
@@ -199,8 +198,9 @@ def analytics(request):
         
         elif request.POST["type"]=="loadedit":
             list = ast.literal_eval(request.POST['itemid'])
+            print(len(list))
             data = {"type": request.POST["type"] ,"itemid": list[0]}
-            uitem = updateitem(data, Tray, Dnewtray)
+            uitem = updateitem(data, Tray, Dnewtray, len(list))
             # filter only non harvested trays
             data = groupingtrays()
 
@@ -208,7 +208,7 @@ def analytics(request):
                                                               "form": Dnewtray(), "todayu": todayu })
         else:
             req = request.POST.copy()
-            object = Tray.objects.get(id=req['poid'])
+            object = Tray.objects.get(id=req['id'])
             count = int(req['count'])
             listobject = Tray.objects.filter(name=object.name, start=object.start)
             for i in listobject:
@@ -216,7 +216,7 @@ def analytics(request):
                     break
                 else:
                     count -= 1
-                    req.update({'poid':i.id})
+                    req.update({'id':i.id})
                     uitem = updateitem(req, Tray, Dnewtray)
 
         if uitem == True:

@@ -95,11 +95,6 @@ class Tray(models.Model):
         }
     
 
-class Harvest(models.Model):
-    tray = models.ForeignKey(Tray, on_delete=models.CASCADE)
-    date = models.DateField()
-    output = models.IntegerField()
-
 
 class BulkHarvest(models.Model):
     Product = models.ForeignKey(Plant, blank=True, null=True, on_delete=models.SET_NULL)
@@ -138,6 +133,11 @@ class BulkHarvest(models.Model):
             "total_seeds" : totalseeds,
         }
 
-    
+class Harvest(models.Model):
+    tray = models.ForeignKey(Tray, on_delete=models.CASCADE)
+    date = models.DateField()
+    output = models.IntegerField()  
+    bulkh = models.ForeignKey(BulkHarvest, on_delete=models.CASCADE, null=True, blank=True)
+  
 
     

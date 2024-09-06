@@ -3,6 +3,7 @@ from .models import *
 from datetime import datetime
 
 from django.utils.translation import gettext_lazy as _
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class Dnewplant (forms.ModelForm):
@@ -26,7 +27,7 @@ class Nharvest (forms.ModelForm):
     id.widget = id.hidden_widget()
     class Meta:
         model = Harvest
-        fields = "__all__"
+        fields = ["tray", "date", "output", "id"]
         widgets = {
         'date': forms.SelectDateWidget(attrs={'class':'toset', 'placeholder':'Select a date', 'type':'date'}),
         'tray': forms.HiddenInput(),
@@ -53,11 +54,20 @@ class Dnewtray(forms.ModelForm):
         # }
 
     
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, count=1, **kwargs):
         super(Dnewtray, self).__init__(*args, **kwargs)
         self.fields['start'].initial = datetime.now()
         self.fields['medium'].initial = ['1']
 
+        self.fields['count'].widget.attrs['max'] = count
+        self.fields['count'].widget.attrs['min'] = 1
+
+
+
+class Nbulkharvest(forms.ModelForm):
+    class Meta:
+        model = BulkHarvest
+        fields = ["Trays","PacksQtt", "MixWeight", "Harvestdate"]
 
 
 class Reportfilter(forms.Form):

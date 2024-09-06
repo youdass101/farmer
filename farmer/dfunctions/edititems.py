@@ -19,25 +19,30 @@ def trayser(type):
 
 
 
-def updateitem (data, dobject, dform):
+def updateitem (data, dobject, dform, att=1):
 
     type = data["type"]
     if type == "loadedit":
         idi = data["itemid"]
         item = dobject.objects.get(id=idi)
-        form = dform(instance=item)
-        form.id = idi
+        try:
+            initial = {'count':att}
+            form = dform(instance=item, count=att, initial = initial)
+
+        except:
+            form = dform(instance=item)
+
         list = dobject.objects.all()
 
         return {"editform": form, "form": dform(), "data": list}
     
     if type == "delete":
-        item = dobject.objects.get(id=data['poid'])
+        item = dobject.objects.get(id=data['id'])
         item.delete()
         return True
 
     if type == "edit":
-        item = dobject.objects.get(id=data['poid'])
+        item = dobject.objects.get(id=data['id'])
         nitem = dform(data, instance=item)
 
     if type == "new":
@@ -47,7 +52,10 @@ def updateitem (data, dobject, dform):
         nitem.save()
         return True
 
+
     else:
+        print(nitem)
+        print(nitem.errors  )
         return False
 
 
@@ -82,14 +90,14 @@ def collectanalyticdata(object):
 def newobject(data, object, form ):
     try: 
         # GET COUNT OF TRAY BASED ON PLANT NAME 
-        qtt = Tray.objects.filter(name=data['name']).count() 
+        c = Tray.objects.filter(name=data['name']).count() 
     except:
         # IF THIS IS THE FRIST TRAY OF IT KIND 
-        qtt = 0
+        c = 0
     # CREATE NEW TRAY NUMBER
     for i in range(int(data['count'])):
         # TRAY NUMBER BY NAME
-        c =check_number(qtt, Tray, data['name'])
+        c =check_number(c, Tray, data['name'])
         # ADD NUMBER TO NAME 
         data.update({'number':c})
         item = updateitem(data, object, form)
