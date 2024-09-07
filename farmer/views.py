@@ -110,44 +110,21 @@ def medium(request):
 @login_required
 def harvest(request):
     if request.method == "POST":
-        uitem = updateitem(request.POST, Harvest, Nharvest)
+        form = request.POST
+        if form[type] == "new":
+            listtray = form.getlist('id')
+            for i in listtray:
+                tray = Tray.objects.get(id=i)
+                
+
+
+            uitem = updateitem(request.POST, Harvest, Nharvest)
         if uitem == True:
             return HttpResponseRedirect(reverse("index"))
         if uitem == False:
             return render(request, "farmer/index.html",{"error": "SOMETHING WENT WRONG"})            
 
     
-    # # HARVEST A TRAY ON REQUEST 
-    # if request.method == "POST":   
-    #     # GET HARVEST DATA FROM JS 
-    #     form = json.loads(request.body)  
-    #     if form['bulk']:
-    #         x = json.loads(form['tidl'])
-    #         pack = Tray.objects.get(id=x[0])
-    #         packweight = pack.name.packweight * int(form['hpw'])
-    #         ttlweight = int(packweight) + int(form['hmw'])
-    #         form['tidl'] = x 
-    #         form['h'] = ttlweight / int(form['tqtt']) 
-    #         ttlmed = pack.medium_weight * int(form['tqtt']) 
-    #         ttlseed = pack.seeds_weight * int(form['tqtt'])
-    #         mpercent = int(form['hmw']) / ttlweight
-    #         ppercent = packweight / ttlweight
-
-        
-
-    #         BulkHarvest.objects.create(Product=pack.name, MediumMix=pack.medium, Trays=int(form['tqtt']), Harvestdate=form['d'], 
-    #                            PacksQtt=int(form['hpw']), PacksWeight=packweight, MixWeight=int(form['hmw']), 
-    #                            MediumWeightpacks= (ttlmed * ppercent), MediumWeightMix= (ttlmed * mpercent), SeedsWeightPacks= (ttlseed * ppercent),  SeedsWeightMix= (ttlseed*mpercent) )
-
-        
-    #     for i in range(int(form['tqtt'])):    
-    #         # GET TRAY MODEL OBJECT INSTANCE 
-    #         tray = Tray.objects.get(id=form['tidl'][i])
-    #         # CREATE HARVEST OBJECT IN HARVEST MODEL 
-    #         Harvest.objects.create(tray=tray, date=form['d'], output=form['h'])
-
-    # return JsonResponse({"result": True, "msg": "Success"}, status=201)
-        
 
 @login_required
 def history(request):
@@ -190,7 +167,7 @@ def analytics(request):
     if request.method == "GET":
         data = groupingtrays()
         # RETURN GROUPED DATA TO ANALYTIC PAGE 
-        return render(request, "farmer/analytics.html", {"data":data, "form": Dnewtray(), "todayu": todayu })
+        return render(request, "farmer/analytics.html", {"data":data, "form": Dnewtray(), "todayu": todayu, "bulkharvest":Nbulkharvest })
     
     if request.method == "POST":
         if request.POST["type"]=="new":
@@ -205,7 +182,7 @@ def analytics(request):
             data = groupingtrays()
 
             return render(request, "farmer/analytics.html", {"data":data,"editform": uitem["editform"],
-                                                              "form": Dnewtray(), "todayu": todayu })
+                                                              "form": Dnewtray(), "todayu": todayu, "bulkharvest":Nbulkharvest })
         else:
             req = request.POST.copy()
             object = Tray.objects.get(id=req['id'])

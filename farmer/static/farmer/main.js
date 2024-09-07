@@ -75,7 +75,10 @@ document.addEventListener('DOMContentLoaded', function() {
             button.onclick = () =>{
                 trayqtt = button.parentElement.querySelector(".ana").querySelector(".analytic_box").querySelector(".tray_number").querySelector(".number").innerHTML
                 traysids = button.value
-                harvestbulk.querySelector(".modal-content").querySelector(".cells").querySelector(".harvest_bulk_trays").value = trayqtt
+
+                harvestbulk.querySelector("#id_Trays").value = trayqtt
+                harvestbulk.querySelector("#id_Trays").max = trayqtt
+                harvestbulk.querySelector('#bulkharvest').value = traysids
                 harvestbulk.style.display = "block"
 
                 // Get the <span> element that closes the modal
@@ -88,34 +91,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (event.target == harvestbulk) {
                         harvestbulk.style.display = "none"
                     }
-                }
-
-                document.querySelector("#harvest_bulk").onclick = () =>{
-                    traysqtt = harvestbulk.querySelector("#harvest_bulk_trays").value
-                    harvestmixweight = harvestbulk.querySelector("#harvest_bulk_mix_weight").value
-                    harvestpackqtt = harvestbulk.querySelector("#harvest_bulk_pack_qtt").value
-                    harvestdate = harvestbulk.querySelector("#harvest_date").value
-
-                    fetch('/harvest', {
-                        method: 'POST',
-                        body: JSON.stringify({
-                            bulk : true,
-                            tqtt : traysqtt,
-                            hmw : harvestmixweight,
-                            hpw: harvestpackqtt,
-                            d : harvestdate,
-                            tidl : traysids,
-                            h : 0
-                        }),
-                        headers: {
-                            'X-CSRFToken': getCookie('csrftoken')
-                        }
-                    })
-                    // GET ACTION RESPONSE, REMOVE TRAY ELEMENT AND CLOSE FORM 
-                    .then(response => response.json())
-                    .then(result => {
-                        window.location.reload();
-                    })
                 }
             }
         })

@@ -52,10 +52,7 @@ def updateitem (data, dobject, dform, att=1):
         nitem.save()
         return True
 
-
     else:
-        print(nitem)
-        print(nitem.errors  )
         return False
 
 
@@ -90,7 +87,7 @@ def collectanalyticdata(object):
 def newobject(data, object, form ):
     try: 
         # GET COUNT OF TRAY BASED ON PLANT NAME 
-        c = Tray.objects.filter(name=data['name']).count() 
+        c = object.objects.filter(name=data['name']).count() 
     except:
         # IF THIS IS THE FRIST TRAY OF IT KIND 
         c = 0

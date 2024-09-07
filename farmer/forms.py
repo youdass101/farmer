@@ -48,13 +48,13 @@ class Dnewtray(forms.ModelForm):
         widgets = {
         'start': forms.SelectDateWidget(attrs={'class':'toset', 'placeholder':'Select a date', 'type':'date'}),
         'number': forms.HiddenInput(),
-    }
+        }
         # labels = {
         #     "name": _("Plant"),
         # }
 
     
-    def __init__(self, *args, count=1, **kwargs):
+    def __init__(self, *args, count=None, **kwargs):
         super(Dnewtray, self).__init__(*args, **kwargs)
         self.fields['start'].initial = datetime.now()
         self.fields['medium'].initial = ['1']
@@ -68,6 +68,16 @@ class Nbulkharvest(forms.ModelForm):
     class Meta:
         model = BulkHarvest
         fields = ["Trays","PacksQtt", "MixWeight", "Harvestdate"]
+
+        widgets = {
+            'Harvestdate': forms.SelectDateWidget(attrs={'class':'toset', 'placeholder':'Select a date', 'type':'date'}),
+            }
+    
+    def __init__(self, *args, **kwargs):
+        super(Nbulkharvest, self).__init__(*args, **kwargs)
+        self.fields['Harvestdate'].initial = datetime.now()
+        self.fields['Trays'].widget.attrs['min'] = 1
+
 
 
 class Reportfilter(forms.Form):

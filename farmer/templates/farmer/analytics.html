@@ -50,13 +50,13 @@
             <span class="clsh">&times;</span>
             <h4 class="harvest_title"></h4>
         </div>
-        <div class="cells">
-            <input id="harvest_bulk_trays" class="harvest_bulk_trays" type="number" placeholder="How many trays" required>
-            <input id="harvest_bulk_mix_weight" type="number" placeholder="Harvest Mix Weight" required>
-            <input id="harvest_bulk_pack_qtt" type="number" placeholder="Harvest Packs QTTY" required>
-            <input id="harvest_date" type="date" value="{{todayu}}">
-            <button id="harvest_bulk" type="submit" class="save">Harvest All</button> 
-            
+        <div>
+            <form action ="/harvest" method="POST">
+                {% csrf_token %}
+                {{bulkharvest}}
+                <input name="id" id="bulkharvest" hidden>
+                <button type="submit" name="type" value="new">Harvest</button>
+            </form>
         </div>
     </div>
 </div>

@@ -109,6 +109,29 @@ class BulkHarvest(models.Model):
     SeedsWeightPacks = models.IntegerField()
     SeedsWeightMix = models.IntegerField()
 
+    @property
+    def calculation (self):
+        self.PacksWeight = self.PacksQtt * self.Product.packweight
+        totalweight = self.PacksWeight + self.MixWeight
+        totalmed = self.Trays * self.Product.medium_weight
+        totalseeds = self.Trays * self.Product.seeds
+        if self.PacksQtt > 0:
+            ppercent = self.PacksWeight / totalweight
+            self.MediumWeightpacks = totalmed * ppercent
+            self.SeedsWeightPacks = totalseeds * ppercent
+        if self.MixWeight > 0 :
+            mpercnt = self.MixWeight / totalweight
+            self.MediumWeightMix = totalmed * mpercnt
+            self.SeedsWeightMix = totalseeds * mpercnt
+
+    def save(self, *args, **kwargs):
+          self.calculation
+          super(BulkHarvest, self).save(*args, **kwargs)
+
+
+
+        
+
     def serialize(self):
         # Total yield weight
         totalweight = self.PacksWeight + self.MixWeight
