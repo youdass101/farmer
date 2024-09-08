@@ -50,9 +50,11 @@ def updateitem (data, dobject, dform, att=1):
 
     if nitem.is_valid():
         nitem.save()
+
         return True
 
     else:
+        print(nitem.errors)
         return False
 
 

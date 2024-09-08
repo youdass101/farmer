@@ -119,11 +119,19 @@ class BulkHarvest(models.Model):
             ppercent = self.PacksWeight / totalweight
             self.MediumWeightpacks = totalmed * ppercent
             self.SeedsWeightPacks = totalseeds * ppercent
+        else:
+            self.MediumWeightpacks = 0
+            self.SeedsWeightPacks = 0
+
+
         if self.MixWeight > 0 :
             mpercnt = self.MixWeight / totalweight
             self.MediumWeightMix = totalmed * mpercnt
             self.SeedsWeightMix = totalseeds * mpercnt
-
+        else:
+            self.MediumWeightMix = 0
+            self.SeedsWeightMix = 0
+            
     def save(self, *args, **kwargs):
           self.calculation
           super(BulkHarvest, self).save(*args, **kwargs)

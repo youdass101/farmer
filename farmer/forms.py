@@ -27,10 +27,12 @@ class Nharvest (forms.ModelForm):
     id.widget = id.hidden_widget()
     class Meta:
         model = Harvest
-        fields = ["tray", "date", "output", "id"]
+        fields = ["tray", "date", "output", "id", "bulkh"]
         widgets = {
         'date': forms.SelectDateWidget(attrs={'class':'toset', 'placeholder':'Select a date', 'type':'date'}),
         'tray': forms.HiddenInput(),
+        'bulkh': forms.HiddenInput(),
+
         }
 
     def __init__(self, *args, **kwargs):
@@ -67,10 +69,12 @@ class Dnewtray(forms.ModelForm):
 class Nbulkharvest(forms.ModelForm):
     class Meta:
         model = BulkHarvest
-        fields = ["Trays","PacksQtt", "MixWeight", "Harvestdate"]
+        fields = ["Product", "MediumMix", "Trays", "PacksQtt", "MixWeight", "Harvestdate"]
 
         widgets = {
             'Harvestdate': forms.SelectDateWidget(attrs={'class':'toset', 'placeholder':'Select a date', 'type':'date'}),
+            'Product': forms.HiddenInput(),
+            'MediumMix': forms.HiddenInput(),
             }
     
     def __init__(self, *args, **kwargs):

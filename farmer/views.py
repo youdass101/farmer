@@ -110,15 +110,28 @@ def medium(request):
 @login_required
 def harvest(request):
     if request.method == "POST":
-        form = request.POST
-        if form[type] == "new":
-            listtray = form.getlist('id')
-            for i in listtray:
-                tray = Tray.objects.get(id=i)
-                
+        form = request.POST.copy()
+
+        if form['type'] == "bulknew":
+            listid = ast.literal_eval(form['id'])
+            tray = Tray.objects.get(id=listid[0])
+            form.update({'Product': tray.name.id, 'MediumMix': tray.medium.id})
+            nitem = Nbulkharvest(form)
+            if nitem.is_valid():
+                nitem = nitem.save()
+            
+            outp = (nitem.PacksWeight + nitem.MixWeight) / len(listid)
+            for i in range(nitem.Trays):
+                tray = Tray.objects.get(id=listid[i])         
+                formd = Harvest(tray=tray, date=nitem.Harvestdate,
+                                  output = outp, bulkh= nitem)
+                formd.save()
+             
+            return HttpResponseRedirect(reverse("analytics"))
 
 
-            uitem = updateitem(request.POST, Harvest, Nharvest)
+
+        uitem = updateitem(request.POST, Harvest, Nharvest)
         if uitem == True:
             return HttpResponseRedirect(reverse("index"))
         if uitem == False:
