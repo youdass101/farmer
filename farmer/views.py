@@ -50,7 +50,6 @@ def index(request):
         
         # Load edit form
         data = trayser("active")
-        print("WHAT THE HELL IS GOING ON")
 
         return render(request, "farmer/index.html", {"cd":data["cd"], "form": Dnewtray(), "data":data["active"], 
                                                      "count":len(data["active"]), "editform":uitem['editform'],
@@ -129,27 +128,20 @@ def harvest(request):
              
             return HttpResponseRedirect(reverse("analytics"))
 
-
-
         uitem = updateitem(request.POST, Harvest, Nharvest)
         if uitem == True:
             return HttpResponseRedirect(reverse("index"))
         if uitem == False:
             return render(request, "farmer/index.html",{"error": "SOMETHING WENT WRONG"})            
-
     
 
 @login_required
 def history(request):
     if request.method == "GET":
-        # LOAD HISTORY PAGE 
-        sdata = Tray.objects.all()
-        # SERIALIZE HISTORY PAGE TRAYS DATA 
-        fdata = [row.serialize() for row in sdata] 
-        # FILTER ONLY HARVESTED TRAYS 
-        data = [x for x in fdata if x["harvest"]]
+        # # LOAD HISTORY PAGE 
+        data = trayser("Inactive")
         # SEND DATA TO HTML PAGE 
-        return render(request, "farmer/history.html", {"data":data})
+        return render(request, "farmer/history.html", {"data":data['active']})
     if request.method == "POST":
 
         if request.POST["type"] == "bulkdelete":
@@ -188,7 +180,6 @@ def analytics(request):
         
         elif request.POST["type"]=="loadedit":
             list = ast.literal_eval(request.POST['itemid'])
-            print(len(list))
             data = {"type": request.POST["type"] ,"itemid": list[0]}
             uitem = updateitem(data, Tray, Dnewtray, len(list))
             # filter only non harvested trays
@@ -228,9 +219,20 @@ def report(request):
         reportfilter = None
 
     else:
+        try:
+            if request.POST['type'] == "delete":
+                print(request.POST['id'])
+                ditem = updateitem(request.POST, BulkHarvest, Nbulkharvest)
+                if ditem == True:
+                    return HttpResponseRedirect(reverse("report"))    
+                if ditem == False:
+                    return render(request, "farmer/reports.html",{"error": "SOMETHING WENT WRONG"}) 
+        except:
+            print("n")
+
+
         form = Reportfilter(request.POST)
-        if form.is_valid():
-            
+        if form.is_valid():            
             type = form.cleaned_data['type']
             productname = form.cleaned_data['product']
             start = form.cleaned_data['start']

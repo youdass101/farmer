@@ -136,6 +136,15 @@
                         <tr><th> Total Seeds </th>
                             <td class="total_seeds">{{i.total_seeds}} gr</td>
                         </tr>
+                        <tr><th>Action</th>
+                            <td>
+                                <form method="POST" action="/report">
+                                    {% csrf_token %}
+                                    <input name="id" value="{{i.id}}" hidden>
+                                    <button type="submit" name="type" value="delete">DELETE ALL</button>
+                                </form>
+                            </td>
+                        </tr>
                     </table>              
                 </div>
             {% endfor %}

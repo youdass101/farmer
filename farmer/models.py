@@ -131,14 +131,11 @@ class BulkHarvest(models.Model):
         else:
             self.MediumWeightMix = 0
             self.SeedsWeightMix = 0
-            
+
     def save(self, *args, **kwargs):
           self.calculation
           super(BulkHarvest, self).save(*args, **kwargs)
 
-
-
-        
 
     def serialize(self):
         # Total yield weight
@@ -148,6 +145,7 @@ class BulkHarvest(models.Model):
 
         return {
             # DATA TO RETURN FOR SERIALZATION 
+            "id": self.pk,
             "product": self.Product,
             "medium": self.MediumMix,
             "trays_QTT": self.Trays,

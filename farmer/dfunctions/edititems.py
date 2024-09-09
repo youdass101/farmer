@@ -37,7 +37,9 @@ def updateitem (data, dobject, dform, att=1):
         return {"editform": form, "form": dform(), "data": list}
     
     if type == "delete":
+        print("first step")
         item = dobject.objects.get(id=data['id'])
+        print("detele now")
         item.delete()
         return True
 
