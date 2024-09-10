@@ -112,7 +112,7 @@ def groupingtrays ():
         grouped = active.values('name', 'start').annotate(qtt=models.Count('name'), seeds=models.Sum('seeds_weight'), 
                                                         soil=models.Sum('medium_weight'), list_id=ArrayAgg('id'))
         # create empty list to add data
-        data= [collectanalyticdata(row) for row in grouped]
+        data= [collectanalyticdata(row) for row in grouped.order_by('-start')]
     except:
         data = False
 
