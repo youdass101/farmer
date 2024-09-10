@@ -1,11 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-    // Get the modal WHICH IS IN LAYOUT A FORM TO CREATE ANY NEW OBJECT
+    // Get the modal WHICH IS IN LAYOUT A GLOBAL FORM TO CREATE ANY NEW OBJECT
     var modal = document.getElementById("myModal");
     var modaledit = document.getElementById("myEditModal");
+    var esc = event.keyCode;
 
 
-    // Get the button that opens the modal
+    // Get the button that opens the Global modal
     var btn = document.getElementById("myBtn");
 
     // Get the <span> element that closes the modal
@@ -21,8 +22,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
 
     // When the user clicks on the button, open the modal
-    btn.onclick = function() {
-        modal.style.display = "block";
+    if (btn){
+        btn.onclick = function() {
+            modal.style.display = "block";
+        }
     }
 
     // When the user clicks on <span> (x), close the modal
@@ -32,11 +35,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
+    window.addEventListener('keydown', function(event) {
+        if (event.key == 'Escape') {
+            if (modal) {
+                modal.style.display = "none";
+            }
+            if (modaledit) {
+                modaledit.style.display = "none";
+            }
         }
-    }
+    })
 
 
     // Harvest button popup and data
@@ -62,6 +70,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         harvestpop.style.display = "none";
                     }
                 }
+
+                window.addEventListener('keydown', function(event) {
+                    if (event.key == 'Escape') {
+                        harvestpop.style.display = "none";
+                    }
+                })
             }
         })
     }
@@ -92,6 +106,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         harvestbulk.style.display = "none"
                     }
                 }
+
+                window.addEventListener('keydown', function(event) {
+                    if (event.key == 'Escape') {
+                        harvestbulk.style.display = "none"
+                    }
+                })
             }
         })
     }

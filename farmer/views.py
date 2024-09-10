@@ -156,7 +156,6 @@ def history(request):
         if uitem == False:
             return render(request, "farmer/index.html",{"error": "SOMETHING WENT WRONG"})
         
-        
         # load edit form
         data = trayser("inactive")
         return render(request, "farmer/history.html", {"data":data['active'],"editform":uitem["editform"] })
@@ -221,14 +220,13 @@ def report(request):
     else:
         try:
             if request.POST['type'] == "delete":
-                print(request.POST['id'])
                 ditem = updateitem(request.POST, BulkHarvest, Nbulkharvest)
                 if ditem == True:
                     return HttpResponseRedirect(reverse("report"))    
                 if ditem == False:
                     return render(request, "farmer/reports.html",{"error": "SOMETHING WENT WRONG"}) 
         except:
-            print("n")
+            print("")
 
 
         form = Reportfilter(request.POST)

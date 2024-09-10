@@ -59,7 +59,7 @@ class Dnewtray(forms.ModelForm):
     def __init__(self, *args, count=None, **kwargs):
         super(Dnewtray, self).__init__(*args, **kwargs)
         self.fields['start'].initial = datetime.now()
-        self.fields['medium'].initial = ['2']
+        self.fields['medium'].initial = ['1']
 
         self.fields['count'].widget.attrs['max'] = count
         self.fields['count'].widget.attrs['min'] = 1
