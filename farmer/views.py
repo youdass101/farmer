@@ -382,6 +382,7 @@ def filter(request):
 
 #LOGIN PAGE 
 def login_view(request):
+    print("are we here?")
     if request.method == "POST":
         # GET DATA
         form = Login(request.POST)
