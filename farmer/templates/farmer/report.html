@@ -141,7 +141,7 @@
                                 <form method="POST" action="/report">
                                     {% csrf_token %}
                                     <input name="id" value="{{i.id}}" hidden>
-                                    <button type="submit" name="type" value="delete">DELETE ALL</button>
+                                    <button class="report_delete_all" type="submit" name="type" value="delete">DELETE ALL</button>
                                 </form>
                             </td>
                         </tr>

@@ -209,25 +209,20 @@ def analytics(request):
 
 @login_required
 def report(request):
+    medium = 0
+    totalyield = 0 
     if request.method == "GET":
         allbulk  = BulkHarvest.objects.all()[:10]
-        data = [row.serialize() for row in  allbulk]
         filter = None  
-        medium = 0
-        totalyield = 0 
-        reportfilter = None
+        form = None
 
     else:
-        try:
-            if request.POST['type'] == "delete":
-                ditem = updateitem(request.POST, BulkHarvest, Nbulkharvest)
-                if ditem == True:
-                    return HttpResponseRedirect(reverse("report"))    
-                if ditem == False:
-                    return render(request, "farmer/reports.html",{"error": "SOMETHING WENT WRONG"}) 
-        except:
-            print("")
-
+        if request.POST['type'] == "delete":
+            ditem = updateitem(request.POST, BulkHarvest, Nbulkharvest)
+            if ditem == True:
+                return HttpResponseRedirect(reverse("report"))    
+            if ditem == False:
+                return render(request, "farmer/reports.html",{"error": "SOMETHING WENT WRONG"}) 
 
         form = Reportfilter(request.POST)
         if form.is_valid():            
@@ -235,55 +230,29 @@ def report(request):
             productname = form.cleaned_data['product']
             start = form.cleaned_data['start']
             end = form.cleaned_data['end']
-            medium = 0
-            totalyield = 0
-            reportfilter = Reportfilter()
-            reportfilter.initial['type'] = type
-            reportfilter.initial['product'] = productname
-            reportfilter.initial['start'] = start
-            reportfilter.initial['end'] = end
             filter = {'type': type, 'product': productname, 'start':start, 'end':end}
-            if type=="All":
-                
-                filter = {'type': type, 'product': productname, 'start':start, 'end':end}
-                if not productname:
-                    allbulk = BulkHarvest.objects.filter(Harvestdate__range=[start, end])
-                else:
-                    allbulk = BulkHarvest.objects.filter(Product= productname, Harvestdate__range=[start, end])
-
-                data = [row.serialize() for row in  allbulk]
-                
-
-            if type=="Packs":
-                if not productname:
-                    allbulk = BulkHarvest.objects.filter(Harvestdate__range=[start, end])
-                    
-                 
-                else:
-                    allbulk = BulkHarvest.objects.filter(Product= productname, Harvestdate__range=[start, end])
             
-                data = [row.serialize() for row in  allbulk]
+            if not productname:
+                allbulk = BulkHarvest.objects.filter(Harvestdate__range=[start, end])
+            else:
+                allbulk = BulkHarvest.objects.filter(Product= productname, Harvestdate__range=[start, end])
+            
 
             if type=="Mix":
                 if not productname:
-                    allbulk = BulkHarvest.objects.filter(Harvestdate__range=[start, end])
                     for i in allbulk:
                         medium = medium + i.MediumWeightMix
                         totalyield = totalyield + i.MixWeight
-                    
-                 
                 else:
-                    allbulk = BulkHarvest.objects.filter(Product= productname, Harvestdate__range=[start, end])
                     for i in allbulk:
                         medium = medium + i.MediumWeightMix
                         totalyield = i.MixWeight
+
+    data = [row.serialize() for row in  allbulk]
+
                     
-            
-                data = [row.serialize() for row in  allbulk]
-
-
-             
-    return render(request, "farmer/report.html", {"data": data, "fform": Reportfilter, "filter": filter, "medium": medium, "totalyield":totalyield, "rff": reportfilter})
+    return render(request, "farmer/report.html", {"data": data, "fform": Reportfilter, "filter": filter, 
+                                                  "medium": medium, "totalyield":totalyield, "rff": form})
 
 @login_required
 def filter(request):

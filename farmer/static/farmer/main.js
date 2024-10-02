@@ -46,6 +46,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     })
 
+    //Alert if delete all is presed
+    if(document.querySelectorAll(".report_delete_all")){
+        document.querySelectorAll(".report_delete_all").forEach(button => {
+        button.onclick = () => {
+            if (confirm("Are you sure you want to delete")) {
+                return true
+            }
+            else{
+                return false
+            }
+        }})
+    }
+
 
     // Harvest button popup and data
     if(document.querySelectorAll('.harvestbt')){    
