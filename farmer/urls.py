@@ -10,7 +10,6 @@ urlpatterns = [
     path("medium", views.medium, name="medium"),
     path("harvest", views.harvest, name="harvest"),
     path("history", views.history, name="history"),
-    path("filter", views.filter, name="filter"),
     path("analytics", views.analytics, name="analytics"),
     path("report", views.report, name="report"),
 ]

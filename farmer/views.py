@@ -38,8 +38,18 @@ def index(request):
                 uitem = updateitem(({'type':'delete', 'id': i}), Tray, Dnewmedium)
             return HttpResponseRedirect(reverse("index"))    
 
+        # Create new Tray
         if request.POST["type"] =="new":
             uitem = newobject(request.POST.copy(), Tray, Dnewtray)
+        # Filter Active trays by something
+        elif request.POST["type"] == "filter":
+            filter = request.POST
+            data = filter_tray(Tray, filter, "active")
+            return render(request, "farmer/index.html", {"cd":data["cd"], "form": Dnewtray(),
+                                                      "data":data["active"], "count":len(data["active"]),
+                                                        "harvestform": Nharvest })
+            
+        # Edit, fetch data or delete
         else:
             uitem = updateitem(request.POST, Tray, Dnewtray)
 
@@ -47,6 +57,7 @@ def index(request):
             return HttpResponseRedirect(reverse("index"))    
         if uitem == False:
             return render(request, "farmer/index.html",{"error": "SOMETHING WENT WRONG"})
+
         
         # Load edit form
         data = trayser("active")
@@ -74,7 +85,12 @@ def plants(request):
             return render(request, "farmer/plants.html", {"form": Dnewplant(), "data": plantslist})
 
         if request.method == "POST":
-            uitem = updateitem(request.POST, Plant, Dnewplant)
+            if request.POST['type'] == "filter":
+                data = filter_data(Plant, request.POST)
+                return render(request, "farmer/plants.html", {"form": Dnewplant(), "data": data})
+
+            else:
+                uitem = updateitem(request.POST, Plant, Dnewplant)
 
         if uitem == True:
             return HttpResponseRedirect("plants")
@@ -95,7 +111,12 @@ def medium(request):
     
     # FETCH, EDIT, DELETE OBJECT
     if request.method == "POST":
-        uitem = updateitem(request.POST, Medium, Dnewmedium)
+        if request.POST['type'] == "filter":
+                data = filter_data(Medium, request.POST)
+                return render(request, "farmer/medium.html", {"form": Dnewmedium(), "data": data})
+      
+        else:
+            uitem = updateitem(request.POST, Medium, Dnewmedium)
 
     if uitem == True:
         return HttpResponseRedirect("medium")
@@ -149,6 +170,11 @@ def history(request):
             for i in listdel:
                 updateitem({'type': 'delete', 'id':i}, Harvest, Nharvest)
             return HttpResponseRedirect(reverse("history")) 
+        elif request.POST["type"] == "filter":
+            filter = request.POST
+            data = filter_tray(Tray, filter, "inactive")
+            return render(request, "farmer/history.html", {"data":data['active']})
+
         uitem = updateitem(request.POST, Harvest, Nharvest)
 
         if uitem == True:
@@ -254,102 +280,9 @@ def report(request):
     return render(request, "farmer/report.html", {"data": data, "fform": Reportfilter, "filter": filter, 
                                                   "medium": medium, "totalyield":totalyield, "rff": form})
 
-@login_required
-def filter(request):
-    if request.method == "POST":
-        try:
-            # REQUEST FILTER DATA 
-            page = request.POST["page"]
-            # INDEX PAGE TARGET 
-            if page == "index":
-                # SEARCH REQUEST STRING  
-                search = request.POST['search']
-                # SEARCH STRING IS NOT EMPTY 
-                if search != "":
-                    # SEARCH MODELS AND SERIALIZE 
-                    sdata = Tray.objects.filter(fname__contains=search)
-                    fdata = [row.serialize() for row in sdata]
-                    
-                else:    
-                    # SEARCH STRING IS EMPTY REQUEST FILTER TARGET 
-                    filter = request.POST["filter"] 
-                    # FILTER IS BY NAME FILTER THE NAME AND SERIALIZE THEM 
-                    if filter == "name":
-                        sdata = Tray.objects.all().order_by('name')
-                        fdata = [row.serialize() for row in sdata] 
-                    else:
-                        # IF FILTER IS ANYTHING ELSE THAN NAME SERIAL ALL DATA AND FILTER IT 
-                        sdata = Tray.objects.all()
-                        vdata = [row.serialize() for row in sdata]
-                        fdata = sorted(vdata, key=lambda k: k[filter])
-                # UPDATE DATE        
-                cd = str(datetime.date(datetime.today()))
-                # FILTER ACTIVE TRAYS 
-                data = [x for x in fdata if not x["harvest"]]
-                # RETURN FILTER DATA WITH NEEDE DEFAULT FORMS 
-                return render(request, "farmer/index.html", {"cd":cd, "edit": Dnewtray(), "form": Dnewtray(), "data":data, "count": len(data)})
-            # FILTER FROM MEDIUM PAGE 
-            elif page == "medium":
-                # REQUEST FILTER DATA 
-                filter = request.POST["filter"]
-                # LOAD ALL MEDIUMS MODELS AND FILTER THEM BY LOADED FILTER 
-                data = Medium.objects.all().order_by(filter)
-                return render(request, "farmer/medium.html", {"form": Dnewmedium(), "data": data})
-            # FILTER PAGE IS PLANTS 
-            elif page == "plant":
-                # REQUEST SEARCH STRING
-                search = request.POST['search']
-                # IF SEARCH STRING IS NOT EMPTY 
-                if search != "":
-                    # SEARCH FOR STRING IN PLANTS MODEL
-                    data = Plant.objects.filter(name__contains=search)
-                else:
-                    # IF SEARCH STRING IS EMPTY 
-                    filter = request.POST["filter"]
-                    # FILTER MODEL BY FILTER LOAD 
-                    data = Plant.objects.all().order_by(filter)
-                # RETURN FILTERED DATA 
-                return render(request, "farmer/plants.html", {"form": Dnewplant(), "plants": data})
-            # IF FILTER IS HISTORY PAGE 
-            elif page == "history":
-                # REQUEST SEARCH STRING FROM PAGE 
-                search = request.POST['search']
-                # IF SEARCH STRING IS NOT NONE
-                if search != "":
-                    # SEARCH AND SERIALIZE FILTER SEARCH 
-                    sdata = Tray.objects.filter(fname__contains=search)
-                    fdata = [row.serialize() for row in sdata]
-                # IF SEARCH STRING IS NO NONE
-                else:
-                    # REQUEST FILTER FROM HTML PAGE 
-                    filter = request.POST["filter"] 
-                    # LOAD ALL TRAYS FROM MODEL 
-                    sdata = Tray.objects.all()
-                    # SERIALIZE ALL TRAYS 
-                    vdata = [row.serialize() for row in sdata]
-                    # FILTER ALL SERIALIZED DATA BY THE LOADED FILTER 
-                    fdata = sorted(vdata, key=lambda k: k[filter])
-                # REMOVE ACTIVE TRAYS AND LOAD ONLY HARVESTED TRAYS 
-                data = [x for x in fdata if x["harvest"]]
-                # RETURN ALL FILTERED DATA TO HISTORY PAGE 
-                return render(request, "farmer/history.html", {"data":data})
-        except:
-            # FILTER ANALYTIC PAGE 
-            dt = request.POST["start"]
-            pname = request.POST["tray_name"]
-            name = Plant.objects.get(name=pname.strip())
-            sdata = Tray.objects.filter(name=name, start=datetime.strptime(dt, '%b. %d, %Y'))
-            vdata = [row.serialize() for row in sdata]
-            data = [x for x in vdata if not x['harvest']]
-            cd = str(datetime.date(datetime.today()))
-
-            return render(request, "farmer/index.html", {"cd":cd, "edit": Dnewtray(), "form": Dnewtray(), "data":data, "count": len(data)})
-         
-
 
 #LOGIN PAGE 
 def login_view(request):
-    print("are we here?")
     if request.method == "POST":
         # GET DATA
         form = Login(request.POST)

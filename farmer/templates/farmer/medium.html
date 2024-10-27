@@ -11,14 +11,16 @@
     <table class="filter">
         <tr>
             <td>
-                <form action="/filter" method="POST">
+                <form action="/medium" method="POST">
                     {% csrf_token %}
-                    <input value="medium" name="page" hidden>
+                    <input value="filter" name="type" hidden>
                     <select name="filter">
                     <option value="name">Name</option>
                     <option value="coco">Coco</option>
                     <option value="soil">Soil</option>
-                    </select>   
+                    </select> 
+                    <input name="search" type="text" placeholder="Search medium">  
+                    <input name="object" value="Medium" hidden>
                     <button type="submit">Filter</button>
                 </form>
             </td>

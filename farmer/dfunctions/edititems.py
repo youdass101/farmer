@@ -3,8 +3,9 @@ from ..forms import *
 from django.contrib.postgres.aggregates import ArrayAgg
 
 
-def trayser(type):
-    sdata = Tray.objects.all()
+def trayser(type, sdata="all"):
+    if sdata=="all":
+        sdata = Tray.objects.all()
     # GET TODAYS DATE 
     cd = str(datetime.date(datetime.today()))
 
@@ -118,8 +119,36 @@ def groupingtrays ():
 
 
     return data
- 
-    
+
+def filter_data(ob, data):
+    if data["search"] != "":
+        if ob == Tray:
+            sdata = ob.objects.filter(fname__contains=data["search"])
+            print(sdata)
+        else:
+            sdata = ob.objects.filter(name__contains=data["search"])
+    else:
+        sdata = ob.objects.all().order_by(data["filter"])   
+    return sdata 
+
+def filter_tray(ob, data, state):
+    try:
+        fdata = trayser(state, filter_data(ob, data))
+    except:
+        filter = data['filter']
+        sdata = Tray.objects.all()
+        vdata = [row.serialize() for row in sdata]
+        fdata = sorted(vdata, key=lambda k: k[filter])
+
+        if state == "active":
+            active = [x for x in fdata if not x["harvest"]]
+        else:
+            active = [x for x in fdata if x["harvest"]]
 
 
-    
+        fdata = {"cd":str(datetime.date(datetime.today())), "active": active}
+
+    return fdata
+
+
+
