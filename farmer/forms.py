@@ -29,7 +29,7 @@ class Nharvest (forms.ModelForm):
         model = Harvest
         fields = ["tray", "date", "output", "id", "bulkh"]
         widgets = {
-        'date': forms.SelectDateWidget(attrs={'class':'toset', 'placeholder':'Select a date', 'type':'date'}),
+        'date': forms.SelectDateWidget(years=range(2023, 2030), attrs={'class':'toset', 'placeholder':'Select a date', 'type':'date'}),
         'tray': forms.HiddenInput(),
         'bulkh': forms.HiddenInput(),
 
@@ -48,7 +48,7 @@ class Dnewtray(forms.ModelForm):
         model = Tray
         fields = ["name", "medium", "seeds_weight", "medium_weight", "start", "number", "count", "id"]
         widgets = {
-        'start': forms.SelectDateWidget(attrs={'class':'toset', 'placeholder':'Select a date', 'type':'date'}),
+        'start': forms.SelectDateWidget(years=range(2023, 2030), attrs={'class':'toset', 'placeholder':'Select a date', 'type':'date'}),
         'number': forms.HiddenInput(),
         }
         # labels = {
@@ -72,7 +72,7 @@ class Nbulkharvest(forms.ModelForm):
         fields = ["Product", "MediumMix", "Trays", "PacksQtt", "MixWeight", "Harvestdate"]
 
         widgets = {
-            'Harvestdate': forms.SelectDateWidget(attrs={'class':'toset', 'placeholder':'Select a date', 'type':'date'}),
+            'Harvestdate': forms.SelectDateWidget(years=range(2023, 2030),attrs={'class':'toset', 'placeholder':'Select a date', 'type':'date'}),
             'Product': forms.HiddenInput(),
             'MediumMix': forms.HiddenInput(),
             }
@@ -87,8 +87,8 @@ class Nbulkharvest(forms.ModelForm):
 class Reportfilter(forms.Form):
     type = forms.ChoiceField(widget=forms.Select(attrs={'class':'toset'}),label=('select type'),choices=(("All","All"),("Packs","Packs"),("Mix","Mix")))
     product = forms.ModelChoiceField(widget=forms.Select(attrs={'class':'toset'}), empty_label='All',required=False, queryset=Plant.objects.all())
-    start = forms.DateField(widget=forms.SelectDateWidget(attrs={'class': 'toset'}),label=('Starting'),initial=datetime.now())
-    end = forms.DateField(widget=forms.SelectDateWidget(attrs={'class': 'toset'}),label=('Ending'),initial=datetime.now())
+    start = forms.DateField(widget=forms.SelectDateWidget(years=range(2023, 2030),attrs={'class': 'toset'}),label=('Starting'),initial=datetime.now())
+    end = forms.DateField(widget=forms.SelectDateWidget(years=range(2023, 2030),attrs={'class': 'toset'}),label=('Ending'),initial=datetime.now())
 
 class Login(forms.Form):
     username = forms.CharField(widget=forms.TextInput(attrs={'class':'inputs', 'placeholder':'Username'}),label=(''))

@@ -109,6 +109,10 @@ class BulkHarvest(models.Model):
     SeedsWeightPacks = models.IntegerField()
     SeedsWeightMix = models.IntegerField()
 
+    def __str__(self):
+            return f" name:{self.Product} start:{self.Harvestdate} Mixweight:{self.MixWeight} Packswight:{self.PacksWeight} "
+
+
     @property
     def calculation (self):
         self.PacksWeight = self.PacksQtt * self.Product.packweight
