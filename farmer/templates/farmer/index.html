@@ -1,26 +1,49 @@
-{% extends "farmer/layout.html" %}
+{%extends "farmer/layout.html"%}
 {% block creator %}<h1>New Tray</h1>{% endblock %}
-{% block action %} action="/"{% endblock %}
-{% block body %}
+{% block action %} action="/analytics"{% endblock %}
+{%block body%}
+<button id="myBtn" class="subbtn">New Tray</button>    
 
-<h1>Active Trays {{count}}</h1>
-{% block id_new %}{% endblock %}
-<div id="MyEdit" class="modal">
-    <!-- NEW PLANT Modal content -->
-    <div class="modal-content">
+{% if data %}
+    <div class="analytics" id="analytic_container">
+        {% for i in data %}
         <div>
-            <span class="cls">&times;</span>
-            <h4 class="edit_title"></h4>
+            <form class="ana" action="/filter" method="POST">
+                {% csrf_token %}
+                <input name="tray_name" value="{{i.name}}" hidden>
+                <input name="start" value="{{i.start}}" hidden>
+                <button type="submit" class="analytic_box"> 
+                    <div class="tray_number"><span class="number">{{i.quantity}}</span> trays </div>
+                    <div class="tray_name">{{i.name}}</div>
+                    <div class="seedstotal">{{i.seeds}} Grams of Seeds</div>
+                    <div class="soilstotal">{{i.soil}} Litre of Soil</div>
+                    <div class="start">{{i.start}}</div> 
+                    <div class="end">{{i.end}}</div> 
+                    <div>{{i.days.days}} days</div>
+                    <div class="countdown"></div>
+                </button>
+            </form>
+            <button id="harvestbulk" class="harvestbulk" type="submit" value="{{i.listid}}">Harvest</button>
+            <div>
+                <form action="/analytics" method="POST">
+                    <!-- CSRF TOKEN FOR FORM-->
+                    {% csrf_token %}
+                    <!-- GET FORM FROM PYTHON DATA SENT  -->
+                    <input name="type" value="loadedit" hidden>
+                    <input value="{{i.listid}}" name="itemid" hidden>
+                    <button class="editplant" type="submit" class="subbtn">Edit</button>
+                </form>
+            </div>
         </div>
-        <div>
-            {{edit}}
-            <button id="save_tray" type="submit" class="save">Save</button> 
-            <button id="delete_tray"  class="delete">DELETE</button>
-        </div>
-    </div>
+
+        {% endfor %}
+{% else %}
+    <h1>Nothing here </h1>
+{% endif %}
+
 </div>
 <!-- HARVEST POP -->
-<div id="Harvest" class="modal">
+<div id="Harvestbulkpop" class="modalbulk">
     <!-- NEW PLANT Modal content -->
     <div class="modal-content">
         <div>
@@ -28,124 +51,13 @@
             <h4 class="harvest_title"></h4>
         </div>
         <div>
-            <input id="harvest_weight" type="number" placeholder="Harvest Weight" required>
-            <input id="harvest_date" type="date" value="{{cd}}">
-            <button id="harvest_tray" type="submit" class="save">Harvest</button> 
-        </div>
-    </div>
-</div>
-
-
-<!-- filters and search  -->
-<table class="filter">
-    <tr>
-        <td>
-            <form action="/" method="POST">
+            <form action ="/harvest" method="POST">
                 {% csrf_token %}
-                <input value="filter" name="type" hidden>
-                <select name="filter">
-                    <option value="name">Name</option>
-                    <option value="days">Days</option>
-                    <option value="start">Start</option>
-                    <option value="end">End</option>
-                </select>   
-                <input name="search" type="text" placeholder="Search product">
-                <input name="object" value="Tray" hidden>
-                <button type="submit">Filter</button>
-            </form>
-        </td>
-        <td>    
-        <!-- create new tray -->
-        <button id="myBtn" class="subbtn">New Tray</button>        
-        </td>
-    </tr>           
-</table>
-
-<!-- table header titles -->
-<ol class="maintable">
-    <table  class="table table-striped">
-        <thead  class="thead-dark">
-            <tr>
-                <th>DELETE</th>
-                <th class="cc" scope="col" >Count</th>
-                <th scope="col">Tray ID</th>
-                <th scope="col">Days</th>
-                <th class="mobile_hide" scope="col">Mix Weight</th>    
-                <th class="mobile_hide" scope="col">Seeds Weight</th>
-                <th class="mobile_hide" scope="col">Medium</th>
-                <th class="mobile_hide" scope="col">Start</th>
-                <th class="mobile_hide" scope="col">End</th>
-                <th scope="col">CountDown</th>
-                <th scope="col">Harvest</th>
-                <th class="mobile_hide" scope="col">Edit</th>
-                
-            </tr>
-        </thead>
-    <!-- created plants list -->
-        <tbody>
-            <form action="/" method="POST" id="deletebulkform">
-                {% csrf_token %}
-                <input name="type" value="bulkdelete" hidden>
-                <button type="submit">DELETE</button>
-            </form>
-            {% for i in data %}
-                    <tr>
-                        <!-- if not harvest -->
-                        <td><input type="checkbox" name="dbid" value="{{i.id}}" form="deletebulkform"></td>
-                        <td> <li class="count"></li></td>
-                        <td class="tn" style = "text-transform:capitalize;">{{i.name}}{{i.number}}</td>
-                        <td>{{i.days.days}}</td>
-                        <td class="mw mobile_hide">{{i.medium_weight}}</td>
-                        <td class="sw mobile_hide">{{i.seeds_weight}}</td>
-                        <td class="mt mobile_hide">{{i.medium}}</td>
-                        <td class="ts mobile_hide">{{i.start}}</td>
-                        <td class="end mobile_hide">{{i.end}}</td>
-                        <td class="countdown" value="{{i.date}}"></td>
-                        <td>
-                            <input value="{{i.name}}{{i.number}}" class="hplantname" hidden>
-                            <button class="harvestbt" value="{{i.id}}" type="submit">Harvest</button>
-                        </td>
-                        <td>   
-                            <form action="/" method="POST">
-                                <!-- CSRF TOKEN FOR FORM-->
-                                {% csrf_token %}
-                                <!-- GET FORM FROM PYTHON DATA SENT  -->
-                                 <input name="type" value="loadedit" hidden>
-                                <input value="{{i.id}}" name="itemid" hidden>
-                                <button class="editplant" type="submit" class="subbtn">Edit</button>
-                            </form>
-                        </td>    
-                    </tr>     
-            {% endfor %}
-        </tbody>
-    </table>
-</ol>  
-
-
-<!-- POP UP FORM FOR DIFFERENT EDIT USE -->
-<div id="myHarvestModal" class="modalharvest">
-    <!-- NEW PLANT Modal content -->
-    <div class="modal-content">
-        <div>
-            <!-- FORM CLOSE BUTTON -->
-            <span class="clsh" id="clsh">&times;</span>
-            <!-- FORM TITLE VARIABLE -->
-            <h4>{% block edit %}{% endblock %}</h4>
-        </div>
-        <div>
-            <!-- FORM ACTION VARIABLE -->
-            <form method="POST" action="/harvest">
-                <!-- CSRF TOKEN FOR FORM-->
-                {% csrf_token %}
-                <!-- GET FORM FROM PYTHON DATA SENT  -->
-                <h1 id="harvestplantname"></h1>
-
-                {{harvestform}}
-                <input name="type", value="new" hidden>
-
-                <button  type="submit" class="subbtn">Harvest</button>
+                {{bulkharvest}}
+                <input name="id" id="bulkharvest" hidden>
+                <button type="submit" name="type" value="bulknew">Harvest</button>
             </form>
         </div>
     </div>
 </div>
-{% endblock %}
+{%endblock%}

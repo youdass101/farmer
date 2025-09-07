@@ -1,24 +1,15 @@
 from django.shortcuts import render
-from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 import json
-from django.views.decorators.csrf import csrf_exempt
-from django.contrib.postgres.aggregates import ArrayAgg
-
 from .dfunctions.edititems import *
-
 import ast
-
-
 from .models import *
 from .forms import *
 from django.contrib.auth.decorators import login_required
-import pandas as pd
-from datetime import datetime, timedelta
-regcode = "123456"
+from datetime import datetime
 
 # INDEX PAGE LOAD TRAYS 
 
@@ -26,48 +17,46 @@ def index(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse("login"))
     else:
-        if request.method == "GET":
-            # GET ALL active CREATED TRAYS
-            data = trayser("active")
-            # SEND DATA TO HTML INDEX PAGE
-            return render(request, "farmer/index.html", {"cd":data["cd"], "form": Dnewtray(),
-                                                      "data":data["active"], "count":len(data["active"]),
-                                                        "harvestform": Nharvest })
-        if request.method == "POST":
-            # bulk delete by checkbox
-            if request.POST["type"] == "bulkdelete":
-                listdel = request.POST.getlist('dbid')
-                for i in listdel:
-                    uitem = updateitem(({'type':'delete', 'id': i}), Tray, Dnewmedium)
-                return HttpResponseRedirect(reverse("index"))    
+        # TODAY DATE 
+        todayu = str(datetime.date(datetime.today()))
 
-            # Create new Tray
-            if request.POST["type"] =="new":
+        if request.method == "GET":
+            data = groupingtrays()
+            # RETURN GROUPED DATA TO ANALYTIC PAGE 
+            return render(request, "farmer/index.html", {"data":data, "form": Dnewtray(), "todayu": todayu, "bulkharvest":Nbulkharvest })
+        
+        if request.method == "POST":
+            if request.POST["type"]=="new":
                 uitem = newobject(request.POST.copy(), Tray, Dnewtray)
-            # Filter Active trays by something
-            elif request.POST["type"] == "filter":
-                filter = request.POST
-                data = filter_tray(Tray, filter, "active")
-                return render(request, "farmer/index.html", {"cd":data["cd"], "form": Dnewtray(),
-                                                        "data":data["active"], "count":len(data["active"]),
-                                                            "harvestform": Nharvest })
-                
-            # Edit, fetch data or delete
+            
+            elif request.POST["type"]=="loadedit":
+                list = ast.literal_eval(request.POST['itemid'])
+                data = {"type": request.POST["type"] ,"itemid": list[0]}
+                uitem = updateitem(data, Tray, Dnewtray, len(list))
+                # filter only non harvested trays
+                data = groupingtrays()
+
+                return render(request, "farmer/index.html", {"data":data,"editform": uitem["editform"],
+                                                                "form": Dnewtray(), "todayu": todayu, "bulkharvest":Nbulkharvest })
             else:
-                uitem = updateitem(request.POST, Tray, Dnewtray)
+                req = request.POST.copy()
+                object = Tray.objects.get(id=req['id'])
+                count = int(req['count'])
+                listobject = Tray.objects.filter(name=object.name, start=object.start)
+                for i in listobject:
+                    if count == 0:
+                        break
+                    else:
+                        count -= 1
+                        req.update({'id':i.id})
+                        uitem = updateitem(req, Tray, Dnewtray)
 
             if uitem == True:
-                return HttpResponseRedirect(reverse("index"))    
+                return HttpResponseRedirect(reverse("analytics"))    
             if uitem == False:
-                return render(request, "farmer/index.html",{"error": "SOMETHING WENT WRONG"})
+                return render(request, "farmer/index.html",{"error": "SOMETHING WENT WRONG"}) 
 
-            
-            # Load edit form
-            data = trayser("active")
-
-            return render(request, "farmer/index.html", {"cd":data["cd"], "form": Dnewtray(), "data":data["active"], 
-                                                        "count":len(data["active"]), "editform":uitem['editform'],
-                                                        "harvestform": Nharvest})
+        
 
 
 # PLANTS 
@@ -191,49 +180,6 @@ def history(request):
 
 
 
-# PAGE TO GROUP ACTIVE TRAYS BY NAME AND START DATE 
-@login_required
-def analytics(request):
-    # TODAY DATE 
-    todayu = str(datetime.date(datetime.today()))
-
-    if request.method == "GET":
-        data = groupingtrays()
-        # RETURN GROUPED DATA TO ANALYTIC PAGE 
-        return render(request, "farmer/analytics.html", {"data":data, "form": Dnewtray(), "todayu": todayu, "bulkharvest":Nbulkharvest })
-    
-    if request.method == "POST":
-        if request.POST["type"]=="new":
-            uitem = newobject(request.POST.copy(), Tray, Dnewtray)
-        
-        elif request.POST["type"]=="loadedit":
-            list = ast.literal_eval(request.POST['itemid'])
-            data = {"type": request.POST["type"] ,"itemid": list[0]}
-            uitem = updateitem(data, Tray, Dnewtray, len(list))
-            # filter only non harvested trays
-            data = groupingtrays()
-
-            return render(request, "farmer/analytics.html", {"data":data,"editform": uitem["editform"],
-                                                              "form": Dnewtray(), "todayu": todayu, "bulkharvest":Nbulkharvest })
-        else:
-            req = request.POST.copy()
-            object = Tray.objects.get(id=req['id'])
-            count = int(req['count'])
-            listobject = Tray.objects.filter(name=object.name, start=object.start)
-            for i in listobject:
-                if count == 0:
-                    break
-                else:
-                    count -= 1
-                    req.update({'id':i.id})
-                    uitem = updateitem(req, Tray, Dnewtray)
-
-        if uitem == True:
-            return HttpResponseRedirect(reverse("analytics"))    
-        if uitem == False:
-            return render(request, "farmer/analytics.html",{"error": "SOMETHING WENT WRONG"}) 
-
-
 
 
 @login_required
@@ -284,69 +230,3 @@ def report(request):
                                                   "medium": medium, "totalyield":totalyield, "rff": form})
 
 
-#LOGIN PAGE 
-def login_view(request):
-    if request.method == "POST":
-        # GET DATA
-        form = Login(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data["username"]
-            password = form.cleaned_data["password"]
-            user = authenticate(request, username=username, password=password)
-
-        # IF AUTHENTICATION SUCCESS
-        if user is not None:
-            login(request, user)
-            return HttpResponseRedirect(reverse("index"))
-        # IF AUTHENTICATION FAILED 
-        else:
-            return render(request, "farmer/login.html", {
-                "error": "Invalid username or password.", "form": form
-            }) 
-    # GET METHOD TO LOAD LOGIN PAGE  
-    else:
-        if not request.user.is_authenticated:
-            return render(request, "farmer/login.html", {"form": Login()})
-        # IF USER IS ALREADY LOGGED IN LOAD INDEX PAGE 
-        else:
-            return HttpResponseRedirect(reverse("index"))
-
-
-# LOGOUT FUNCTION 
-def logout_view(request):
-    logout(request)
-    return HttpResponseRedirect(reverse("index"))
-
-# REGISTER NEW USER 
-def register_view(request):
-    if request.method == "POST":
-        # GET CREDENTIALS 
-        form =Register(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data["username"]
-            email = form.cleaned_data["email"]
-            password = form.cleaned_data["password"]
-            comfirm = form.cleaned_data["confirm"]
-            reg = form.cleaned_data["regcode"]
-            # Check password and code
-            if password == comfirm and reg == regcode:
-                try:
-                    new = User.objects.create_user(username, email, password)
-                    new.save()
-                except:
-                    return render(request, "farmer/register.html", {"error": "user already exist", "form": form})
-                
-                # LOGIN WITH NEW USER 
-                user = authenticate(request, username=username, password=password)
-                if user is not None:
-                    login(request, user)
-                    return HttpResponseRedirect(reverse("index"))
-            # ERROR
-            else:
-                return render(request, "farmer/register.html", {"error": "password comfirmation or REG Code do not match", "form": form})
-        # MISSING CREDENTIALS
-        else:
-            return render(request, "farmer/register.html", {"error": "Missing Information"})    
-    # GET PAGE 
-    else:
-        return render(request, "farmer/register.html", {"form": Register()})
