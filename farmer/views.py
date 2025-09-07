@@ -21,50 +21,53 @@ from datetime import datetime, timedelta
 regcode = "123456"
 
 # INDEX PAGE LOAD TRAYS 
-@login_required
-def index(request):
-    if request.method == "GET":
-        # GET ALL active CREATED TRAYS
-        data = trayser("active")
-        # SEND DATA TO HTML INDEX PAGE 
-        return render(request, "farmer/index.html", {"cd":data["cd"], "form": Dnewtray(),
-                                                      "data":data["active"], "count":len(data["active"]),
-                                                        "harvestform": Nharvest })
-    if request.method == "POST":
-        # bulk delete by checkbox
-        if request.POST["type"] == "bulkdelete":
-            listdel = request.POST.getlist('dbid')
-            for i in listdel:
-                uitem = updateitem(({'type':'delete', 'id': i}), Tray, Dnewmedium)
-            return HttpResponseRedirect(reverse("index"))    
 
-        # Create new Tray
-        if request.POST["type"] =="new":
-            uitem = newobject(request.POST.copy(), Tray, Dnewtray)
-        # Filter Active trays by something
-        elif request.POST["type"] == "filter":
-            filter = request.POST
-            data = filter_tray(Tray, filter, "active")
+def index(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+    else:
+        if request.method == "GET":
+            # GET ALL active CREATED TRAYS
+            data = trayser("active")
+            # SEND DATA TO HTML INDEX PAGE
             return render(request, "farmer/index.html", {"cd":data["cd"], "form": Dnewtray(),
                                                       "data":data["active"], "count":len(data["active"]),
                                                         "harvestform": Nharvest })
+        if request.method == "POST":
+            # bulk delete by checkbox
+            if request.POST["type"] == "bulkdelete":
+                listdel = request.POST.getlist('dbid')
+                for i in listdel:
+                    uitem = updateitem(({'type':'delete', 'id': i}), Tray, Dnewmedium)
+                return HttpResponseRedirect(reverse("index"))    
+
+            # Create new Tray
+            if request.POST["type"] =="new":
+                uitem = newobject(request.POST.copy(), Tray, Dnewtray)
+            # Filter Active trays by something
+            elif request.POST["type"] == "filter":
+                filter = request.POST
+                data = filter_tray(Tray, filter, "active")
+                return render(request, "farmer/index.html", {"cd":data["cd"], "form": Dnewtray(),
+                                                        "data":data["active"], "count":len(data["active"]),
+                                                            "harvestform": Nharvest })
+                
+            # Edit, fetch data or delete
+            else:
+                uitem = updateitem(request.POST, Tray, Dnewtray)
+
+            if uitem == True:
+                return HttpResponseRedirect(reverse("index"))    
+            if uitem == False:
+                return render(request, "farmer/index.html",{"error": "SOMETHING WENT WRONG"})
+
             
-        # Edit, fetch data or delete
-        else:
-            uitem = updateitem(request.POST, Tray, Dnewtray)
+            # Load edit form
+            data = trayser("active")
 
-        if uitem == True:
-            return HttpResponseRedirect(reverse("index"))    
-        if uitem == False:
-            return render(request, "farmer/index.html",{"error": "SOMETHING WENT WRONG"})
-
-        
-        # Load edit form
-        data = trayser("active")
-
-        return render(request, "farmer/index.html", {"cd":data["cd"], "form": Dnewtray(), "data":data["active"], 
-                                                     "count":len(data["active"]), "editform":uitem['editform'],
-                                                     "harvestform": Nharvest})
+            return render(request, "farmer/index.html", {"cd":data["cd"], "form": Dnewtray(), "data":data["active"], 
+                                                        "count":len(data["active"]), "editform":uitem['editform'],
+                                                        "harvestform": Nharvest})
 
 
 # PLANTS 
