@@ -120,11 +120,7 @@ class BulkHarvest(models.Model):
     SeedsWeightMix = models.IntegerField()
 
     def __str__(self):
-<<<<<<< HEAD
-            return f" name:{self.Product} start:{self.Harvestdate} Mixweight:{self.MixWeight} Packswight:{self.PacksWeight} "
-=======
         return f" name:{self.Product} start:{self.Harvestdate} Mixweight:{self.MixWeight} Packswight:{self.PacksWeight} "
->>>>>>> v2.1
 
 
     @property
