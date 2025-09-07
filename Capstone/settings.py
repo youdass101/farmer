@@ -27,7 +27,13 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+# Add CSRF trusted origins for network access
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+    'http://192.168.68.*:8000',  # Replace with your actual network range
 
+]
 # Application definition
 
 INSTALLED_APPS = [

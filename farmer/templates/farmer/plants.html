@@ -7,15 +7,16 @@
 <table class="filter">
     <tr>
         <td>
-            <form action="/filter" method="POST">
+            <form action="/plants" method="POST">
                 {% csrf_token %}
-                <input value="plant" name="page" hidden>
+                <input value="filter" name="type" hidden>
                 <select name="filter">
                 <option value="name">Name</option>
                 <option value="harvest">Harvest</option>
                 <option value="medium_weight">Medium Weight</option>
                 </select>   
                 <input name="search" type="text" placeholder="Search Plants">
+                <input name="object" value="Plant" hidden>
                 <button type="submit">Filter</button>
             </form>
         </td>

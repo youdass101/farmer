@@ -40,9 +40,9 @@
 <table class="filter">
     <tr>
         <td>
-            <form action="/filter" method="POST">
+            <form action="/" method="POST">
                 {% csrf_token %}
-                <input value="index" name="page" hidden>
+                <input value="filter" name="type" hidden>
                 <select name="filter">
                     <option value="name">Name</option>
                     <option value="days">Days</option>
@@ -50,6 +50,7 @@
                     <option value="end">End</option>
                 </select>   
                 <input name="search" type="text" placeholder="Search product">
+                <input name="object" value="Tray" hidden>
                 <button type="submit">Filter</button>
             </form>
         </td>

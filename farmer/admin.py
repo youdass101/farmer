@@ -8,4 +8,8 @@ admin.site.register(Plant)
 admin.site.register(Medium)
 admin.site.register(Tray)
 admin.site.register(BulkHarvest)
+<<<<<<< HEAD
 admin.site.register(Harvest)
+=======
+admin.site.register(Harvest)
+>>>>>>> v2.1

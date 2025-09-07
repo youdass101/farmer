@@ -49,6 +49,16 @@ class Tray(models.Model):
     fname = models.CharField(max_length=255)
     location = models.CharField(max_length=255, blank=True)
 
+    @property
+    def nameit(self):
+        
+        self.fname = str(self.name) + str(self.number)
+
+    def save(self, *args, **kwargs):
+          self.nameit
+          super(Tray, self).save(*args, **kwargs)
+
+
     def __str__(self):
             return f"{self.name} start:{self.start}"
 
@@ -110,7 +120,11 @@ class BulkHarvest(models.Model):
     SeedsWeightMix = models.IntegerField()
 
     def __str__(self):
+<<<<<<< HEAD
             return f" name:{self.Product} start:{self.Harvestdate} Mixweight:{self.MixWeight} Packswight:{self.PacksWeight} "
+=======
+        return f" name:{self.Product} start:{self.Harvestdate} Mixweight:{self.MixWeight} Packswight:{self.PacksWeight} "
+>>>>>>> v2.1
 
 
     @property
