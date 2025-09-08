@@ -1,0 +1,41 @@
+body {
+    padding: 2%;
+}
+
+.forma {
+    margin: 10px;
+}
+
+.inputs {
+       padding: 8px 20px;
+       margin-right: 7px;
+}
+
+.subbtn {
+    margin: 10px;
+    background-color: seagreen;
+    color: white;
+    font-weight: bold;
+    font-family: sans-serif;
+    padding: 5px;
+    border-radius: 6px;
+    border-style: groove;   
+}
+
+// wast for history page not used currently
+.maintable {
+  width: 102.5%; 
+  margin-left: -2.5%;
+}
+
+@media (max-width: 599px) {
+  .mobile_hide { display: none; }  
+  body {padding: 0%;}
+  .subbtn {width: 90%;
+    margin: 0px;}
+  .maintable {margin: 0;
+    padding-left: 10px;
+    font-size: 12.5px;
+  }
+}
+

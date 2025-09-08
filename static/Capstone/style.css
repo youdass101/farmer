@@ -1,0 +1,238 @@
+body {
+  padding: 2%;
+}
+
+.forma {
+  margin: 10px;
+}
+
+.inputs {
+  padding: 8px 20px;
+  margin-right: 7px;
+}
+
+.subbtn {
+  margin: 10px;
+  background-color: seagreen;
+  color: white;
+  font-weight: bold;
+  font-family: sans-serif;
+  padding: 5px;
+  border-radius: 6px;
+  border-style: groove;
+}
+
+.maintable {
+  width: 102.5%;
+  margin-left: -2.5%;
+}
+
+@media (max-width: 599px) {
+  .mobile_hide {
+    display: none;
+  }
+  body {
+    padding: 0%;
+  }
+  .subbtn {
+    width: 90%;
+    margin: 0px;
+  }
+  .maintable {
+    margin: 0;
+    padding-left: 10px;
+    font-size: 12.5px;
+  }
+}
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+.modaledit {
+  display: block; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close, .cls, .clsh {
+  float: right;
+  color: black;
+  font-size: 25px;
+  margin-top: -15px;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.cls:hover,
+.cls:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.clsh:hover,
+.clsh:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.analytics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2.5rem;
+  justify-content: center;
+  padding: 2rem;
+  background: linear-gradient(120deg, #0f2027, #2c5364 100%);
+  min-height: 100vh;
+}
+
+.ana-cards {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 2rem 1.5rem 1.5rem 1.5rem;
+  min-width: 320px;
+  max-width: 350px;
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.ana-cards:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 16px 48px 0 rgba(31, 38, 135, 0.45);
+  border-color: #00eaff;
+}
+.ana-cards .ana {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+.ana-cards .analytic_box {
+  width: 100%;
+  background: linear-gradient(120deg, #232526 0%, #414345 100%);
+  border: none;
+  border-radius: 1rem;
+  color: #fff;
+  padding: 1.5rem 1rem;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 234, 255, 0.08);
+  transition: background 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-family: "Segoe UI", "Roboto", Arial, sans-serif;
+}
+.ana-cards .analytic_box:hover {
+  background: linear-gradient(120deg, #00eaff 0%, #232526 100%);
+  color: #232526;
+  box-shadow: 0 4px 24px rgba(0, 234, 255, 0.2666666667);
+}
+.ana-cards .analytic_box .tray_number {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #00eaff;
+  margin-bottom: 0.2rem;
+}
+.ana-cards .analytic_box .tray_name {
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin-bottom: 0.2rem;
+}
+.ana-cards .analytic_box .seedstotal, .ana-cards .analytic_box .soilstotal, .ana-cards .analytic_box .start, .ana-cards .analytic_box .end {
+  font-size: 1rem;
+  color: #b2f7ef;
+}
+.ana-cards .analytic_box .countdown {
+  font-size: 0.95rem;
+  color: #ffb347;
+  margin-top: 0.5rem;
+}
+.ana-cards .harvestbulk {
+  margin: 0.5rem 0 0.5rem 0;
+  background: #00eaff;
+  color: #232526;
+  border: none;
+  border-radius: 0.7rem;
+  padding: 0.5rem 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.ana-cards .harvestbulk:hover {
+  background: #00b8d4;
+  color: #fff;
+}
+.ana-cards .editplant {
+  background: transparent;
+  color: #00eaff;
+  border: 1px solid #00eaff;
+  border-radius: 0.7rem;
+  padding: 0.4rem 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 0.3rem;
+  transition: background 0.2s, color 0.2s;
+}
+.ana-cards .editplant:hover {
+  background: #00eaff;
+  color: #232526;
+}
+
+#report_container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#report_container > div {
+  background-color: white;
+  font-size: 18px;
+  margin: 10px;
+  width: 250px;
+}
+
+.report_table tr:nth-child(even) {
+  background-color: #D6EEEE;
+}
+
+.report_table {
+  border: 1px solid black;
+  width: 100%;
+}/*# sourceMappingURL=style.css.map */

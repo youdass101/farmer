@@ -7,7 +7,7 @@
 {% if data %}
     <div class="analytics" id="analytic_container">
         {% for i in data %}
-        <div>
+        <div class="ana-cards">
             <form class="ana" action="/filter" method="POST">
                 {% csrf_token %}
                 <input name="tray_name" value="{{i.name}}" hidden>
