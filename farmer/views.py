@@ -13,6 +13,55 @@ from datetime import datetime
 
 # INDEX PAGE LOAD TRAYS 
 
+def traylist(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+    else:
+        if request.method == "GET":
+            # GET ALL active CREATED TRAYS
+            data = trayser("active")
+            # SEND DATA TO HTML INDEX PAGE
+            return render(request, "farmer/traylist.html", {"cd":data["cd"], "form": Dnewtray(),
+                                                      "data":data["active"], "count":len(data["active"]),
+                                                        "harvestform": Nharvest })
+        if request.method == "POST":
+            print("in POST")
+            # bulk delete by checkbox
+            if request.POST["type"] == "bulkdelete":
+                listdel = request.POST.getlist('dbid')
+                for i in listdel:
+                    uitem = updateitem(({'type':'delete', 'id': i}), Tray, Dnewmedium)
+                return HttpResponseRedirect(reverse("traylist"))    
+
+            # Create new Tray
+            if request.POST["type"] =="new":
+                uitem = newobject(request.POST.copy(), Tray, Dnewtray)
+            # Filter Active trays by something
+            elif request.POST["type"] == "filter":
+                print("in filter")
+                filter = request.POST
+                data = filter_tray(Tray, filter, "active")
+                return render(request, "farmer/traylist.html", {"cd":data["cd"], "form": Dnewtray(),
+                                                        "data":data["active"], "count":len(data["active"]),
+                                                            "harvestform": Nharvest })
+                
+            # Edit, fetch data or delete
+            else:
+                uitem = updateitem(request.POST, Tray, Dnewtray)
+
+            if uitem == True:
+                return HttpResponseRedirect(reverse("index"))    
+            if uitem == False:
+                return render(request, "farmer/traylist.html",{"error": "SOMETHING WENT WRONG"})
+
+            
+            # Load edit form
+            data = trayser("active")
+
+            return render(request, "farmer/traylist.html", {"cd":data["cd"], "form": Dnewtray(), "data":data["active"], 
+                                                        "count":len(data["active"]), "editform":uitem['editform'],
+                                                        "harvestform": Nharvest})
+
 def index(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse("login"))
@@ -208,9 +257,12 @@ def report(request):
             filter = {'type': type, 'product': productname, 'start':start, 'end':end}
             
             if not productname:
+                print("no product")
                 allbulk = BulkHarvest.objects.filter(Harvestdate__range=[start, end])
             else:
+                print(start, end, productname)
                 allbulk = BulkHarvest.objects.filter(Product= productname, Harvestdate__range=[start, end])
+                print(allbulk)
             
 
             if type=="Mix":

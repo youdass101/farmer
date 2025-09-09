@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     path("", views.index, name="index"),
+    path("traylist", views.traylist, name="traylist"),
     path("plants", views.plants, name="plants"),
     path("medium", views.medium, name="medium"),
     path("harvest", views.harvest, name="harvest"),

@@ -5,7 +5,7 @@
 
 
 {% if filter %}
-    <table class="report">
+    <table class="report reportfilter">
         <form action="/report" method="POST">
             <tr>
                 <td>{% csrf_token %}
@@ -19,7 +19,7 @@
     <h2>{{filter.type}}, {{filter.product}}, {{filter.start}}, {{filter.end}}</h2>
 
 {% else %}
-    <table class="report">
+    <table class="report reportfilter">
         <form action="/report" method="POST">
             <tr>
                 <td>{% csrf_token %}
@@ -80,9 +80,11 @@
             <div>
                 <table class="report_table">
                     {% for i in data %}
-                        <tr><th> {{i.product}} </th>
-                            <td class="packs_seeds">{{i.mix_seeds}} gr</td>
-                        </tr>
+                        {% if i.mix_seeds %}
+                            <tr><th> {{i.product}} </th>
+                                <td class="packs_seeds">{{i.mix_seeds}} gr</td>
+                            </tr>
+                        {% endif %}
                     {% endfor %}    
                 </table>    
                       
@@ -109,32 +111,32 @@
                         <tr><th> Packs </th>
                             <td class="packs_QTT">{{i.packs_QTT}}</td>
                         </tr>
+                        <tr><th> Pack Seeds </th>
+                            <td class="packs_seeds">{{i.packs_seeds}} gr</td>
+                        </tr>
+                        <tr><th> Pack Medium </th>
+                            <td class="packs_medium">{{i.packs_medium}} cl</td>
+                        </tr>
                         <tr><th> Packs Yield </th>
                             <td class="packs_weight">{{i.packs_weight}} gr</td>
                         </tr>
                         <tr><th> Mix Yield </th>
                             <td class="mix_weight">{{i.mix_weight}} gr</td>
                         </tr>
-                        <tr><th> Total Yield </th>
-                            <td class="total_weight">{{i.total_weight}} gr</td>
-                        </tr>
-                        <tr><th> Pack Medium </th>
-                            <td class="packs_medium">{{i.packs_medium}} cl</td>
-                        </tr>
                         <tr><th>Mix Medium </th>
                             <td class="mix_mediumt">{{i.mix_medium}} cl</td>
-                        </tr>
-                        <tr><th> Total Medium </th>
-                            <td class="total_medium">{{i.total_medium}} cl</td>
-                        </tr>
-                        <tr><th> Pack Seeds </th>
-                            <td class="packs_seeds">{{i.packs_seeds}} gr</td>
                         </tr>
                         <tr><th> Mix Seeds </th>
                             <td class="mix_seeds">{{i.mix_seeds}} gr</td>
                         </tr>
+                        <tr><th> Total Medium </th>
+                            <td class="total_medium">{{i.total_medium}} cl</td>
+                        </tr> 
                         <tr><th> Total Seeds </th>
                             <td class="total_seeds">{{i.total_seeds}} gr</td>
+                        </tr>
+                          <tr><th> Total Yield </th>
+                            <td class="total_weight">{{i.total_weight}} gr</td>
                         </tr>
                         <tr><th>Action</th>
                             <td>

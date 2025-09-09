@@ -100,9 +100,10 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll(".harvestbulk").forEach(button => {
             var harvestbulk = document.getElementById("Harvestbulkpop")
             button.onclick = () =>{
+                trayname = button.parentElement.querySelector(".ana").querySelector(".analytic_box").querySelector(".tray_name").innerHTML
                 trayqtt = button.parentElement.querySelector(".ana").querySelector(".analytic_box").querySelector(".tray_number").querySelector(".number").innerHTML
                 traysids = button.value
-
+                harvestbulk.querySelector("#harvest_title").innerHTML = trayname
                 harvestbulk.querySelector("#id_Trays").value = trayqtt
                 harvestbulk.querySelector("#id_Trays").max = trayqtt
                 harvestbulk.querySelector('#bulkharvest').value = traysids

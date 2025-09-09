@@ -8,9 +8,10 @@
     <div class="analytics" id="analytic_container">
         {% for i in data %}
         <div class="ana-cards">
-            <form class="ana" action="/filter" method="POST">
+            <form class="ana" action="/traylist" method="POST">
                 {% csrf_token %}
                 <input name="tray_name" value="{{i.name}}" hidden>
+                <input name="type" value="filter" hidden>
                 <input name="start" value="{{i.start}}" hidden>
                 <button type="submit" class="analytic_box"> 
                     <div class="tray_number"><span class="number">{{i.quantity}}</span> trays </div>
@@ -25,7 +26,7 @@
             </form>
             <button id="harvestbulk" class="harvestbulk" type="submit" value="{{i.listid}}">Harvest</button>
             <div>
-                <form action="/analytics" method="POST">
+                <form action="/" method="POST">
                     <!-- CSRF TOKEN FOR FORM-->
                     {% csrf_token %}
                     <!-- GET FORM FROM PYTHON DATA SENT  -->
@@ -48,7 +49,7 @@
     <div class="modal-content">
         <div>
             <span class="clsh">&times;</span>
-            <h4 class="harvest_title"></h4>
+            <h4 id ="harvest_title" class="harvest_title"></h4>
         </div>
         <div>
             <form action ="/harvest" method="POST">
