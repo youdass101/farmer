@@ -576,4 +576,312 @@ h1, h2 {
     max-width: 98vw;
     padding: 0.5rem 0.2rem;
   }
+}
+#planttable {
+  width: 100%;
+  max-width: 1100px;
+  margin: 2rem auto;
+  border-radius: 1.2rem;
+  overflow: hidden;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  -webkit-backdrop-filter: blur(6px);
+          backdrop-filter: blur(6px);
+}
+#planttable thead {
+  background: linear-gradient(90deg, #00eaff 0%, #0056b3 100%);
+}
+#planttable thead th {
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+  padding: 1rem 0.7rem;
+  border: none;
+  text-shadow: 0 0 8px rgba(0, 234, 255, 0.3333333333);
+}
+#planttable tbody tr {
+  transition: background 0.2s, box-shadow 0.2s;
+}
+#planttable tbody tr:hover {
+  background: rgba(0, 234, 255, 0.1);
+  box-shadow: 0 2px 16px rgba(0, 234, 255, 0.2);
+}
+#planttable tbody td {
+  color: #e0f7fa;
+  font-size: 1.05rem;
+  padding: 0.8rem 0.7rem;
+  border: none;
+  background: transparent;
+  vertical-align: middle;
+  text-align: left;
+}
+#planttable tbody .name {
+  font-weight: 700;
+  color: #00eaff;
+  text-shadow: 0 0 8px rgba(0, 234, 255, 0.2);
+}
+#planttable tbody .editplant {
+  background: linear-gradient(90deg, #00eaff 0%, #0056b3 100%);
+  color: #fff;
+  border: none;
+  border-radius: 0.7rem;
+  padding: 0.4rem 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 12px rgba(0, 234, 255, 0.2);
+}
+#planttable tbody .editplant:hover {
+  background: linear-gradient(90deg, #0056b3 0%, #00eaff 100%);
+  color: #232526;
+  box-shadow: 0 4px 24px rgba(0, 234, 255, 0.4666666667);
+}
+
+.filter {
+  width: 100%;
+  max-width: 900px;
+  margin: 2rem auto 1.5rem auto;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  box-shadow: 0 2px 12px rgba(0, 234, 255, 0.1333333333);
+  padding: 1.2rem 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  align-items: center;
+  justify-content: space-between;
+}
+.filter form, .filter button {
+  margin: 0.2rem 0.5rem;
+}
+.filter input, .filter select {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1.2px solid rgba(0, 234, 255, 0.3333333333);
+  border-radius: 0.5rem;
+  color: #00eaff;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  margin-right: 0.5rem;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+.filter input:focus, .filter select:focus {
+  border: 1.5px solid #00eaff;
+  box-shadow: 0 0 8px rgba(0, 234, 255, 0.3333333333);
+  outline: none;
+}
+
+.subbtn {
+  background: linear-gradient(90deg, #00eaff 0%, #0056b3 100%);
+  color: #fff;
+  border: none;
+  border-radius: 0.7rem;
+  padding: 0.6rem 1.3rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  margin: 0.3rem 0.2rem;
+  box-shadow: 0 2px 12px rgba(0, 234, 255, 0.2);
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+.subbtn:hover {
+  background: linear-gradient(90deg, #0056b3 0%, #00eaff 100%);
+  color: #232526;
+  box-shadow: 0 4px 24px rgba(0, 234, 255, 0.4666666667);
+}
+
+@media (max-width: 900px) {
+  #planttable, .filter {
+    max-width: 99vw;
+    font-size: 0.98rem;
+  }
+  .filter {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.7rem;
+    padding: 0.7rem 0.2rem;
+  }
+}
+@media (max-width: 600px) {
+  #planttable thead th.mobile_hide,
+  #planttable tbody td.mobile_hide {
+    display: none;
+  }
+  #planttable {
+    font-size: 0.93rem;
+  }
+}
+.formerror {
+  color: #ff4d4d;
+  background-color: #330000;
+  border: 1px solid #ff1a1a;
+  padding: 0.8rem 1rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  box-shadow: 0 0 8px rgba(255, 26, 26, 0.2);
+}
+
+.login-page-bg {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 0;
+}
+.login-page-bg .login-form-container {
+  background: rgba(255, 255, 255, 0.13);
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 40px 0 rgba(0, 234, 255, 0.3333333333), 0 1.5px 8px 0 rgba(34, 34, 34, 0.5333333333);
+  border: 1.5px solid rgba(0, 234, 255, 0.5333333333);
+  padding: 2.5rem 2rem 2rem 2rem;
+  width: 95%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  animation: modalPopIn 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+.login-page-bg .login-form-container h1, .login-page-bg .login-form-container h2 {
+  color: #00eaff;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 0 12px rgba(0, 234, 255, 0.2);
+}
+.login-page-bg .login-form-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+.login-page-bg .login-form-container form input, .login-page-bg .login-form-container form select {
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  margin-bottom: 0.7rem;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+.login-page-bg .login-form-container button[type=submit] {
+  background: linear-gradient(90deg, #00eaff 0%, #0056b3 100%);
+  color: #fff;
+  border: none;
+  border-radius: 0.7rem;
+  padding: 0.7rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  box-shadow: 0 2px 12px rgba(0, 234, 255, 0.2);
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+.login-page-bg .login-form-container button[type=submit]:hover {
+  background: linear-gradient(90deg, #0056b3 0%, #00eaff 100%);
+  color: #232526;
+  box-shadow: 0 4px 24px rgba(0, 234, 255, 0.4666666667);
+}
+
+@keyframes modalPopIn {
+  0% {
+    transform: scale(0.8) translateY(40px);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+@media (max-width: 600px) {
+  .login-form-container {
+    max-width: 98vw;
+    padding: 1.2rem 0.5rem;
+  }
+}
+.register-page-bg {
+  min-height: 100vh;
+  background: linear-gradient(120deg, #0f2027 0%, #2c5364 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+.register-form-container {
+  background: rgba(255, 255, 255, 0.13);
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 40px 0 rgba(0, 234, 255, 0.3333333333), 0 1.5px 8px 0 rgba(34, 34, 34, 0.5333333333);
+  border: 1.5px solid rgba(0, 234, 255, 0.5333333333);
+  padding: 2.5rem 2rem 2rem 2rem;
+  width: 95%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  animation: modalPopIn 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.register-form-container h1, .register-form-container h2 {
+  color: #00eaff;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 0 12px rgba(0, 234, 255, 0.2);
+}
+
+.register-form-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.register-form-container input,
+.register-form-container select {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1.2px solid rgba(0, 234, 255, 0.3333333333);
+  border-radius: 0.5rem;
+  color: #00eaff;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  margin-bottom: 0.7rem;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+.register-form-container input:focus,
+.register-form-container select:focus {
+  border: 1.5px solid #00eaff;
+  box-shadow: 0 0 8px rgba(0, 234, 255, 0.3333333333);
+  outline: none;
+}
+
+.register-form-container button[type=submit] {
+  background: linear-gradient(90deg, #00eaff 0%, #0056b3 100%);
+  color: #fff;
+  border: none;
+  border-radius: 0.7rem;
+  padding: 0.7rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  box-shadow: 0 2px 12px rgba(0, 234, 255, 0.2);
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+.register-form-container button[type=submit]:hover {
+  background: linear-gradient(90deg, #0056b3 0%, #00eaff 100%);
+  color: #232526;
+  box-shadow: 0 4px 24px rgba(0, 234, 255, 0.4666666667);
+}
+
+@keyframes modalPopIn {
+  0% {
+    transform: scale(0.8) translateY(40px);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+@media (max-width: 600px) {
+  .register-form-container {
+    max-width: 98vw;
+    padding: 1.2rem 0.5rem;
+  }
 }/*# sourceMappingURL=style.css.map */

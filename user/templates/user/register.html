@@ -5,7 +5,7 @@
 {% if error %}
 <p class="forma">{{error}}</p>
 {% endif %}
-<div>
+<!-- <div>
     <form action="{% url 'register' %}" method="POST">
         {% csrf_token %}
     <div class="forma">
@@ -20,6 +20,15 @@
     <div class="forma">
         <input class="inputs" type="submit">
 </div>
-</form>
-
+</form> -->
+<div class="register-page-bg">
+  <div class="register-form-container">
+    <h1>Register</h1>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Register</button>
+    </form>
+  </div>
+</div>
 {% endblock %}

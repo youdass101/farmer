@@ -10,6 +10,12 @@ from django.views.decorators.csrf import csrf_exempt
 
 regcode = "123456"
 
+# LOGOUT FUNCTION 
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect(reverse("index"))
+
+
 # Create your views here.
 #LOGIN PAGE 
 def login_view(request):
@@ -20,7 +26,6 @@ def login_view(request):
             username = form.cleaned_data["username"]
             password = form.cleaned_data["password"]
             user = authenticate(request, username=username, password=password)
-
 
         # IF AUTHENTICATION SUCCESS
         if user is not None:
@@ -40,16 +45,15 @@ def login_view(request):
             return HttpResponseRedirect(reverse("index"))
 
 
-# LOGOUT FUNCTION 
-def logout_view(request):
-    logout(request)
-    return HttpResponseRedirect(reverse("index"))
-
 # REGISTER NEW USER 
 def register_view(request):
+    # subfunction to load page with error and form and load register page
+    def registerpage(error, form):
+        return render(request, "user/register.html", {"error": error, "form": form})
+    # POST METHOD TO REGISTER NEW USER
     if request.method == "POST":
-        # GET CREDENTIALS 
-        form =Register(request.POST)
+        # GET CREDENTIALS
+        form = Register(request.POST)
         if form.is_valid():
             username = form.cleaned_data["username"]
             email = form.cleaned_data["email"]
@@ -62,7 +66,7 @@ def register_view(request):
                     new = User.objects.create_user(username, email, password)
                     new.save()
                 except:
-                    return render(request, "user/register.html", {"error": "user already exist", "form": form})
+                    return registerpage("user already exist", form)
                 
                 # LOGIN WITH NEW USER 
                 user = authenticate(request, username=username, password=password)
@@ -71,10 +75,10 @@ def register_view(request):
                     return HttpResponseRedirect(reverse("index"))
             # ERROR
             else:
-                return render(request, "user/register.html", {"error": "password comfirmation or REG Code do not match", "form": form})
+                return registerpage("password comfirmation or REG Code do not match", form)
         # MISSING CREDENTIALS
         else:
-            return render(request, "user/register.html", {"error": "Missing Information"})    
+            return registerpage("Missing Information", form)
     # GET PAGE 
     else:
-        return render(request, "user/register.html", {"form": Register()})
+        return registerpage("", Register())

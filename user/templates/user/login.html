@@ -3,17 +3,17 @@
 <h1 class="forma">Login</h1>
 
 {% if error %}
-    <p class="forma">{{error}}</p>
+    <p class="formerror">{{error}}</p>
 {% endif %}
 
-<form action="{% url 'login' %}" method="POST">
-    {% csrf_token %}
-    <div class="forma">    
-        {{form}}
-    </div>
-    <div class="forma">    
-        <input class="inputs" type="submit" value="Login">
-    </div>
-
-</form> 
+<div class="login-page-bg">
+  <div class="login-form-container">
+    <h1>Login</h1>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Login</button>
+    </form>
+  </div>
+</div>
 {% endblock %}

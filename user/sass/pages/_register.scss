@@ -1,0 +1,84 @@
+.register-page-bg {
+  min-height: 100vh;
+  background: linear-gradient(120deg, #0f2027 0%, #2c5364 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+.register-form-container {
+  background: rgba(255,255,255,0.13);
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 40px 0 #00eaff55, 0 1.5px 8px 0 #2228;
+  border: 1.5px solid #00eaff88;
+  padding: 2.5rem 2rem 2rem 2rem;
+  width: 95%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  animation: modalPopIn 0.4s cubic-bezier(.68,-0.55,.27,1.55);
+}
+
+.register-form-container h1, .register-form-container h2 {
+  color: #00eaff;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 0 12px #00eaff33;
+}
+
+.register-form-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.register-form-container input, 
+.register-form-container select {
+  background: rgba(255,255,255,0.08);
+  border: 1.2px solid #00eaff55;
+  border-radius: 0.5rem;
+  color: #00eaff;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  margin-bottom: 0.7rem;
+  transition: border 0.2s, box-shadow 0.2s;
+  &:focus {
+    border: 1.5px solid #00eaff;
+    box-shadow: 0 0 8px #00eaff55;
+    outline: none;
+  }
+}
+
+.register-form-container button[type="submit"] {
+  background: linear-gradient(90deg, #00eaff 0%, #0056b3 100%);
+  color: #fff;
+  border: none;
+  border-radius: 0.7rem;
+  padding: 0.7rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  box-shadow: 0 2px 12px #00eaff33;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    background: linear-gradient(90deg, #0056b3 0%, #00eaff 100%);
+    color: #232526;
+    box-shadow: 0 4px 24px #00eaff77;
+  }
+}
+
+@keyframes modalPopIn {
+  0% { transform: scale(0.8) translateY(40px); opacity: 0; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+@media (max-width: 600px) {
+  .register-form-container {
+    max-width: 98vw;
+    padding: 1.2rem 0.5rem;
+  }
+}
