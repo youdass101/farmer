@@ -182,7 +182,12 @@
 //     background-color: rgb(0,0,0); /* Fallback color */
 //     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 // } 
-
+.button_container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;  
+}
 // Futuristic bulk harvest popup modal
 .modalbulk, .modalharvest {
   display: none; // Hidden by default
@@ -197,8 +202,9 @@
 }
 
 .modal-content {
-  background: rgba(255,255,255,0.5);
+  background: rgba(10, 20, 40,0.8);
   border-radius: 1.5rem;
+  color: white;
   box-shadow: 0 8px 40px 0 #00eaff55, 0 1.5px 8px 0 #2228;
   border: 1.5px solid #00eaff88;
   margin: 5% auto;

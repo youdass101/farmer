@@ -2,7 +2,9 @@
 {% block creator %}<h1>New Tray</h1>{% endblock %}
 {% block action %} action="/analytics"{% endblock %}
 {%block body%}
-<button id="myBtn" class="subbtn">New Tray</button>    
+<div class="button_container">
+    <button id="myBtn" class="subbtn">New Tray</button>    
+</div>
 
 {% if data %}
     <div class="analytics" id="analytic_container">

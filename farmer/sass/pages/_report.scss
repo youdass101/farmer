@@ -73,15 +73,15 @@
   background: transparent;
 
   th, td {
-    padding: 0.6rem 0.8rem;
-    font-size: 1.05rem;
+    padding: 0.2rem 0.3rem;
+    font-size: 1rem;
     border: none;
     text-align: left;
   }
 
   th {
     color: #00eaff;
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: 0.5px;
     text-shadow: 0 0 8px #00eaff33;
     width: 40%;
@@ -90,7 +90,7 @@
 
   td {
     color: #fff;
-    font-weight: 500;
+    font-weight: 400;
     background: rgba(0,234,255,0.07);
     border-radius: 0.5rem;
     box-shadow: 0 1px 4px #00eaff11;

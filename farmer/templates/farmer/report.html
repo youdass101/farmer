@@ -102,42 +102,64 @@
                         <tr><th> Medium </th>
                             <td class="medium">{{i.medium}}</td>
                         </tr>
-                        <tr><th> Trays </th>
-                            <td class="trays_qtt">{{i.trays_QTT}}</td>
-                        </tr>
+                        {% if i.trays_QTT %}
+                            <tr><th> Trays </th>
+                                <td class="trays_qtt">{{i.trays_QTT}}</td>
+                            </tr>
+                        {% endif %}
                         <tr><th> Harvest </th>
                             <td class="date">{{i.date}}</td>
                         </tr>
-                        <tr><th> Packs </th>
-                            <td class="packs_QTT">{{i.packs_QTT}}</td>
-                        </tr>
-                        <tr><th> Pack Seeds </th>
-                            <td class="packs_seeds">{{i.packs_seeds}} gr</td>
-                        </tr>
-                        <tr><th> Pack Medium </th>
-                            <td class="packs_medium">{{i.packs_medium}} cl</td>
-                        </tr>
-                        <tr><th> Packs Yield </th>
-                            <td class="packs_weight">{{i.packs_weight}} gr</td>
-                        </tr>
-                        <tr><th> Mix Yield </th>
-                            <td class="mix_weight">{{i.mix_weight}} gr</td>
-                        </tr>
-                        <tr><th>Mix Medium </th>
-                            <td class="mix_mediumt">{{i.mix_medium}} cl</td>
-                        </tr>
-                        <tr><th> Mix Seeds </th>
-                            <td class="mix_seeds">{{i.mix_seeds}} gr</td>
-                        </tr>
-                        <tr><th> Total Medium </th>
-                            <td class="total_medium">{{i.total_medium}} cl</td>
-                        </tr> 
-                        <tr><th> Total Seeds </th>
-                            <td class="total_seeds">{{i.total_seeds}} gr</td>
-                        </tr>
-                          <tr><th> Total Yield </th>
-                            <td class="total_weight">{{i.total_weight}} gr</td>
-                        </tr>
+                        {% if i.packs_QTT %}
+                            <tr><th> Packs </th>
+                                <td class="packs_QTT">{{i.packs_QTT}}</td>
+                            </tr>
+                        {% endif %}
+                        {% if i.packs_seeds %}
+                            <tr><th> Pack Seeds </th>
+                                <td class="packs_seeds">{{i.packs_seeds}} gr</td>
+                            </tr>
+                        {% endif %}
+                        {% if i.packs_medium %}
+                            <tr><th> Pack Medium </th>
+                                <td class="packs_medium">{{i.packs_medium}} cl</td>
+                            </tr>
+                        {% endif %}
+                        {% if i.packs_weight %}
+                            <tr><th> Packs Yield </th>
+                                <td class="packs_weight">{{i.packs_weight}} gr</td>
+                            </tr>
+                        {% endif %}
+                        {% if i.mix_weight %}
+                            <tr><th> Mix Yield </th>
+                                <td class="mix_weight">{{i.mix_weight}} gr</td>
+                            </tr>
+                        {% endif %}
+                        {% if i.mix_medium %}
+                            <tr><th>Mix Medium </th>
+                                <td class="mix_mediumt">{{i.mix_medium}} cl</td>
+                            </tr>
+                        {% endif %}
+                        {% if i.mix_seeds %}
+                            <tr><th> Mix Seeds </th>
+                                <td class="mix_seeds">{{i.mix_seeds}} gr</td>
+                            </tr>
+                        {% endif %}
+                        {% if i.total_medium %}
+                            <tr><th> Total Medium </th>
+                                <td class="total_medium">{{i.total_medium}} cl</td>
+                            </tr> 
+                        {% endif %}
+                        {% if i.total_seeds %}
+                            <tr><th> Total Seeds </th>
+                                <td class="total_seeds">{{i.total_seeds}} gr</td>
+                            </tr>
+                        {% endif %}
+                        {% if i.total_weight %}
+                            <tr><th> Total Yield </th>
+                                <td class="total_weight">{{i.total_weight}} gr</td>
+                            </tr>
+                        {% endif %}
                         <tr><th>Action</th>
                             <td>
                                 <form method="POST" action="/report">
