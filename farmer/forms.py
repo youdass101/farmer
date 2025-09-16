@@ -51,17 +51,15 @@ class Dnewtray(forms.ModelForm):
         'start': forms.SelectDateWidget(years=range(2023, 2030), attrs={'class':'toset', 'placeholder':'Select a date', 'type':'date'}),
         'number': forms.HiddenInput(),
         }
-        # labels = {
-        #     "name": _("Plant"),
-        # }
 
     
     def __init__(self, *args, count=None, **kwargs):
         super(Dnewtray, self).__init__(*args, **kwargs)
         self.fields['start'].initial = datetime.now()
         self.fields['medium'].initial = ['1']
-
-        self.fields['count'].widget.attrs['max'] = count
+        self.fields['name'].queryset = Plant.objects.filter(active=True)  # Only active mediums
+        self.fields['medium'].queryset = Medium.objects.all()  # Show all Mediums
+        self.fields['medium'].initial = Medium.objects.first()  # Default to first Medium        self.fields['count'].widget.attrs['max'] = count
         self.fields['count'].widget.attrs['min'] = 1
 
 

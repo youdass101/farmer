@@ -19,45 +19,35 @@ def trayser(type, sdata="all"):
     return {"cd": cd, "active": active}
 
 
-
+# update update tray
 def updateitem (data, dobject, dform, att=1):
-
-    type = data["type"]
-    if type == "loadedit":
-        idi = data["itemid"]
-        item = dobject.objects.get(id=idi)
+    item = dobject.objects.get(id=data["itemid"]) # Tray object
+    type = data["type"] # type of action
+    if type == "loadedit": # load edit form
         try:
-            initial = {'count':att}
-            form = dform(instance=item, count=att, initial = initial)
-
+            initial = {'count':att} # trays qtt
+            form = dform(instance=item, count=att, initial = initial) # form with instance and count
         except:
-            form = dform(instance=item)
+            form = dform(instance=item) # form with instance if failed
 
-        list = dobject.objects.all()
-
+        list = dobject.objects.all() # all trays 
         return {"editform": form, "form": dform(), "data": list}
     
-    if type == "delete":
-        print("first step")
-        item = dobject.objects.get(id=data['id'])
-        print("detele now")
+    if type == "delete": # delete tray
         item.delete()
         return True
 
-    if type == "edit":
-        item = dobject.objects.get(id=data['id'])
+    if type == "edit": # edit tray
         nitem = dform(data, instance=item)
 
-    if type == "new":
+    if type == "new": # create new tray
         nitem = dform(data)
 
-    if nitem.is_valid():
+    if nitem.is_valid(): # check if form is valid
         nitem.save()
-
         return True
 
     else:
-        print(nitem.errors)
         return False
 
 

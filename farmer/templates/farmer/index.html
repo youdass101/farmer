@@ -10,7 +10,7 @@
     <div class="analytics" id="analytic_container">
         {% for i in data %}
         <div class="ana-cards">
-            <form class="ana" action="/traylist" method="POST">
+            <form class="ana" action="/" method="POST">
                 {% csrf_token %}
                 <input name="tray_name" value="{{i.name}}" hidden>
                 <input name="type" value="filter" hidden>
@@ -19,7 +19,7 @@
                     <div class="tray_number"><span class="number">{{i.quantity}}</span> trays </div>
                     <div class="tray_name">{{i.name}}</div>
                     <div class="seedstotal">{{i.seeds}} Grams of Seeds</div>
-                    <div class="soilstotal">{{i.soil}} Litre of Soil</div>
+                    <div class="soilstotal">{{i.soil}} Centilitres of Soil</div>
                     <div class="start">{{i.start}}</div> 
                     <div class="end">{{i.end}}</div> 
                     <div>{{i.days.days}} days</div>

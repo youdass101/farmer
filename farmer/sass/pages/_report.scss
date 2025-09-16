@@ -1,35 +1,6 @@
-// #report_container {
-//   display: flex;
-//   flex-wrap: wrap;
-// }
 
-// #report_container > div {
-//   background-color: white;
-//   font-size: 18px;
-//   margin: 10px;
-//   width: 250px;
-// }
-
-// .report_table tr:nth-child(even) {
-//   background-color: #D6EEEE;
-  
-// }
-
-// .report_table {
-//   border: 1px solid black;
-//   width: 100%;
-
-// }
-
-
-// @media (max-width: 599px) {
-
-
-// }
 .reportfilter {
     min-height: 10vh !important;
-
-  
 }
 
 .report {
@@ -167,4 +138,11 @@ h1, h2 {
     max-width: 98vw;
     padding: 0.5rem 0.2rem;
   }
+}
+
+.packinfo {
+  background: rgba(55, 186, 83, 0.3); // 0.7 = 70% opaque, 30% transparent
+}
+.mixinfo {
+  background: rgba(10, 20, 40, 0.3); // 0.7 = 70% opaque, 30% transparent
 }

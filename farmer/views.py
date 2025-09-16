@@ -101,7 +101,7 @@ def index(request):
                         uitem = updateitem(req, Tray, Dnewtray)
 
             if uitem == True:
-                return HttpResponseRedirect(reverse("analytics"))    
+                return HttpResponseRedirect(reverse("index"))    
             if uitem == False:
                 return render(request, "farmer/index.html",{"error": "SOMETHING WENT WRONG"}) 
 
@@ -122,7 +122,7 @@ def plants(request):
             return JsonResponse({"result": [data.seeds, data.medium_weight]}, status=201)
     except:
         if request.method == "GET":
-            plantslist = Plant.objects.all()
+            plantslist = Plant.objects.filter(active=True)
             return render(request, "farmer/plants.html", {"form": Dnewplant(), "data": plantslist})
 
         if request.method == "POST":
@@ -188,7 +188,7 @@ def harvest(request):
                                   output = outp, bulkh= nitem)
                 formd.save()
              
-            return HttpResponseRedirect(reverse("analytics"))
+            return HttpResponseRedirect(reverse("index"))
 
         uitem = updateitem(request.POST, Harvest, Nharvest)
         if uitem == True:
@@ -257,12 +257,9 @@ def report(request):
             filter = {'type': type, 'product': productname, 'start':start, 'end':end}
             
             if not productname:
-                print("no product")
                 allbulk = BulkHarvest.objects.filter(Harvestdate__range=[start, end])
             else:
-                print(start, end, productname)
                 allbulk = BulkHarvest.objects.filter(Product= productname, Harvestdate__range=[start, end])
-                print(allbulk)
             
 
             if type=="Mix":

@@ -18,6 +18,7 @@ class Plant(models.Model):
     harvest = models.IntegerField()
     medium_weight = models.IntegerField()
     packweight = models.IntegerField()
+    active = models.BooleanField(default=True)
 
     def clean(self):
         self.name = self.name.capitalize()
