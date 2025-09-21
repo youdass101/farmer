@@ -15,7 +15,7 @@
                 <input name="tray_name" value="{{i.name}}" hidden>
                 <input name="type" value="filter" hidden>
                 <input name="start" value="{{i.start}}" hidden>
-                <button type="submit" class="analytic_box"> 
+                <div class="analytic_box"> 
                     <div class="tray_number"><span class="number">{{i.quantity}}</span> trays </div>
                     <div class="tray_name">{{i.name}}</div>
                     <div class="seedstotal">{{i.seeds}} Grams of Seeds</div>
@@ -24,7 +24,7 @@
                     <div class="end">{{i.end}}</div> 
                     <div>{{i.days.days}} days</div>
                     <div class="countdown"></div>
-                </button>
+                </div>
             </form>
             <button id="harvestbulk" class="harvestbulk" type="submit" value="{{i.listid}}">Harvest</button>
             <div>
