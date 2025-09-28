@@ -90,6 +90,9 @@ DATABASES = {
         'PASSWORD': 'Blackgod70148082',
         'HOST': 'localhost',
         'PORT': '5432',
+        "OPTIONS": {
+            # This executes for every new connection:
+            "options": "-c timezone=UTC"},
     }
 }
 
