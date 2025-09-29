@@ -1,0 +1,190 @@
+body {
+    padding: 2%;
+}
+
+.forma {
+    margin: 10px;
+    }
+
+.inputs {
+       padding: 8px 20px;
+       margin-right: 7px;
+    }
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    } 
+    
+    .modaledit {
+      display: block; /* Hidden by default */
+      position: fixed; /* Stay in place */
+      z-index: 1; /* Sit on top */
+      left: 0;
+      top: 0;
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      overflow: auto; /* Enable scroll if needed */
+      background-color: rgb(0,0,0); /* Fallback color */
+      background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+      } 
+    
+  .modalbulk, .modalharvest {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }   
+
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+    }
+
+/* The Close Button */
+.close, .cls, .clsh {
+    float: right;
+    color:black;
+    font-size: 25px; 
+    margin-top: -15px;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .cls:hover,
+  .cls:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .clsh:hover,
+  .clsh:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+.subbtn {
+    margin: 10px;
+    background-color: seagreen;
+    color: white;
+    font-weight: bold;
+    font-family: sans-serif;
+    padding: 5px;
+    border-radius: 6px;
+    border-style: groove;   
+}
+
+.maintable {
+  width: 102.5%; 
+  margin-left: -2.5%;
+}
+
+.count {
+  margin-left: 25%;
+}
+
+@media (max-width: 599px) {
+  .mobile_hide { display: none; }  
+  body {padding: 0%;}
+  .subbtn {width: 90%;
+  margin: 0px;}
+  .maintable {margin: 0;
+    padding-left: 10px;
+    font-size: 12.5px;
+  }
+  .count{width: 50%;}
+  #planttable {font-size: 15px;}
+  .cc {font-size: 0px;}
+}
+
+.analytics{
+  padding-top: 20px;
+}
+
+.tray_number {
+  color: green;
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.tray_name {
+  font: outline;
+  font-weight: 700;
+  font-size: 20px;
+  text-transform:capitalize;
+  min-width: 200px;
+}
+
+.ana {
+  margin: 0;
+  padding: 5px;
+  display: inline;
+}
+
+#analytic_container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#analytic_container > div {
+  background-color: lawngreen;
+  font-size: 18px;
+  margin: 18px;
+  padding: 5px;
+  width: 200px;
+}
+
+.ana > button {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+
+#report_container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#report_container > div {
+  background-color: white;
+  font-size: 18px;
+  margin: 10px;
+  width: 250px;
+}
+
+.report_table tr:nth-child(even) {
+  background-color: #D6EEEE;
+  
+}
+
+.report_table {
+  border: 1px solid black;
+  width: 100%;
+
+}
