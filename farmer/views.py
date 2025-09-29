@@ -25,7 +25,6 @@ def traylist(request):
                                                       "data":data["active"], "count":len(data["active"]),
                                                         "harvestform": Nharvest })
         if request.method == "POST":
-            print("in POST")
             # bulk delete by checkbox
             if request.POST["type"] == "bulkdelete":
                 listdel = request.POST.getlist('dbid')
@@ -38,7 +37,6 @@ def traylist(request):
                 uitem = newobject(request.POST.copy(), Tray, Dnewtray)
             # Filter Active trays by something
             elif request.POST["type"] == "filter":
-                print("in filter")
                 filter = request.POST
                 data = filter_tray(Tray, filter, "active")
                 return render(request, "farmer/traylist.html", {"cd":data["cd"], "form": Dnewtray(),
@@ -79,8 +77,8 @@ def index(request):
                 uitem = newobject(request.POST.copy(), Tray, Dnewtray)
             
             elif request.POST["type"]=="loadedit":
-                list = ast.literal_eval(request.POST['itemid'])
-                data = {"type": request.POST["type"] ,"itemid": list[0]}
+                list = ast.literal_eval(request.POST['id'])
+                data = {"type": request.POST["type"] ,"id": list[0]}
                 uitem = updateitem(data, Tray, Dnewtray, len(list))
                 # filter only non harvested trays
                 data = groupingtrays()

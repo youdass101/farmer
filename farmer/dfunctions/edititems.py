@@ -21,8 +21,10 @@ def trayser(type, sdata="all"):
 
 # update update tray
 def updateitem (data, dobject, dform, att=1):
-    item = dobject.objects.get(id=data["itemid"]) # Tray object
     type = data["type"] # type of action
+    if type != "new":
+        item = dobject.objects.get(id=data["id"]) # Tray object
+
     if type == "loadedit": # load edit form
         try:
             initial = {'count':att} # trays qtt
@@ -114,7 +116,6 @@ def filter_data(ob, data):
     if data["search"] != "":
         if ob == Tray:
             sdata = ob.objects.filter(fname__contains=data["search"])
-            print(sdata)
         else:
             sdata = ob.objects.filter(name__contains=data["search"])
     else:

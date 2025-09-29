@@ -1,6 +1,6 @@
 {%extends "farmer/layout.html"%}
 {% block creator %}<h1>New Tray</h1>{% endblock %}
-{% block action %} action="/analytics"{% endblock %}
+{% block action %} action="/"{% endblock %}
 {%block body%}
 <div class="button_container">
     <button id="myBtn" class="subbtn">New Tray</button>    
@@ -33,7 +33,7 @@
                     {% csrf_token %}
                     <!-- GET FORM FROM PYTHON DATA SENT  -->
                     <input name="type" value="loadedit" hidden>
-                    <input value="{{i.listid}}" name="itemid" hidden>
+                    <input value="{{i.listid}}" name="id" hidden>
                     <button class="editplant" type="submit" class="subbtn">Edit</button>
                 </form>
             </div>
