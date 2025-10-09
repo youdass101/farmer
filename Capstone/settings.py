@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 SECRET_KEY = 'br&vwv*acijvxy_d8zr94o!g!b=j4e@$pz25)wjf%w2h2@^68n'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -40,6 +40,7 @@ CSRF_TRUSTED_ORIGINS = [
 INSTALLED_APPS = [
     'farmer',
     'user',
+    'analytic',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
