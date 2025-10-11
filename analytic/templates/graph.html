@@ -1,0 +1,23 @@
+{%extends "farmer/layout.html"%}
+{% block creator %}<h1>Data Analytic</h1>{% endblock %}
+{%block body%}
+<canvas id="outputChart"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const labels = {{ dates|safe }};
+  const data = {
+    labels: labels,
+    datasets: [{
+      label: 'Output',
+      data: {{ outputs|safe }},
+      borderColor: 'rgb(75, 192, 192)',
+      fill: false,
+    }]
+  };
+  const config = {
+    type: 'line',
+    data: data,
+  };
+  new Chart(document.getElementById('outputChart'), config);
+</script>
+{% endblock %}

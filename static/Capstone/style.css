@@ -910,6 +910,7 @@ h1, h2 {
   background: #f8f9fa;
   border-radius: 8px;
   overflow: hidden;
+  color: black;
 }
 
 .plan-table th, .plan-table td {

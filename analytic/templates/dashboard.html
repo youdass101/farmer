@@ -2,7 +2,7 @@
 {% block creator %}<h1>Data Analytic</h1>{% endblock %}
 {%block body%}
     <h1>We are still working on that feature!</h1>
-
+    <a href="{% url 'output_graph' %}">View Output Graph</a>
     <div class="plan-container">
         <h1>Tray Production Plan for {{ today }}</h1>
         <table class="plan-table">
@@ -16,7 +16,7 @@
                 {% for stat in tray_stats %}
                 <tr>
                     <td>{{ stat.name__name }}</td>
-                    <td>{{ stat.avg_number|floatformat:0 }}</td>
+                    <td>{{ stat.avg_per_week|floatformat:0 }}</td>
                 </tr>
                 {% empty %}
                 <tr>
