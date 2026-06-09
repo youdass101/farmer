@@ -57,14 +57,21 @@ def build_bulk_harvest_form(form_data, trays):
     return Nbulkharvest(form_data)
 
 
-def validate_selected_trays(form, trays):
-    """Validate the submitted quantity and selected trays as one harvest group."""
-    if form.cleaned_data["Trays"] != len(trays):
+def select_trays_for_harvest(form, available_trays):
+    """Select the requested number of trays from the available tray group."""
+    tray_quantity = form.cleaned_data["Trays"]
+    if tray_quantity > len(available_trays):
         form.add_error(
             "Trays",
-            "Tray quantity must match the number of selected trays.",
+            "Tray quantity cannot exceed the number of available trays.",
         )
+        raise BulkHarvestValidationError(form)
 
+    return available_trays[:tray_quantity]
+
+
+def validate_selected_trays(form, trays):
+    """Validate the trays selected for this harvest as one group."""
     first_tray = trays[0]
     if any(
         tray.name_id != first_tray.name_id
@@ -124,5 +131,6 @@ def create_bulk_harvest(form_data):
         if not form.is_valid():
             raise BulkHarvestValidationError(form)
 
-        validate_selected_trays(form, trays)
-        return save_bulk_harvest(form, trays)
+        selected_trays = select_trays_for_harvest(form, trays)
+        validate_selected_trays(form, selected_trays)
+        return save_bulk_harvest(form, selected_trays)

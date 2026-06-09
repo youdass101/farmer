@@ -106,6 +106,24 @@ class BulkHarvestViewTests(TestCase):
             {tray.id for tray in self.trays},
         )
 
+    def test_bulk_harvest_can_harvest_part_of_available_group(self):
+        available_trays = [self.create_tray(number) for number in range(3, 11)]
+        all_trays = self.trays + available_trays
+
+        response = self.client.post(
+            reverse("harvest"),
+            self.bulk_harvest_data(trays=all_trays, quantity=2),
+        )
+
+        self.assertRedirects(response, reverse("index"))
+        bulk_harvest = BulkHarvest.objects.get()
+        self.assertEqual(bulk_harvest.Trays, 2)
+        self.assertSetEqual(
+            set(Harvest.objects.values_list("tray_id", flat=True)),
+            {self.trays[0].id, self.trays[1].id},
+        )
+        self.assertEqual(Harvest.objects.count(), 2)
+
     def test_invalid_bulk_harvest_form_returns_errors_without_writes(self):
         response = self.client.post(
             reverse("harvest"),
@@ -131,7 +149,7 @@ class BulkHarvestViewTests(TestCase):
         self.assertEqual(BulkHarvest.objects.count(), 0)
         self.assertEqual(Harvest.objects.count(), 0)
 
-    def test_bulk_harvest_rejects_quantity_mismatch(self):
+    def test_bulk_harvest_rejects_quantity_greater_than_available_trays(self):
         response = self.client.post(
             reverse("harvest"),
             self.bulk_harvest_data(quantity=3),
@@ -140,7 +158,7 @@ class BulkHarvestViewTests(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertContains(
             response,
-            "Tray quantity must match the number of selected trays.",
+            "Tray quantity cannot exceed the number of available trays.",
             status_code=400,
         )
         self.assertContains(response, 'style="display: block;"', status_code=400)
