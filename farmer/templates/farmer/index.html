@@ -2,49 +2,78 @@
 {% block creator %}<h1>New Tray</h1>{% endblock %}
 {% block action %} action="/"{% endblock %}
 {%block body%}
-<div class="button_container">
-    <button id="myBtn" class="subbtn">New Tray</button>    
-</div>
-
-{% if data %}
-    <div class="analytics" id="analytic_container">
-        {% for i in data %}
-        <div class="ana-cards">
-            <form class="ana" action="/" method="POST">
-                {% csrf_token %}
-                <input name="tray_name" value="{{i.name}}" hidden>
-                <input name="type" value="filter" hidden>
-                <input name="start" value="{{i.start}}" hidden>
-                <div class="analytic_box"> 
-                    <div class="tray_number"><span class="number">{{i.quantity}}</span> trays </div>
-                    <div class="tray_name">{{i.name}}</div>
-                    <div class="seedstotal">{{i.seeds}} Grams of Seeds</div>
-                    <div class="soilstotal">{{i.soil}} Centilitres of Soil</div>
-                    <div class="start">{{i.start}}</div> 
-                    <div class="end">{{i.end}}</div> 
-                    <div>{{i.days.days}} days</div>
-                    <div class="countdown"></div>
-                </div>
-            </form>
-            <button id="harvestbulk" class="harvestbulk" type="submit" value="{{i.listid}}">Harvest</button>
-            <div>
-                <form action="/" method="POST">
-                    <!-- CSRF TOKEN FOR FORM-->
-                    {% csrf_token %}
-                    <!-- GET FORM FROM PYTHON DATA SENT  -->
-                    <input name="type" value="loadedit" hidden>
-                    <input value="{{i.listid}}" name="id" hidden>
-                    <button class="editplant" type="submit" class="subbtn">Edit</button>
-                </form>
-            </div>
+<main class="dashboard">
+    <section class="dashboard__hero" aria-labelledby="dashboard-title">
+        <div class="dashboard__intro">
+            <span class="dashboard__eyebrow">Growing overview</span>
+            <h2 id="dashboard-title">Active tray groups</h2>
+            <p>Review crop progress, seed and soil usage, then harvest or edit each batch.</p>
         </div>
+        <div class="button_container">
+            <button id="myBtn" class="subbtn" type="button"><span aria-hidden="true">+</span> New Tray</button>
+        </div>
+    </section>
 
-        {% endfor %}
-{% else %}
-    <h1>Nothing here </h1>
-{% endif %}
+    {% if data %}
+        <section class="analytics" id="analytic_container" aria-label="Active tray groups">
+            {% for i in data %}
+            <article class="ana-cards">
+                <form class="ana" action="/" method="POST">
+                    {% csrf_token %}
+                    <input name="tray_name" value="{{i.name}}" hidden>
+                    <input name="type" value="filter" hidden>
+                    <input name="start" value="{{i.start}}" hidden>
+                    <div class="analytic_box">
+                        <div class="card-heading">
+                            <div>
+                                <span class="card-heading__label">Crop batch</span>
+                                <h3 class="tray_name">{{i.name}}</h3>
+                            </div>
+                            <div class="tray_number"><span class="number">{{i.quantity}}</span><span>trays</span></div>
+                        </div>
+                        <div class="card-metrics">
+                            <div class="card-metric seedstotal">
+                                <span class="card-metric__label">Seeds</span>
+                                <strong>{{i.seeds}} g</strong>
+                            </div>
+                            <div class="card-metric soilstotal">
+                                <span class="card-metric__label">Soil</span>
+                                <strong>{{i.soil}} cl</strong>
+                            </div>
+                            <div class="card-metric card-metric--wide">
+                                <span class="card-metric__label">Growing time</span>
+                                <strong>{{i.days.days}} days</strong>
+                            </div>
+                        </div>
+                        <div class="card-dates">
+                            <div class="start"><span>Started</span><strong>{{i.start}}</strong></div>
+                            <span class="card-dates__line" aria-hidden="true"></span>
+                            <div class="end"><span>Target</span><strong>{{i.end}}</strong></div>
+                        </div>
+                        <div class="countdown" data-countdown-target="{{i.end|date:'Y-m-d'}}T00:00:00"></div>
+                    </div>
+                </form>
+                <div class="card-actions">
+                    <button class="harvestbulk" type="button" value="{{i.listid}}">Harvest</button>
+                    <form action="/" method="POST">
+                        {% csrf_token %}
+                        <input name="type" value="loadedit" hidden>
+                        <input value="{{i.listid}}" name="id" hidden>
+                        <button class="editplant" type="submit">Edit batch</button>
+                    </form>
+                </div>
+            </article>
+            {% endfor %}
+        </section>
+    {% else %}
+        <section class="dashboard__empty">
+            <span aria-hidden="true">+</span>
+            <h2>No active trays yet</h2>
+            <p>Create your first tray to start tracking its growing progress.</p>
+        </section>
+    {% endif %}
+</main>
 
-</div>
 <!-- HARVEST POP -->
 <div id="Harvestbulkpop" class="modalbulk"{% if bulkharvest.errors %} style="display: block;"{% endif %}>
     <!-- NEW PLANT Modal content -->

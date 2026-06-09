@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Get the modal WHICH IS IN LAYOUT A GLOBAL FORM TO CREATE ANY NEW OBJECT
     var modal = document.getElementById("myModal");
     var modaledit = document.getElementById("myEditModal");
-    var esc = event.keyCode;
 
 
     // Get the button that opens the Global modal
@@ -29,8 +28,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // When the user clicks on <span> (x), close the modal
-    span.onclick = function() {
-        modal.style.display = "none";
+    if (span && modal) {
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
     }
 
 
@@ -95,106 +96,113 @@ document.addEventListener('DOMContentLoaded', function() {
                 
             
 
-    //Harvest bulk
-    if (document.querySelector('#harvestbulk')){
-        document.querySelectorAll(".harvestbulk").forEach(button => {
-            var harvestbulk = document.getElementById("Harvestbulkpop")
-            button.onclick = () =>{
-                trayname = button.parentElement.querySelector(".ana").querySelector(".analytic_box").querySelector(".tray_name").innerHTML
-                trayqtt = button.parentElement.querySelector(".ana").querySelector(".analytic_box").querySelector(".tray_number").querySelector(".number").innerHTML
-                traysids = button.value
-                harvestbulk.querySelector("#harvest_title").innerHTML = trayname
-                harvestbulk.querySelector("#id_Trays").value = trayqtt
-                harvestbulk.querySelector("#id_Trays").max = trayqtt
-                harvestbulk.querySelector('#bulkharvest').value = traysids
-                harvestbulk.style.display = "block"
-
-                // Get the <span> element that closes the modal
-                var sp = document.getElementsByClassName("clsh")[0];
-                sp.onclick = function() {
-                    harvestbulk.style.display = "none";
-                }
-                // close when click outside the block container
-                window.onclick = function(event) {
-                    if (event.target == harvestbulk) {
-                        harvestbulk.style.display = "none"
-                    }
-                }
-
-                window.addEventListener('keydown', function(event) {
-                    if (event.key == 'Escape') {
-                        harvestbulk.style.display = "none"
-                    }
-                })
+    // Harvest bulk
+    const harvestbulk = document.getElementById("Harvestbulkpop");
+    document.querySelectorAll(".harvestbulk").forEach(button => {
+        button.onclick = () => {
+            const card = button.closest(".ana-cards");
+            if (!harvestbulk || !card) {
+                return;
             }
-        })
+
+            const trayName = card.querySelector(".tray_name").textContent.trim();
+            const trayQuantity = card.querySelector(".tray_number .number").textContent.trim();
+            const traysIds = button.value;
+
+            harvestbulk.querySelector("#harvest_title").textContent = trayName;
+            harvestbulk.querySelector("#id_Trays").value = trayQuantity;
+            harvestbulk.querySelector("#id_Trays").max = trayQuantity;
+            harvestbulk.querySelector("#bulkharvest").value = traysIds;
+            harvestbulk.style.display = "block";
+        }
+    });
+
+    const closeHarvest = document.querySelector("#Harvestbulkpop .clsh");
+    if (closeHarvest && harvestbulk) {
+        closeHarvest.onclick = () => {
+            harvestbulk.style.display = "none";
+        };
     }
+
+    window.addEventListener("click", event => {
+        if (event.target === harvestbulk) {
+            harvestbulk.style.display = "none";
+        }
+    });
   
 
 
 
-    //Countdown 
-    if (document.querySelector(".countdown")){
-        document.querySelectorAll(".countdown").forEach (cell => {
-            var parent = (cell.parentElement).querySelector(".end").innerHTML
-            
-            var countDownDate = new Date(parent).getTime();
+    // Countdown
+    document.querySelectorAll(".countdown").forEach(cell => {
+        const endCell = cell.parentElement.querySelector(".end");
+        const target = cell.dataset.countdownTarget || (endCell && endCell.textContent.trim());
+        const countDownDate = new Date(target).getTime();
 
-            // Update the count down every 1 second
-            var x = setInterval(function() {
+        if (Number.isNaN(countDownDate)) {
+            cell.textContent = "Countdown unavailable";
+            return;
+        }
 
-            // Get today's date and time
-            var now = new Date().getTime();
+        let interval;
+        const updateCountdown = () => {
+            const distance = countDownDate - Date.now();
 
-            // Find the distance between now and the count down date
-            var distance = countDownDate - now;
-
-            // Time calculations for days, hours, minutes and seconds
-            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            // Display the result in the element with id="demo"
-            cell.innerHTML = days + "d " + hours + "h "
-            + minutes + "m " + seconds + "s ";
-            
-            
-            // If the count down is finished, write some text
             if (distance < 0) {
-                clearInterval(x);
-                cell.innerHTML = "HARVEST NOW";
+                clearInterval(interval);
+                cell.textContent = "HARVEST NOW";
+                return false;
             }
-            }, 1000);
 
-        })
-    }
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            cell.textContent = days + "d " + hours + "h " + minutes + "m " + seconds + "s";
+            return true;
+        };
+
+        if (updateCountdown()) {
+            interval = setInterval(updateCountdown, 1000);
+        }
+    });
     
-    // AUTO GET SEED WEIGHT WHEN CREATIING NEW PLANT AND SELECT A PLANT NAME FROM LIST
-    if (document.querySelector("#id_name")){
-        select = document.querySelector("#id_name")
-        
-        select.addEventListener('change', (event) =>{
-            var s = select.value
-            fetch('/plants', {
-                method: 'POST',
+    // Load plant defaults into the new/edit tray form that changed.
+    document.querySelectorAll('select[name="name"]').forEach(select => {
+        select.addEventListener("change", () => {
+            const form = select.closest("form");
+            const seedsWeight = form && form.querySelector('[name="seeds_weight"]');
+            const mediumWeight = form && form.querySelector('[name="medium_weight"]');
+
+            if (!select.value || !seedsWeight || !mediumWeight) {
+                return;
+            }
+
+            fetch("/plants", {
+                method: "POST",
                 body: JSON.stringify({
-                    data: s,
-                    type: "fetch"  
+                    data: select.value,
+                    type: "fetch"
                 }),
                 headers: {
-                    'X-CSRFToken': getCookie('csrftoken')
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCookie("csrftoken")
                 }
             })
-            // REQUESTING REPLY INFO AND DATA FROM VIEW 
-            .then (response => response.json())
-            .then (result => {
-                document.querySelector("#id_seeds_weight").value = result.result[0]
-                document.querySelector("#id_medium_weight").value = result.result[1]
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Unable to load plant defaults.");
+                }
+                return response.json();
             })
-        })
-
-    }
+            .then(result => {
+                seedsWeight.value = result.result[0];
+                mediumWeight.value = result.result[1];
+            })
+            .catch(error => console.error(error));
+        });
+    });
     
 
 
