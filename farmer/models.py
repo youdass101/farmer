@@ -78,7 +78,7 @@ class Tray(models.Model):
             harvest_date = h.date
             harvest_id = h.pk
             dh = h.date - datetime.date(self.start)
-        except:
+        except Harvest.DoesNotExist:
             # IF TRAY NOT HARVESTED AND STILL ACTIVE 
             harvest_id = None
             harvest = False
@@ -178,7 +178,7 @@ class BulkHarvest(models.Model):
         }
 
 class Harvest(models.Model):
-    tray = models.ForeignKey(Tray, on_delete=models.CASCADE)
+    tray = models.OneToOneField(Tray, on_delete=models.CASCADE)
     date = models.DateField()
     output = models.IntegerField()  
     bulkh = models.ForeignKey(BulkHarvest, on_delete=models.CASCADE, null=True, blank=True)

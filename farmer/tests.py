@@ -3,6 +3,7 @@ from unittest.mock import patch
 
 from django.contrib.auth.models import AnonymousUser
 from django.template.loader import render_to_string
+from django.db import IntegrityError, transaction
 from django.test import SimpleTestCase, TestCase
 from django.urls import reverse
 from django.utils import timezone
@@ -183,3 +184,57 @@ class BulkHarvestViewTests(TestCase):
 
         self.assertEqual(BulkHarvest.objects.count(), 0)
         self.assertEqual(Harvest.objects.count(), 0)
+
+
+class HarvestTrayInvariantTests(TestCase):
+    def setUp(self):
+        self.plant = Plant.objects.create(
+            name="Pea",
+            seeds=10,
+            pressure=1,
+            blackout=1,
+            harvest=7,
+            medium_weight=100,
+            packweight=50,
+        )
+        self.medium = Medium.objects.create(name="Soil", soil=100, coco=0)
+        self.tray = Tray.objects.create(
+            name=self.plant,
+            number=1,
+            medium=self.medium,
+            start=timezone.now(),
+            medium_weight=100,
+            seeds_weight=10,
+        )
+
+    def test_database_rejects_second_harvest_for_same_tray(self):
+        Harvest.objects.create(tray=self.tray, date=date(2026, 6, 8), output=100)
+
+        with self.assertRaises(IntegrityError):
+            with transaction.atomic():
+                Harvest.objects.create(
+                    tray=self.tray,
+                    date=date(2026, 6, 9),
+                    output=120,
+                )
+
+        self.assertEqual(Harvest.objects.filter(tray=self.tray).count(), 1)
+
+    def test_serialize_marks_tray_without_harvest_as_active(self):
+        serialized = self.tray.serialize()
+
+        self.assertFalse(serialized["harvest"])
+        self.assertIsNone(serialized["harvest_id"])
+
+    def test_serialize_returns_the_trays_single_harvest(self):
+        harvest = Harvest.objects.create(
+            tray=self.tray,
+            date=date(2026, 6, 8),
+            output=100,
+        )
+
+        serialized = self.tray.serialize()
+
+        self.assertTrue(serialized["harvest"])
+        self.assertEqual(serialized["harvest_id"], harvest.id)
+        self.assertEqual(serialized["harvest_weight"], harvest.output)
