@@ -1,10 +1,10 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.db import IntegrityError, transaction
 from farmer.models import *
 from .forms import *
-from django.views.decorators.csrf import csrf_exempt
 
 
 
@@ -22,10 +22,14 @@ def login_view(request):
     if request.method == "POST":
         # GET DATA
         form = Login(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data["username"]
-            password = form.cleaned_data["password"]
-            user = authenticate(request, username=username, password=password)
+        if not form.is_valid():
+            return render(request, "user/login.html", {
+                "error": "Enter a username and password.", "form": form
+            }, status=400)
+
+        username = form.cleaned_data["username"]
+        password = form.cleaned_data["password"]
+        user = authenticate(request, username=username, password=password)
 
         # IF AUTHENTICATION SUCCESS
         if user is not None:
@@ -63,9 +67,9 @@ def register_view(request):
             # Check password and code
             if password == comfirm and reg == regcode:
                 try:
-                    new = User.objects.create_user(username, email, password)
-                    new.save()
-                except:
+                    with transaction.atomic():
+                        User.objects.create_user(username, email, password)
+                except IntegrityError:
                     return registerpage("user already exist", form)
                 
                 # LOGIN WITH NEW USER 

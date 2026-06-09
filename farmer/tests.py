@@ -238,3 +238,80 @@ class HarvestTrayInvariantTests(TestCase):
         self.assertTrue(serialized["harvest"])
         self.assertEqual(serialized["harvest_id"], harvest.id)
         self.assertEqual(serialized["harvest_weight"], harvest.output)
+
+
+class ReportViewTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="reporter", password="password")
+        self.client.force_login(self.user)
+        self.plant = Plant.objects.create(
+            name="Pea",
+            seeds=10,
+            pressure=1,
+            blackout=1,
+            harvest=7,
+            medium_weight=100,
+            packweight=50,
+        )
+        self.medium = Medium.objects.create(name="Soil", soil=100, coco=0)
+        BulkHarvest.objects.create(
+            Product=self.plant,
+            MediumMix=self.medium,
+            Trays=2,
+            Harvestdate=date(2026, 6, 1),
+            PacksQtt=0,
+            MixWeight=100,
+        )
+        BulkHarvest.objects.create(
+            Product=self.plant,
+            MediumMix=self.medium,
+            Trays=3,
+            Harvestdate=date(2026, 6, 2),
+            PacksQtt=0,
+            MixWeight=150,
+        )
+
+    def report_data(self, **overrides):
+        data = {
+            "type": "Mix",
+            "product": self.plant.id,
+            "start_year": 2026,
+            "start_month": 6,
+            "start_day": 1,
+            "end_year": 2026,
+            "end_month": 6,
+            "end_day": 30,
+        }
+        data.update(overrides)
+        return data
+
+    def test_product_mix_report_accumulates_all_matching_records(self):
+        response = self.client.post(reverse("report"), self.report_data())
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["totalyield"], 250)
+        self.assertEqual(response.context["medium"], 500)
+        self.assertEqual(len(response.context["data"]), 2)
+
+    def test_invalid_report_form_returns_errors_without_crashing(self):
+        response = self.client.post(reverse("report"), {"type": "Mix"})
+
+        self.assertEqual(response.status_code, 400)
+        self.assertTrue(response.context["fform"].errors)
+        self.assertEqual(response.context["data"], [])
+
+
+class ExceptionHandlingTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="farmer-errors", password="password")
+        self.client.force_login(self.user)
+
+    def test_malformed_plant_json_returns_bad_request(self):
+        response = self.client.post(
+            reverse("plants"),
+            data="not-json",
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(response.content, {"error": "Invalid JSON payload."})

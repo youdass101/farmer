@@ -26,11 +26,11 @@ def updateitem (data, dobject, dform, att=1):
         item = dobject.objects.get(id=data["id"]) # Tray object
 
     if type == "loadedit": # load edit form
-        try:
+        if dform == Dnewtray:
             initial = {'count':att} # trays qtt
-            form = dform(instance=item, count=att, initial = initial) # form with instance and count
-        except:
-            form = dform(instance=item) # form with instance if failed
+            form = dform(instance=item, count=att, initial=initial)
+        else:
+            form = dform(instance=item)
 
         list = dobject.objects.all() # all trays 
         return {"editform": form, "form": dform(), "data": list}
@@ -55,16 +55,10 @@ def updateitem (data, dobject, dform, att=1):
 
 
 def check_number(count, cobject, item):
-    try: 
-        cobject.objects.get(number=count, name=item)
+    if count == 0:
+        count = 1
+    while cobject.objects.filter(number=count, name=item).exists():
         count += 1
-        count = check_number(count, cobject, item)
-    except:
-        if count == 0:
-            count = 1
-        else:
-            return count
-                
     return count
 
 def collectanalyticdata(object):
@@ -82,12 +76,8 @@ def collectanalyticdata(object):
     }
 
 def newobject(data, object, form ):
-    try: 
-        # GET COUNT OF TRAY BASED ON PLANT NAME 
-        c = object.objects.filter(name=data['name']).count() 
-    except:
-        # IF THIS IS THE FRIST TRAY OF IT KIND 
-        c = 0
+    # GET COUNT OF TRAY BASED ON PLANT NAME
+    c = object.objects.filter(name=data['name']).count()
     # CREATE NEW TRAY NUMBER
     for i in range(int(data['count'])):
         # TRAY NUMBER BY NAME
@@ -98,19 +88,16 @@ def newobject(data, object, form ):
     return item
 
 def groupingtrays ():
-    try:
-        # filter only non harvested trays
-        active = Tray.objects.exclude(id__in= Harvest.objects.values('tray'))
-        # group trays my name and date
-        grouped = active.values('name', 'start').annotate(qtt=models.Count('name'), seeds=models.Sum('seeds_weight'), 
-                                                        soil=models.Sum('medium_weight'), list_id=ArrayAgg('id'))
-        # create empty list to add data
-        data= [collectanalyticdata(row) for row in grouped.order_by('-start')]
-    except:
-        data = False
-
-
-    return data
+    # filter only non harvested trays
+    active = Tray.objects.exclude(id__in=Harvest.objects.values('tray'))
+    # group trays by name and date
+    grouped = active.values('name', 'start').annotate(
+        qtt=models.Count('name'),
+        seeds=models.Sum('seeds_weight'),
+        soil=models.Sum('medium_weight'),
+        list_id=ArrayAgg('id'),
+    )
+    return [collectanalyticdata(row) for row in grouped.order_by('-start')]
 
 def filter_data(ob, data):
     if data["search"] != "":
@@ -123,23 +110,14 @@ def filter_data(ob, data):
     return sdata 
 
 def filter_tray(ob, data, state):
-    try:
-        fdata = trayser(state, filter_data(ob, data))
-    except:
-        filter = data['filter']
-        sdata = Tray.objects.all()
-        vdata = [row.serialize() for row in sdata]
-        fdata = sorted(vdata, key=lambda k: k[filter])
+    filter_name = data["filter"]
+    if data["search"] or filter_name not in {"days", "end"}:
+        return trayser(state, filter_data(ob, data))
 
-        if state == "active":
-            active = [x for x in fdata if not x["harvest"]]
-        else:
-            active = [x for x in fdata if x["harvest"]]
-
-
-        fdata = {"cd":str(datetime.date(datetime.today())), "active": active}
-
-    return fdata
-
-
-
+    serialized = [row.serialize() for row in Tray.objects.all()]
+    sorted_data = sorted(serialized, key=lambda row: row[filter_name])
+    if state == "active":
+        active = [row for row in sorted_data if not row["harvest"]]
+    else:
+        active = [row for row in sorted_data if row["harvest"]]
+    return {"cd": str(datetime.date(datetime.today())), "active": active}
