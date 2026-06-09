@@ -1,194 +1,386 @@
-  
+$index-accent: #00eaff;
+$index-surface: rgba(10, 30, 43, 0.76);
+$index-border: rgba(126, 231, 240, 0.16);
 
-// .analytics{
-//     padding-top: 20px;
-// }
-// .ana {
-//     margin: 0;
-//     padding: 5px;
-//     display: inline;
-// }
+.dashboard {
+  width: min(100% - 2rem, 1240px);
+  margin: 0 auto;
+  padding: 0.5rem 0 4rem;
+}
 
-// #analytic_container {
-//     display: flex;
-//     flex-wrap: wrap;
-// }
-
-// #analytic_container > div {
-//     background-color: lawngreen;
-//     font-size: 18px;
-//     margin: 18px;
-//     padding: 5px;
-//     width: 200px;
-// }
-
-// .ana > button {
-//     width: 100%;
-//     table-layout: fixed;
-//     border-collapse: collapse;
-// }
-
-
-// .count {
-//   margin-left: 25%;
-// }
-
-// .tray_number {
-//   color: green;
-//   font-size: 20px;
-//   font-weight: 900;
-// }
-
-// .tray_name {
-//   font: outline;
-//   font-weight: 700;
-//   font-size: 20px;
-//   text-transform:capitalize;
-//   min-width: 200px;
-// }
-
-// @media (max-width: 599px) {
-//     .count{width: 50%;}
-//     #planttable {font-size: 15px;}
-//     .cc {font-size: 0px;}
-    
-// }   
-.analytics {
+.dashboard__hero {
   display: flex;
-  flex-wrap: wrap;
-  gap: 2.5rem;
-  justify-content: center;
-  padding: 2rem;
-  background: linear-gradient(120deg, #0f2027, #2c5364 100%);
-  min-height: 100vh;
+  align-items: end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  padding: 2rem 2.25rem;
+  overflow: hidden;
+  position: relative;
+  background: linear-gradient(135deg, rgba(0, 234, 255, 0.12), rgba(8, 28, 40, 0.72) 58%);
+  border: 1px solid $index-border;
+  border-radius: 1.5rem;
+  box-shadow: 0 18px 50px rgba(3, 16, 25, 0.24);
+
+  &::after {
+    content: '';
+    width: 15rem;
+    height: 15rem;
+    position: absolute;
+    right: -5rem;
+    top: -8rem;
+    background: $index-accent;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.14;
+    pointer-events: none;
+  }
+}
+
+.dashboard__intro {
+  position: relative;
+  z-index: 1;
+
+  h2 {
+    margin: 0.35rem 0 0.6rem;
+    color: #f3fdff;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 750;
+    letter-spacing: -0.04em;
+    text-shadow: none;
+  }
+
+  p {
+    max-width: 620px;
+    margin: 0;
+    color: #a9c8d0;
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+}
+
+.dashboard__eyebrow,
+.card-heading__label,
+.card-metric__label,
+.card-dates span {
+  color: #83aeb8;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.button_container {
+  width: auto;
+  margin: 0;
+  position: relative;
+  z-index: 1;
+  flex: 0 0 auto;
+
+  .subbtn {
+    min-height: 3.1rem;
+    margin: 0;
+    padding: 0.75rem 1.2rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    background: $index-accent;
+    color: #072430;
+    box-shadow: 0 10px 28px rgba(0, 234, 255, 0.22);
+
+    span {
+      font-size: 1.45rem;
+      line-height: 0;
+    }
+  }
+}
+
+.analytics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+  padding: 0;
+  background: none;
+  min-height: 0;
 }
 
 .ana-cards {
-  background: rgba(255,255,255,0.10);
-  border-radius: 1.5rem;
-  box-shadow: 0 8px 32px 0 rgba(31,38,135,0.37);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255,255,255,0.18);
-  padding: 2rem 1.5rem 1.5rem 1.5rem;
-  min-width: 320px;
-  max-width: 350px;
-  margin: 1rem 0;
+  min-width: 0;
+  margin: 0;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
-  align-items: stretch;
-  position: relative;
-  transition: transform 0.2s, box-shadow 0.2s;
+  background: $index-surface;
+  border: 1px solid $index-border;
+  border-radius: 1.25rem;
+  box-shadow: 0 16px 40px rgba(3, 16, 25, 0.24);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 
   &:hover {
-    transform: translateY(-8px) scale(1.03);
-    box-shadow: 0 16px 48px 0 rgba(31,38,135,0.45);
-    border-color: #00eaff;
+    transform: translateY(-4px);
+    border-color: rgba(0, 234, 255, 0.42);
+    box-shadow: 0 22px 52px rgba(3, 16, 25, 0.38);
   }
 
   .ana {
-    width: 100%;
-    margin-bottom: 1rem;
+    height: 100%;
+    margin: 0;
   }
 
   .analytic_box {
-    width: 100%;
-    background: linear-gradient(120deg, #232526 0%, #414345 100%);
-    border: none;
-    border-radius: 1rem;
-    color: #fff;
-    padding: 1.5rem 1rem;
-    text-align: left;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0,234,255,0.08);
-    transition: background 0.2s, box-shadow 0.2s;
+    height: 100%;
+    padding: 0.35rem;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+    gap: 1.25rem;
+    color: #ecfbfd;
+  }
+}
 
-    &:hover {
-      background: linear-gradient(120deg, #00eaff 0%, #232526 100%);
-      color: #232526;
-      box-shadow: 0 4px 24px #00eaff44;
-    }
+.card-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
 
-    .tray_number {
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: #00eaff;
-      margin-bottom: 0.2rem;
+  .tray_name {
+    margin: 0.3rem 0 0;
+    color: #f6feff;
+    font-size: 1.35rem;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    text-transform: capitalize;
+  }
+
+  .tray_number {
+    min-width: 4.5rem;
+    padding: 0.65rem 0.8rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(0, 234, 255, 0.08);
+    border: 1px solid rgba(0, 234, 255, 0.16);
+    border-radius: 0.9rem;
+    color: #99c7cf;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    text-transform: uppercase;
+
+    .number {
+      margin-bottom: 0.3rem;
+      color: $index-accent;
+      font-size: 1.45rem;
+      letter-spacing: 0;
     }
-    .tray_name {
-      font-size: 1.4rem;
-      font-weight: 600;
-      letter-spacing: 1px;
-      margin-bottom: 0.2rem;
-    }
-    .seedstotal, .soilstotal, .start, .end {
-      font-size: 1rem;
-      color: #b2f7ef;
-    }
-    .countdown {
-      font-size: 0.95rem;
-      color: #ffb347;
-      margin-top: 0.5rem;
-    }
+  }
+}
+
+.card-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.card-metric {
+  padding: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 0.85rem;
+
+  strong {
+    color: #dff9fc;
+    font-size: 1rem;
+    font-weight: 650;
+  }
+}
+
+.card-metric--wide {
+  grid-column: 1 / -1;
+}
+
+.card-dates {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 0.75rem;
+
+  > div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .end {
+    text-align: right;
+  }
+
+  strong {
+    color: #dff9fc;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+}
+
+.card-dates__line {
+  width: 1.6rem;
+  height: 1px;
+  background: rgba(0, 234, 255, 0.35);
+}
+
+.countdown:empty {
+  display: none;
+}
+
+.card-actions {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.7rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+  form {
+    display: block;
+  }
+
+  .harvestbulk,
+  .editplant {
+    width: 100%;
+    min-height: 2.65rem;
+    margin: 0;
+    border-radius: 0.75rem;
+    font-size: 0.9rem;
   }
 
   .harvestbulk {
-    margin: 0.5rem 0 0.5rem 0;
-    background: #00eaff;
-    color: #232526;
-    border: none;
-    border-radius: 0.7rem;
-    padding: 0.5rem 1.2rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
-    &:hover {
-      background: #00b8d4;
-      color: #fff;
-    }
+    background: $index-accent;
+    color: #072430;
+    border: 1px solid $index-accent;
   }
 
   .editplant {
     background: transparent;
-    color: #00eaff;
-    border: 1px solid #00eaff;
-    border-radius: 0.7rem;
-    padding: 0.4rem 1.1rem;
-    font-weight: 500;
-    cursor: pointer;
-    margin-top: 0.3rem;
-    transition: background 0.2s, color 0.2s;
-    &:hover {
-      background: #00eaff;
-      color: #232526;
-    }
+    color: #b9e6eb;
+    border: 1px solid rgba(185, 230, 235, 0.25);
   }
 }
 
-// // bulk harvest popup modal new harvest - hidden by default
-// .modalbulk, .modalharvest {
-//     display: none; /* Hidden by default */
-//     position: fixed; /* Stay in place */
-//     z-index: 1; /* Sit on top */
-//     left: 0;
-//     top: 0;
-//     width: 100%; /* Full width */
-//     height: 100%; /* Full height */
-//     overflow: auto; /* Enable scroll if needed */
-//     background-color: rgb(0,0,0); /* Fallback color */
-//     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-// } 
-.button_container {
-  width: 100%;
+.dashboard__empty {
+  padding: 4.5rem 1.5rem;
   display: flex;
-  justify-content: center;
-  margin-bottom: 2rem;  
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: $index-surface;
+  border: 1px dashed rgba(0, 234, 255, 0.28);
+  border-radius: 1.5rem;
+
+  > span {
+    width: 3.5rem;
+    height: 3.5rem;
+    margin-bottom: 1rem;
+    display: grid;
+    place-items: center;
+    background: rgba(0, 234, 255, 0.08);
+    border: 1px solid rgba(0, 234, 255, 0.2);
+    border-radius: 50%;
+    color: $index-accent;
+    font-size: 2rem;
+  }
+
+  h2 {
+    margin: 0 0 0.5rem;
+    color: #f3fdff;
+    font-size: 1.4rem;
+    text-shadow: none;
+  }
+
+  p {
+    margin: 0;
+    color: #94b8c0;
+  }
 }
-// Futuristic bulk harvest popup modal
+
+@media (max-width: 1020px) {
+  .analytics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .dashboard {
+    width: min(100% - 1.25rem, 1240px);
+    padding-top: 0;
+  }
+
+  .dashboard__hero {
+    margin-bottom: 1rem;
+    padding: 1.35rem;
+    align-items: stretch;
+    flex-direction: column;
+    gap: 1.25rem;
+    border-radius: 1.1rem;
+  }
+
+  .dashboard__intro p {
+    font-size: 0.92rem;
+  }
+
+  .button_container,
+  .button_container .subbtn {
+    width: 100%;
+  }
+
+  .button_container .subbtn {
+    justify-content: center;
+  }
+
+  .analytics {
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+  }
+
+  .ana-cards {
+    padding: 0.9rem;
+    border-radius: 1rem;
+
+    &:hover {
+      transform: none;
+    }
+  }
+
+  .card-actions {
+    gap: 0.55rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .card-heading {
+    gap: 0.65rem;
+  }
+
+  .card-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .card-metric--wide {
+    grid-column: auto;
+  }
+
+  .card-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Bulk harvest popup modal
 .modalbulk, .modalharvest {
   display: none; // Hidden by default
   position: fixed;
