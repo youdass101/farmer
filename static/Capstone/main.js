@@ -133,42 +133,40 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-    //Countdown 
-    if (document.querySelector(".countdown")){
-        document.querySelectorAll(".countdown").forEach (cell => {
-            var parent = (cell.parentElement).querySelector(".end").innerHTML
-            
-            var countDownDate = new Date(parent).getTime();
+    // Countdown
+    document.querySelectorAll(".countdown").forEach(cell => {
+        const endCell = cell.parentElement.querySelector(".end");
+        const target = cell.dataset.countdownTarget || (endCell && endCell.textContent.trim());
+        const countDownDate = new Date(target).getTime();
 
-            // Update the count down every 1 second
-            var x = setInterval(function() {
+        if (Number.isNaN(countDownDate)) {
+            cell.textContent = "Countdown unavailable";
+            return;
+        }
 
-            // Get today's date and time
-            var now = new Date().getTime();
+        let interval;
+        const updateCountdown = () => {
+            const distance = countDownDate - Date.now();
 
-            // Find the distance between now and the count down date
-            var distance = countDownDate - now;
-
-            // Time calculations for days, hours, minutes and seconds
-            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            // Display the result in the element with id="demo"
-            cell.innerHTML = days + "d " + hours + "h "
-            + minutes + "m " + seconds + "s ";
-            
-            
-            // If the count down is finished, write some text
             if (distance < 0) {
-                clearInterval(x);
-                cell.innerHTML = "HARVEST NOW";
+                clearInterval(interval);
+                cell.textContent = "HARVEST NOW";
+                return false;
             }
-            }, 1000);
 
-        })
-    }
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            cell.textContent = days + "d " + hours + "h " + minutes + "m " + seconds + "s";
+            return true;
+        };
+
+        if (updateCountdown()) {
+            interval = setInterval(updateCountdown, 1000);
+        }
+    });
     
     // AUTO GET SEED WEIGHT WHEN CREATIING NEW PLANT AND SELECT A PLANT NAME FROM LIST
     if (document.querySelector("#id_name")){
