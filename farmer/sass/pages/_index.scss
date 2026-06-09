@@ -2,6 +2,12 @@ $index-accent: #00eaff;
 $index-surface: rgba(10, 30, 43, 0.76);
 $index-border: rgba(126, 231, 240, 0.16);
 
+// Keep the index-page create/edit dialogs above the positioned dashboard content.
+#myModal,
+#myEditModal {
+  z-index: 2000;
+}
+
 .dashboard {
   width: min(100% - 2rem, 1240px);
   margin: 0 auto;
