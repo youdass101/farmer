@@ -1,6 +1,6 @@
 {% extends "farmer/layout.html" %}
 {% block creator %}<h1>New Tray</h1>{% endblock %}
-{% block action %} action="/"{% endblock %}
+{% block action %} action="{% url 'traylist' %}"{% endblock %}
 {% block body %}
 
 <h1>Active Trays {{count}}</h1>
@@ -40,7 +40,7 @@
 <table class="filter">
     <tr>
         <td>
-            <form action="/" method="POST">
+            <form action="{% url 'traylist' %}" method="POST">
                 {% csrf_token %}
                 <input value="filter" name="type" hidden>
                 <select name="filter">
@@ -83,7 +83,7 @@
         </thead>
     <!-- created plants list -->
         <tbody>
-            <form action="/" method="POST" id="deletebulkform">
+            <form action="{% url 'traylist' %}" method="POST" id="deletebulkform">
                 {% csrf_token %}
                 <input name="type" value="bulkdelete" hidden>
                 <button type="submit">DELETE</button>
@@ -106,7 +106,7 @@
                             <button class="harvestbt" value="{{i.id}}" type="submit">Harvest</button>
                         </td>
                         <td>   
-                            <form action="/" method="POST">
+                            <form action="{% url 'traylist' %}" method="POST">
                                 <!-- CSRF TOKEN FOR FORM-->
                                 {% csrf_token %}
                                 <!-- GET FORM FROM PYTHON DATA SENT  -->

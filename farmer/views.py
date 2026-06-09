@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 import json
+from .dfunctions.bulkharvest import BulkHarvestValidationError, create_bulk_harvest
 from .dfunctions.edititems import *
 import ast
 from .models import *
@@ -166,26 +167,24 @@ def medium(request):
     return render(request, "farmer/medium.html", uitem)
 
 
+def render_bulk_harvest_error(request, form):
+    return render(request, "farmer/index.html", {
+        "data": groupingtrays(),
+        "form": Dnewtray(),
+        "todayu": str(datetime.date(datetime.today())),
+        "bulkharvest": form,
+        "bulk_tray_ids": request.POST.get("id", ""),
+    }, status=400)
+
+
 @login_required
 def harvest(request):
     if request.method == "POST":
-        form = request.POST.copy()
-
-        if form['type'] == "bulknew":
-            listid = ast.literal_eval(form['id'])
-            tray = Tray.objects.get(id=listid[0])
-            form.update({'Product': tray.name.id, 'MediumMix': tray.medium.id})
-            nitem = Nbulkharvest(form)
-            if nitem.is_valid():
-                nitem = nitem.save()
-            
-            outp = (nitem.PacksWeight + nitem.MixWeight) / len(listid)
-            for i in range(nitem.Trays):
-                tray = Tray.objects.get(id=listid[i])         
-                formd = Harvest(tray=tray, date=nitem.Harvestdate,
-                                  output = outp, bulkh= nitem)
-                formd.save()
-             
+        if request.POST.get("type") == "bulknew":
+            try:
+                create_bulk_harvest(request.POST.copy())
+            except BulkHarvestValidationError as error:
+                return render_bulk_harvest_error(request, error.form)
             return HttpResponseRedirect(reverse("index"))
 
         uitem = updateitem(request.POST, Harvest, Nharvest)

@@ -80,6 +80,23 @@ class Nbulkharvest(forms.ModelForm):
         self.fields['Harvestdate'].initial = datetime.now()
         self.fields['Trays'].widget.attrs['min'] = 1
 
+    def clean(self):
+        cleaned_data = super().clean()
+        trays = cleaned_data.get("Trays")
+        packs_quantity = cleaned_data.get("PacksQtt")
+        mix_weight = cleaned_data.get("MixWeight")
+
+        if trays is not None and trays < 1:
+            self.add_error("Trays", "Select at least one tray.")
+        if packs_quantity is not None and packs_quantity < 0:
+            self.add_error("PacksQtt", "Pack quantity cannot be negative.")
+        if mix_weight is not None and mix_weight < 0:
+            self.add_error("MixWeight", "Mix weight cannot be negative.")
+        if packs_quantity == 0 and mix_weight == 0:
+            self.add_error(None, "Harvest output must be greater than zero.")
+
+        return cleaned_data
+
 
 
 class Reportfilter(forms.Form):
