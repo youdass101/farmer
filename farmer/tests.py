@@ -42,6 +42,29 @@ class TrayListTemplateTests(SimpleTestCase):
         self.assertIn(f'action="{reverse("harvest")}"', html)
 
 
+class MediumViewTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="medium-editor", password="password")
+        self.client.force_login(self.user)
+        self.medium = Medium.objects.create(name="Soil", soil=100, coco=0)
+
+    def test_edit_button_loads_medium_edit_form(self):
+        response = self.client.post(
+            reverse("medium"),
+            {"type": "loadedit", "id": self.medium.id},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["editform"].instance, self.medium)
+        self.assertContains(response, f'name="id" value="{self.medium.id}"')
+
+    def test_medium_list_edit_button_submits_id(self):
+        response = self.client.get(reverse("medium"))
+
+        self.assertContains(response, f'name="id" value="{self.medium.id}" hidden')
+        self.assertNotContains(response, 'name="itemid"')
+
+
 class BulkHarvestHelperTests(SimpleTestCase):
     def test_parse_tray_ids_returns_unique_integer_ids(self):
         self.assertEqual(parse_tray_ids("[1, '2']"), [1, 2])

@@ -52,7 +52,7 @@
                     <form action="/medium" method="POST">
                         {% csrf_token %}
                         <input name="type" value="loadedit" hidden>
-                        <input name="itemid" value="{{i.id}}" hidden>
+                        <input name="id" value="{{i.id}}" hidden>
                         <button class="editmedium" type="submit">Edit</button>
                     </form>
                 </td>
