@@ -1,14 +1,14 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 import json
+from .dfunctions.bulkharvest import BulkHarvestValidationError, create_bulk_harvest
 from .dfunctions.edititems import *
 import ast
 from .models import *
 from .forms import *
-from django.contrib.auth.decorators import login_required
 from datetime import datetime
 
 # INDEX PAGE LOAD TRAYS 
@@ -109,36 +109,39 @@ def index(request):
 # PLANTS 
 @login_required
 def plants(request):
-    try: 
-        # LOAD JS DATA 
-        tp = json.loads(request.body)['type']
-        # JS DATA FOR NEW TRAY CREATION 
-        if tp == "fetch":
-            pp = json.loads(request.body)['data']
-            data = Plant.objects.get(id=pp)
-             
-            return JsonResponse({"result": [data.seeds, data.medium_weight]}, status=201)
-    except:
-        if request.method == "GET":
-            plantslist = Plant.objects.filter(active=True)
-            return render(request, "farmer/plants.html", {"form": Dnewplant(), "data": plantslist})
+    if request.method == "GET":
+        plantslist = Plant.objects.filter(active=True)
+        return render(request, "farmer/plants.html", {"form": Dnewplant(), "data": plantslist})
 
-        if request.method == "POST":
-            if request.POST['type'] == "filter":
-                data = filter_data(Plant, request.POST)
-                return render(request, "farmer/plants.html", {"form": Dnewplant(), "data": data})
+    if request.content_type == "application/json":
+        try:
+            payload = json.loads(request.body)
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            return JsonResponse({"error": "Invalid JSON payload."}, status=400)
 
-            else:
-                uitem = updateitem(request.POST, Plant, Dnewplant)
+        if payload.get("type") != "fetch":
+            return JsonResponse({"error": "Unsupported request type."}, status=400)
 
-        if uitem == True:
-            return HttpResponseRedirect("plants")
-        
-        if uitem == False:
-            return render(request, "farmer/plants.html",{"error": "SOMETHING WENT WRONG"})
-        
-        return render(request, "farmer/plants.html", uitem)
-        
+        try:
+            plant = Plant.objects.get(id=payload.get("data"))
+        except (TypeError, ValueError):
+            return JsonResponse({"error": "Invalid plant ID."}, status=400)
+        except Plant.DoesNotExist:
+            return JsonResponse({"error": "Plant not found."}, status=404)
+
+        return JsonResponse({"result": [plant.seeds, plant.medium_weight]}, status=201)
+
+    if request.POST.get("type") == "filter":
+        data = filter_data(Plant, request.POST)
+        return render(request, "farmer/plants.html", {"form": Dnewplant(), "data": data})
+
+    uitem = updateitem(request.POST, Plant, Dnewplant)
+    if uitem == True:
+        return HttpResponseRedirect("plants")
+    if uitem == False:
+        return render(request, "farmer/plants.html", {"error": "SOMETHING WENT WRONG"})
+    return render(request, "farmer/plants.html", uitem)
+
 
 # MEDIUM PAGE 
 @login_required
@@ -166,26 +169,24 @@ def medium(request):
     return render(request, "farmer/medium.html", uitem)
 
 
+def render_bulk_harvest_error(request, form):
+    return render(request, "farmer/index.html", {
+        "data": groupingtrays(),
+        "form": Dnewtray(),
+        "todayu": str(datetime.date(datetime.today())),
+        "bulkharvest": form,
+        "bulk_tray_ids": request.POST.get("id", ""),
+    }, status=400)
+
+
 @login_required
 def harvest(request):
     if request.method == "POST":
-        form = request.POST.copy()
-
-        if form['type'] == "bulknew":
-            listid = ast.literal_eval(form['id'])
-            tray = Tray.objects.get(id=listid[0])
-            form.update({'Product': tray.name.id, 'MediumMix': tray.medium.id})
-            nitem = Nbulkharvest(form)
-            if nitem.is_valid():
-                nitem = nitem.save()
-            
-            outp = (nitem.PacksWeight + nitem.MixWeight) / len(listid)
-            for i in range(nitem.Trays):
-                tray = Tray.objects.get(id=listid[i])         
-                formd = Harvest(tray=tray, date=nitem.Harvestdate,
-                                  output = outp, bulkh= nitem)
-                formd.save()
-             
+        if request.POST.get("type") == "bulknew":
+            try:
+                create_bulk_harvest(request.POST.copy())
+            except BulkHarvestValidationError as error:
+                return render_bulk_harvest_error(request, error.form)
             return HttpResponseRedirect(reverse("index"))
 
         uitem = updateitem(request.POST, Harvest, Nharvest)
@@ -232,48 +233,49 @@ def history(request):
 @login_required
 def report(request):
     medium = 0
-    totalyield = 0 
-    if request.method == "GET":
-        allbulk  = BulkHarvest.objects.all()[:10]
-        filter = None  
-        form = None
+    totalyield = 0
+    allbulk = BulkHarvest.objects.all()[:10]
+    report_filter = None
+    form = Reportfilter()
+    status = 200
 
-    else:
-        if request.POST['type'] == "delete":
-            ditem = updateitem(request.POST, BulkHarvest, Nbulkharvest)
-            if ditem == True:
-                return HttpResponseRedirect(reverse("report"))    
-            if ditem == False:
-                return render(request, "farmer/reports.html",{"error": "SOMETHING WENT WRONG"}) 
+    if request.method == "POST":
+        if request.POST.get("type") == "delete":
+            deleted = updateitem(request.POST, BulkHarvest, Nbulkharvest)
+            if deleted:
+                return HttpResponseRedirect(reverse("report"))
+            return render(request, "farmer/report.html", {"error": "SOMETHING WENT WRONG"}, status=400)
 
         form = Reportfilter(request.POST)
-        if form.is_valid():            
-            type = form.cleaned_data['type']
-            productname = form.cleaned_data['product']
-            start = form.cleaned_data['start']
-            end = form.cleaned_data['end']
-            filter = {'type': type, 'product': productname, 'start':start, 'end':end}
-            
-            if not productname:
-                allbulk = BulkHarvest.objects.filter(Harvestdate__range=[start, end])
-            else:
-                allbulk = BulkHarvest.objects.filter(Product= productname, Harvestdate__range=[start, end])
-            
+        if form.is_valid():
+            report_type = form.cleaned_data["type"]
+            product = form.cleaned_data["product"]
+            start = form.cleaned_data["start"]
+            end = form.cleaned_data["end"]
+            report_filter = {"type": report_type, "product": product, "start": start, "end": end}
 
-            if type=="Mix":
-                if not productname:
-                    for i in allbulk:
-                        medium = medium + i.MediumWeightMix
-                        totalyield = totalyield + i.MixWeight
-                else:
-                    for i in allbulk:
-                        medium = medium + i.MediumWeightMix
-                        totalyield = i.MixWeight
+            allbulk = BulkHarvest.objects.filter(Harvestdate__range=[start, end])
+            if product:
+                allbulk = allbulk.filter(Product=product)
 
-    data = [row.serialize() for row in  allbulk]
+            if report_type == "Mix":
+                totals = allbulk.aggregate(
+                    medium=models.Sum("MediumWeightMix"),
+                    totalyield=models.Sum("MixWeight"),
+                )
+                medium = totals["medium"] or 0
+                totalyield = totals["totalyield"] or 0
+        else:
+            allbulk = BulkHarvest.objects.none()
+            status = 400
 
-                    
-    return render(request, "farmer/report.html", {"data": data, "fform": Reportfilter, "filter": filter, 
-                                                  "medium": medium, "totalyield":totalyield, "rff": form})
-
+    data = [row.serialize() for row in allbulk]
+    return render(request, "farmer/report.html", {
+        "data": data,
+        "fform": form,
+        "filter": report_filter,
+        "medium": medium,
+        "totalyield": totalyield,
+        "rff": form,
+    }, status=status)
 

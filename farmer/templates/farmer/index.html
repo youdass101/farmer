@@ -46,7 +46,7 @@
 
 </div>
 <!-- HARVEST POP -->
-<div id="Harvestbulkpop" class="modalbulk">
+<div id="Harvestbulkpop" class="modalbulk"{% if bulkharvest.errors %} style="display: block;"{% endif %}>
     <!-- NEW PLANT Modal content -->
     <div class="modal-content">
         <div>
@@ -57,7 +57,7 @@
             <form action ="/harvest" method="POST">
                 {% csrf_token %}
                 {{bulkharvest}}
-                <input name="id" id="bulkharvest" hidden>
+                <input name="id" id="bulkharvest" value="{{bulk_tray_ids}}" hidden>
                 <button type="submit" name="type" value="bulknew">Harvest</button>
             </form>
         </div>
